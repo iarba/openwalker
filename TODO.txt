@@ -5,10 +5,10 @@ grid - fixed size. basically a matrix. cells have properties
      - has a list of objects
      - executes events
 
-object - has a grid position.
-       - has a grid size
-       - executes scripts
-       - has a context - sees the grid object
+structure - has a grid position.
+          - has a grid size
+          - executes scripts
+          - has a context - sees the grid object
 
 walker - has a position, not necessarily a grid position.
        - moves in 8 directions
@@ -16,8 +16,8 @@ walker - has a position, not necessarily a grid position.
        - executes scripts
        - has a context - sees the grid object
 
-order - load objects -> update grid from scratch
+order - load structures -> update grid from scratch
       - load walkers -> update their paths, positions, etc
-      - execute object scripts
+      - execute structures scripts
       - execute walker scripts
       - execute events
