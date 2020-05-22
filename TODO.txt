@@ -1,0 +1,23 @@
+server - handles multiple grids
+       - accepts inputs and outputs grid state/state transition.
+
+grid - fixed size. basically a matrix. cells have properties
+     - has a list of objects
+     - executes events
+
+object - has a grid position.
+       - has a grid size
+       - executes scripts
+       - has a context - sees the grid object
+
+walker - has a position, not necessarily a grid position.
+       - moves in 8 directions
+       - may have a path - list of grid positions
+       - executes scripts
+       - has a context - sees the grid object
+
+order - load objects -> update grid from scratch
+      - load walkers -> update their paths, positions, etc
+      - execute object scripts
+      - execute walker scripts
+      - execute events
