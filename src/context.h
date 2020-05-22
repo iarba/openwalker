@@ -1,5 +1,5 @@
-#ifndef context_h
-#define context_h
+#ifndef CONTEXT_H
+#define CONTEXT_H
 
 #include "_fwd.h"
 #include "grid.h"
@@ -15,4 +15,4 @@ private:
   grid_t *grid;
 };
 
-#endif
+#endif // CONTEXT_H
