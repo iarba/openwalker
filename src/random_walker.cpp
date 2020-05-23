@@ -1,10 +1,11 @@
 #include "random_walker.h"
 #include <set>
 
-random_walker_t::random_walker_t(glm::dvec2 position, context_t *ctx, namer_t required_pathfinding_property, value_t required_pathfinding_value) : walker_t(position, ctx)
+random_walker_t::random_walker_t(glm::dvec2 position, context_t *ctx, namer_t required_pathfinding_property, value_t required_pathfinding_min_value, value_t required_pathfinding_max_value) : walker_t(position, ctx)
 {
   this->required_pathfinding_property = required_pathfinding_property;
-  this->required_pathfinding_value = required_pathfinding_value;
+  this->required_pathfinding_min_value = required_pathfinding_min_value;
+  this->required_pathfinding_max_value = required_pathfinding_max_value;
 }
 
 walker_delta random_walker_t::compute_delta() const
