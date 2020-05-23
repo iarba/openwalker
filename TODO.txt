@@ -10,9 +10,9 @@ structure - has a grid position.
           - executes scripts
           - has a context - sees the grid object
 
-walker - has a position, not necessarily a grid position.
-       - moves in 8 directions
-       - may have a path - list of grid positions
+walker - has a position, not necessarily a grid position.                                             V
+       - moves in 8 directions                                                                        V
+       - may have a path - list of grid positions                                                     
        - executes scripts
        - has a context - sees the grid object
 
