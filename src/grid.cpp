@@ -120,16 +120,30 @@ void grid_t::apply_delta(grid_delta gd)
   {
     structures[it.first] = it.second;
   }
+  std::map<oid_t, structure_t *> new_structures = structures;
   for(auto it : gd.structure_deltas)
   {
     structures[it.first]->apply_delta(it.second);
+    if(structures[it.first]->get_suicide())
+    {
+      delete structures[it.first];
+      new_structures.erase(it.first);
+    }
   }
+  structures = new_structures;
   for(auto it : gd.walker_spawns)
   {
     walkers[it.first] = it.second;
   }
+  std::map<oid_t, walker_t *> new_walkers = walkers;
   for(auto it : gd.walker_deltas)
   {
     walkers[it.first]->apply_delta(it.second);
+    if(walkers[it.first]->get_suicide())
+    {
+      delete walkers[it.first];
+      new_walkers.erase(it.first);
+    }
   }
+  walkers = new_walkers;
 }

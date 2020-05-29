@@ -6,6 +6,10 @@ walker_t::walker_t(glm::dvec2 position, context_t *ctx)
   this->ctx = ctx;
 }
 
+walker_t::~walker_t()
+{
+}
+
 glm::dvec2 walker_t::get_position()
 {
   return this->position;

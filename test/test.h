@@ -21,6 +21,7 @@ class road : public structure_t
 {
 public:
   road(glm::ivec2 position, context_t *ctx);
+  ~road();
 };
 
 #endif // TEST_TEST_H

@@ -13,19 +13,22 @@ public:
   std::map<glm::ivec2, properties_t> delta_cell_temporary_setters;
   std::map<glm::ivec2, properties_t> delta_cell_persistent_setters;
   properties_t delta_properties;
+  bool suicide = false;
 };
 
 class structure_t
 {
 public:
   structure_t(glm::ivec2 position, glm::ivec2 size, context_t *ctx);
+  virtual ~structure_t();
   glm::ivec2 get_position();
   glm::ivec2 get_size();
   virtual structure_delta compute_delta() const;
   void apply_delta(structure_delta wd);
+  bool get_suicide();
 protected:
-  properties_t properties;
   bool suicide = false;
+  properties_t properties;
   glm::ivec2 position;
   glm::ivec2 size;
   context_t *ctx;

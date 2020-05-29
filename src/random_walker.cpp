@@ -10,6 +10,10 @@ random_walker_t::random_walker_t(glm::dvec2 position, context_t *ctx, namer_t re
   this->required_pathfinding_def_value = required_pathfinding_def_value;
 }
 
+random_walker_t::~random_walker_t()
+{
+}
+
 walker_delta random_walker_t::compute_delta() const
 {
   walker_delta wd = this->walker_t::compute_delta();

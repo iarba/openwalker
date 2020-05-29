@@ -7,6 +7,10 @@ structure_t::structure_t(glm::ivec2 position, glm::ivec2 size, context_t *ctx)
   this->ctx = ctx;
 }
 
+structure_t::~structure_t()
+{
+}
+
 glm::ivec2 structure_t::get_position()
 {
   return this->position;
@@ -43,4 +47,10 @@ void structure_t::apply_delta(structure_delta sd)
   {
     this->properties[it.first] = it.second;
   }
+  this->suicide = sd.suicide;
+}
+
+bool structure_t::get_suicide()
+{
+  return this->suicide;
 }
