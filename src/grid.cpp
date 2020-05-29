@@ -70,3 +70,44 @@ cell_t *grid_t::at(glm::ivec2 position)
 {
   return this->grid[position.x] + position.y;
 }
+
+grid_delta grid_t::compute_delta() const
+{
+  grid_delta gd;
+  for(auto it : this->structures)
+  {
+    gd.structure_deltas[it.first] = it.second->compute_delta();
+  }
+  for(auto it : this->walkers)
+  {
+    gd.walker_deltas[it.first] = it.second->compute_delta();
+  }
+  return gd;
+}
+
+void grid_t::apply_delta(grid_delta gd)
+{
+  for(int i = 0; i < this->size.x; i++)
+  {
+    for(int j = 0; j < this->size.y; j++)
+    {
+      at({i, j})->discard();
+    }
+  }
+  for(auto it : gd.structure_spawns)
+  {
+    structures[it.first] = it.second;
+  }
+  for(auto it : gd.structure_deltas)
+  {
+    structures[it.first]->apply_delta(it.second);
+  }
+  for(auto it : gd.walker_spawns)
+  {
+    walkers[it.first] = it.second;
+  }
+  for(auto it : gd.walker_deltas)
+  {
+    walkers[it.first]->apply_delta(it.second);
+  }
+}

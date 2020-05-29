@@ -1,13 +1,16 @@
 #ifndef SLICER_H
 #define SLICER_H
 
+#include "_fwd.h"
 #include "context.h"
+#include "grid.h"
 
 namespace slicer
 {
   class slice_t
   {
   public:
+    grid_delta gd;
     slice_t();
   };
 

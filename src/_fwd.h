@@ -13,4 +13,7 @@ class structure_t; //-+--* |
 //                    V n  |
 class walker_t; //---------*
 
+class structure_delta;
+class walker_delta;
+
 #endif // _FWD_H

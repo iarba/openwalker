@@ -28,4 +28,8 @@ void walker_t::apply_delta(walker_delta wd)
   this->speed +=wd.delta_speed;
   this->position += wd.delta_position;
   this->suicide = wd.suicide;
+  for(auto it : wd.delta_properties)
+  {
+    this->properties[it.first] = it.second;
+  }
 }

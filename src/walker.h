@@ -4,6 +4,7 @@
 #include <glm/glm.hpp>
 #include "_fwd.h"
 #include "context.h"
+#include "properties.h"
 
 typedef double direction_t;
 
@@ -23,6 +24,7 @@ public:
   double delta_speed = 0;
   glm::dvec2 delta_position = {0, 0};
   bool suicide = false;
+  properties_t delta_properties;
 };
 
 class walker_t
@@ -34,6 +36,7 @@ public:
   virtual walker_delta compute_delta() const;
   void apply_delta(walker_delta wd);
 protected:
+  properties_t properties;
   bool suicide = false;
   direction_t direction = dir_east;
   double speed = 1;

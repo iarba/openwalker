@@ -1,12 +1,13 @@
 server - handles multiple grids
        - accepts inputs and outputs grid state/state transition.
 
-grid - fixed size. basically a matrix. cells have properties
-     - has a list of objects
+grid - fixed size. basically a matrix. cells have properties                                          V
+     - has a list of strucutres                                                                       V
+     - has a list of walkers                                                                          V
      - executes events
 
-structure - has a grid position.
-          - has a grid size
+structure - has a grid position.                                                                      V
+          - has a grid size                                                                           V
           - executes scripts
           - has a context - sees the grid object                                                      V
 
@@ -15,8 +16,6 @@ walker - has a position, not necessarily a grid position.                       
        - executes scripts
        - has a context - sees the grid object                                                         V
 
-order - load structures -> update grid from scratch
-      - load walkers -> update their paths, positions, etc
-      - execute structures scripts
-      - execute walker scripts
+order - load structures -> update grid from scratch                                                   V
+      - load walkers -> update their paths, positions, etc                                            V
       - execute events
