@@ -1,8 +1,4 @@
 #include "test.h"
-#include "../src/main.h"
-
-def_zone(test);
-def(test, walkable);
 
 test_context *ctx;
 
@@ -54,6 +50,13 @@ road::road(glm::ivec2 position, context_t *ctx) : structure_t(position, {1, 1}, 
 
 road::~road()
 {
+}
+
+structure_delta road::compute_delta() const
+{
+  structure_delta sd = structure_t::compute_delta();
+  sd.delta_cell_persistent_setters[position][test_walkable] = (void *) 1;
+  return sd;
 }
 
 int main()

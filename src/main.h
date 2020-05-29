@@ -5,6 +5,7 @@
 #include "context.h"
 #include "slicer.h"
 #include "random_walker.h"
+#include "misc_utils.h"
 
 void openwalker_init(int seed);
 

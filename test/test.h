@@ -3,6 +3,9 @@
 
 #include "../src/main.h"
 
+def_zone(test);
+def(test, walkable);
+
 void initialise();
 
 void run();
@@ -21,6 +24,7 @@ class road : public structure_t
 {
 public:
   road(glm::ivec2 position, context_t *ctx);
+  structure_delta compute_delta() const;
   ~road();
 };
 

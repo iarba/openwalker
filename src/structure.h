@@ -6,12 +6,13 @@
 #include "context.h"
 #include "properties.h"
 #include <map>
+#include "ivec2comparator.h"
 
 class structure_delta
 {
 public:
-  std::map<glm::ivec2, properties_t> delta_cell_temporary_setters;
-  std::map<glm::ivec2, properties_t> delta_cell_persistent_setters;
+  std::map<glm::ivec2, properties_t, ivec2comparator> delta_cell_temporary_setters;
+  std::map<glm::ivec2, properties_t, ivec2comparator> delta_cell_persistent_setters;
   properties_t delta_properties;
   bool suicide = false;
 };
