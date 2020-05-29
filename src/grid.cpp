@@ -65,3 +65,8 @@ glm::ivec2 grid_t::get_size()
 {
   return this->size;
 }
+
+cell_t *grid_t::at(glm::ivec2 position)
+{
+  return this->grid[position.x] + position.y;
+}

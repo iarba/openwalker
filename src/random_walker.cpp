@@ -1,11 +1,13 @@
 #include "random_walker.h"
 #include <set>
+#include "misc_utils.h"
 
-random_walker_t::random_walker_t(glm::dvec2 position, context_t *ctx, namer_t required_pathfinding_property, value_t required_pathfinding_min_value, value_t required_pathfinding_max_value) : walker_t(position, ctx)
+random_walker_t::random_walker_t(glm::dvec2 position, context_t *ctx, namer_t required_pathfinding_property, value_t required_pathfinding_min_value, value_t required_pathfinding_max_value, value_t required_pathfinding_def_value) : walker_t(position, ctx)
 {
   this->required_pathfinding_property = required_pathfinding_property;
   this->required_pathfinding_min_value = required_pathfinding_min_value;
   this->required_pathfinding_max_value = required_pathfinding_max_value;
+  this->required_pathfinding_def_value = required_pathfinding_def_value;
 }
 
 walker_delta random_walker_t::compute_delta() const
@@ -21,10 +23,30 @@ walker_delta random_walker_t::compute_delta() const
     dist_to_parse -= distance;
     position = next_grid_point;
     std::set<direction_t> possible_directions;
-    // for each direction, if it's not backwards, consider going in that direction
+    double backwards = direction + M_PI;
+    while(backwards > 2 * M_PI)
+    {
+      backwards -= 2 * M_PI;
+    }
+    for(double new_direction = dir_east; new_direction < dir_south_east; new_direction += M_PI / 2)
+    {
+      if(eq(new_direction, backwards))
+      {
+        continue;
+      }
+      value_t pathfinding_value = this->ctx->get_grid()->at(glm::ivec2(position.x + cos(new_direction) * 1.10, position.y + sin(new_direction) * 1.10))->get(required_pathfinding_property, required_pathfinding_def_value);
+      if(required_pathfinding_min_value <= pathfinding_value && pathfinding_value <= required_pathfinding_max_value)
+      {
+        possible_directions.insert(new_direction);
+      }
+    }
     if(possible_directions.size() == 0)
     {
-      // consider going backwards
+      value_t pathfinding_value = this->ctx->get_grid()->at(glm::ivec2(position.x + cos(backwards) * 1.10, position.y + sin(backwards) * 1.10))->get(required_pathfinding_property, required_pathfinding_def_value);
+      if(required_pathfinding_min_value <= pathfinding_value && pathfinding_value <= required_pathfinding_max_value)
+      {
+        possible_directions.insert(backwards);
+      }
     }
     if(possible_directions.size() == 0)
     {
@@ -33,7 +55,13 @@ walker_delta random_walker_t::compute_delta() const
     }
     else
     {
-      // choose a direction at random from the set;
+      int pos = rand() % possible_directions.size();
+      auto it = possible_directions.begin();
+      while(pos--)
+      {
+        it++;
+      }
+      direction = *it;
     }
   }
   position = position + glm::dvec2(cos(direction), sin(direction)) * dist_to_parse;

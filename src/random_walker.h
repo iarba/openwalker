@@ -9,12 +9,13 @@
 
 class random_walker_t : public walker_t
 {
-  random_walker_t(glm::dvec2 position, context_t *ctx, namer_t required_pathfinding_property, value_t required_pathfinding_min_value, value_t required_pathfinding_max_value);
+  random_walker_t(glm::dvec2 position, context_t *ctx, namer_t required_pathfinding_property, value_t required_pathfinding_min_value, value_t required_pathfinding_max_value, value_t required_pathfinding_def_value);
   virtual walker_delta compute_delta() const;
 protected:
   namer_t required_pathfinding_property;
   value_t required_pathfinding_min_value;
   value_t required_pathfinding_max_value;
+  value_t required_pathfinding_def_value;
 };
 
 #endif // RANDOM_WALKER_H

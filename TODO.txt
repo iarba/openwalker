@@ -8,13 +8,12 @@ grid - fixed size. basically a matrix. cells have properties
 structure - has a grid position.
           - has a grid size
           - executes scripts
-          - has a context - sees the grid object
+          - has a context - sees the grid object                                                      V
 
 walker - has a position, not necessarily a grid position.                                             V
        - moves in 8 directions                                                                        V
-       - may have a path - list of grid positions                                                     
        - executes scripts
-       - has a context - sees the grid object
+       - has a context - sees the grid object                                                         V
 
 order - load structures -> update grid from scratch
       - load walkers -> update their paths, positions, etc
