@@ -16,6 +16,7 @@ namespace slicer
 
   slice_t slice(context_t *ctx);
   void apply(context_t *ctx, slice_t slice);
+  void tick(context_t *ctx);
 };
 
 #endif // SLICER_H

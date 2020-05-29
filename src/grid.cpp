@@ -59,6 +59,28 @@ grid_t::grid_t(glm::ivec2 size, context_t *ctx)
 {
   this->size = size;
   this->ctx = ctx;
+  grid = new cell_t*[size.x];
+  for(int i = 0; i < size.x; i++)
+  {
+    grid[i] = new cell_t[size.y];
+  }
+}
+
+grid_t::~grid_t()
+{
+  for(int i = 0; i < this->size.x; i++)
+  {
+    delete[] grid[i];
+  }
+  delete[] grid;
+  for(auto it : this->structures)
+  {
+    delete it.second;
+  }
+  for(auto it : this->walkers)
+  {
+    delete it.second;
+  }
 }
 
 glm::ivec2 grid_t::get_size()

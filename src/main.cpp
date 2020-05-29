@@ -1,11 +1,6 @@
-#include "grid.h"
+#include "main.h"
 
-int main(int argc, char **argv)
+void openwalker_init(int seed)
 {
-  if(argc < 2)
-  {
-    return -1;
-  }
-  srand(std::atoi(argv[1]));
-  return 0;
+  srand(seed);
 }

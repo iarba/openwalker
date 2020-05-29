@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.10.0)
 project(openwalker)
 
 file(GLOB_RECURSE SOURCES "src/*.cpp")
+file(GLOB_RECURSE TEST_SOURCES "test/*.cpp")
 
 add_subdirectory(dep/glm)
 
@@ -16,4 +17,7 @@ include_directories(${Boost_INCLUDE_DIR})
 link_directories(${Boost_LIBRARY_DIR})
 link_libraries(${Boost_LIBRARIES} glm)
 
-add_executable(openwalker ${SOURCES})
+add_library(openwalker STATIC ${SOURCES})
+
+add_executable(test ${TEST_SOURCES})
+target_link_libraries(test openwalker)

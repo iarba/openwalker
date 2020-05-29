@@ -5,6 +5,14 @@ context_t::context_t()
   this->grid = NULL;
 }
 
+context_t::~context_t()
+{
+  if(this->grid)
+  {
+    delete this->grid;
+  }
+}
+
 grid_t *context_t::get_grid()
 {
   return this->grid;

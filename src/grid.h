@@ -38,6 +38,7 @@ class grid_t
 {
 public:
   grid_t(glm::ivec2 size, context_t *ctx);
+  ~grid_t();
   glm::ivec2 get_size();
   cell_t *at(glm::ivec2 position);
   grid_delta compute_delta() const;
