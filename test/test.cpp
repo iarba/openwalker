@@ -35,6 +35,10 @@ void road::append_influence_delta(influence_delta &id, context_t ctx) const
 int main()
 {
   openwalker_init(1234);
+  console_explorer_slave_t *ces = new console_explorer_slave_t(openwalker_master);
+  openwalker_master->add_listener(ces);
   run();
+  delete ces;
+  openwalker_destroy();
   return 0;
 }

@@ -6,6 +6,7 @@
 #include "slave.h"
 #include <mutex>
 #include <set>
+#include <thread>
 
 class master_delta;
 class master_t;
@@ -35,6 +36,12 @@ public:
 protected:
   std::mutex master_lock;
   std::set<slave_t *>listeners;
+  bool autorun = false;
+  int delay = 1;
+private:
+  void duty();
+  bool kill = false;
+  std::thread duty_thread;
 };
 
 #endif // MASTER_H

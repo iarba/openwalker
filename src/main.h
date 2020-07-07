@@ -4,6 +4,7 @@
 #include "_fwd.h"
 #include "context.h"
 #include "influence.h"
+#include "console_explorer_slave.h"
 #include "slave.h"
 #include "master.h"
 #include "world.h"
@@ -16,5 +17,7 @@
 extern master_t *openwalker_master;
 
 void openwalker_init(int seed);
+
+void openwalker_destroy();
 
 #endif // MAIN_H
