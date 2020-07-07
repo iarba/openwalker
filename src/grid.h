@@ -7,8 +7,7 @@
 #include "walker.h"
 #include "context.h"
 #include "properties.h"
-
-typedef int oid_t;
+#include "influence.h"
 
 class grid_delta
 {
@@ -17,6 +16,8 @@ public:
   std::map<oid_t, structure_delta> structure_deltas;
   std::map<oid_t, walker_t *> walker_spawns;
   std::map<oid_t, walker_delta> walker_deltas;
+  influence_delta inf_delta;
+  bool suicide = false;
 };
 
 class cell_t
@@ -27,8 +28,8 @@ public:
   void set(namer_t name, value_t value);
   void set_persistent(namer_t name, value_t value);
   void unset(namer_t name);
+  value_t get(namer_t name, value_t def, bool *found);
   value_t get(namer_t name);
-  value_t get(namer_t name, value_t def);
 private:
   properties_t temporary;
   properties_t persistent;
@@ -37,18 +38,21 @@ private:
 class grid_t
 {
 public:
-  grid_t(glm::ivec2 size, context_t *ctx);
+  grid_t(glm::ivec2 size);
   ~grid_t();
   glm::ivec2 get_size();
   cell_t *at(glm::ivec2 position);
-  grid_delta compute_delta() const;
+  structure_t *get_structure(oid_t id);
+  walker_t *get_walker(oid_t id);
+  grid_delta compute_delta(context_t ctx) const;
   void apply_delta(grid_delta gd);
+  bool get_suicide();
 private:
   std::map<oid_t, structure_t *> structures;
   std::map<oid_t, walker_t *> walkers;
   glm::ivec2 size;
-  context_t *ctx;
   cell_t **grid;
+  bool suicide = false;
 };
 
 #endif // GRID_H

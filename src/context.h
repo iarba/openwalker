@@ -1,19 +1,14 @@
 #ifndef CONTEXT_H
 #define CONTEXT_H
 
-#include "_fwd.h"
-#include "grid.h"
+#include "world.h"
 
 class context_t
 {
 public:
-  context_t();
-  virtual ~context_t();
-  grid_t *get_grid();
-protected:
-  void set_grid(grid_t *grid);
-private:
-  grid_t *grid = NULL;
+  world_t* world = NULL;
+  oid_t grid_id = 0;
+  oid_t element_id = 0;
 };
 
 #endif // CONTEXT_H

@@ -2,7 +2,7 @@
 #include <set>
 #include "misc_utils.h"
 
-random_walker_t::random_walker_t(glm::dvec2 position, context_t *ctx, namer_t required_pathfinding_property, value_t required_pathfinding_min_value, value_t required_pathfinding_max_value, value_t required_pathfinding_def_value) : walker_t(position, ctx)
+random_walker_t::random_walker_t(glm::dvec2 position, namer_t required_pathfinding_property, value_t required_pathfinding_min_value, value_t required_pathfinding_max_value, value_t required_pathfinding_def_value) : walker_t(position)
 {
   this->required_pathfinding_property = required_pathfinding_property;
   this->required_pathfinding_min_value = required_pathfinding_min_value;
@@ -14,12 +14,13 @@ random_walker_t::~random_walker_t()
 {
 }
 
-walker_delta random_walker_t::compute_delta() const
+walker_delta random_walker_t::compute_delta(context_t ctx) const
 {
-  walker_delta wd = this->walker_t::compute_delta();
+  walker_delta wd = this->walker_t::compute_delta(ctx);
   double dist_to_parse = this->speed;
   double direction = this->direction;
   glm::dvec2 position = this->position;
+  grid_t *parent_grid = ctx.world->get_grid(ctx.grid_id);
   double distance;
   glm::ivec2 grid_position;
   for(glm::dvec2 next_grid_point = position; (distance = glm::distance(position, next_grid_point)) < dist_to_parse; next_grid_point = glm::dvec2(grid_position = glm::ivec2(position + glm::dvec2(cos(direction), sin(direction)))))
@@ -38,7 +39,7 @@ walker_delta random_walker_t::compute_delta() const
       {
         continue;
       }
-      value_t pathfinding_value = this->ctx->get_grid()->at(glm::ivec2(position.x + cos(new_direction) * 1.10, position.y + sin(new_direction) * 1.10))->get(required_pathfinding_property, required_pathfinding_def_value);
+      value_t pathfinding_value = parent_grid->at(glm::ivec2(position.x + cos(new_direction) * 1.10, position.y + sin(new_direction) * 1.10))->get(required_pathfinding_property, required_pathfinding_def_value, NULL);
       if(required_pathfinding_min_value <= pathfinding_value && pathfinding_value <= required_pathfinding_max_value)
       {
         possible_directions.insert(new_direction);
@@ -46,7 +47,7 @@ walker_delta random_walker_t::compute_delta() const
     }
     if(possible_directions.size() == 0)
     {
-      value_t pathfinding_value = this->ctx->get_grid()->at(glm::ivec2(position.x + cos(backwards) * 1.10, position.y + sin(backwards) * 1.10))->get(required_pathfinding_property, required_pathfinding_def_value);
+      value_t pathfinding_value = parent_grid->at(glm::ivec2(position.x + cos(backwards) * 1.10, position.y + sin(backwards) * 1.10))->get(required_pathfinding_property, required_pathfinding_def_value, NULL);
       if(required_pathfinding_min_value <= pathfinding_value && pathfinding_value <= required_pathfinding_max_value)
       {
         possible_directions.insert(backwards);

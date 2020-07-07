@@ -25,40 +25,44 @@ void cell_t::unset(namer_t name)
   persistent.erase(name);
 }
 
-value_t cell_t::get(namer_t name)
+value_t cell_t::get(namer_t name, value_t def, bool *found)
 {
+  value_t rval = def;
+  bool aux;
+  if(found == NULL)
+  {
+    found = &aux; // we're just gonna pretend it doesn't exist
+  }
+  *found = false;
   auto it = temporary.find(name);
   if(it != temporary.end())
   {
-    return it -> second;
+    *found = true;
+    rval = it -> second;
   }
   it = persistent.find(name);
   if(it != persistent.end())
   {
-    return it -> second;
+    *found = true;
+    rval = it -> second;
+  }
+  return rval;
+}
+
+value_t cell_t::get(namer_t name)
+{
+  bool found;
+  value_t rval = get(name, &found, NULL);
+  if(found)
+  {
+    return rval;
   }
   throw std::logic_error("property not found");
 }
 
-value_t cell_t::get(namer_t name, value_t def)
-{
-  auto it = temporary.find(name);
-  if(it != temporary.end())
-  {
-    return it -> second;
-  }
-  it = persistent.find(name);
-  if(it != persistent.end())
-  {
-    return it -> second;
-  }
-  return def;
-}
-
-grid_t::grid_t(glm::ivec2 size, context_t *ctx)
+grid_t::grid_t(glm::ivec2 size)
 {
   this->size = size;
-  this->ctx = ctx;
   grid = new cell_t*[size.x];
   for(int i = 0; i < size.x; i++)
   {
@@ -93,16 +97,48 @@ cell_t *grid_t::at(glm::ivec2 position)
   return this->grid[position.x] + position.y;
 }
 
-grid_delta grid_t::compute_delta() const
+structure_t *grid_t::get_structure(oid_t id)
+{
+  auto it = structures.find(id);
+  if(it != structures.end())
+  {
+    return it->second;
+  }
+  return NULL;
+}
+
+walker_t *grid_t::get_walker(oid_t id)
+{
+  auto it = walkers.find(id);
+  if(it != walkers.end())
+  {
+    return it->second;
+  }
+  return NULL;
+}
+
+grid_delta grid_t::compute_delta(context_t ctx) const
 {
   grid_delta gd;
   for(auto it : this->structures)
   {
-    gd.structure_deltas[it.first] = it.second->compute_delta();
+    ctx.element_id = it.first;
+    gd.structure_deltas[it.first] = it.second->compute_delta(ctx);
   }
   for(auto it : this->walkers)
   {
-    gd.walker_deltas[it.first] = it.second->compute_delta();
+    ctx.element_id = it.first;
+    gd.walker_deltas[it.first] = it.second->compute_delta(ctx);
+  }
+  for(auto it : this->structures)
+  {
+    ctx.element_id = it.first;
+    it.second->append_influence_delta(gd.inf_delta, ctx);
+  }
+  for(auto it : this->walkers)
+  {
+    ctx.element_id = it.first;
+    it.second->append_influence_delta(gd.inf_delta, ctx);
   }
   return gd;
 }
@@ -114,6 +150,22 @@ void grid_t::apply_delta(grid_delta gd)
     for(int j = 0; j < this->size.y; j++)
     {
       at({i, j})->discard();
+    }
+  }
+  for(auto it : gd.inf_delta.cell_persistent_setters)
+  {
+    cell_t *c = at(it.first);
+    for(auto it2 : it.second)
+    {
+      c->set_persistent(it2.first, it2.second);
+    }
+  }
+  for(auto it : gd.inf_delta.cell_temporary_setters)
+  {
+    cell_t *c = at(it.first);
+    for(auto it2 : it.second)
+    {
+      c->set(it2.first, it2.second);
     }
   }
   for(auto it : gd.structure_spawns)
@@ -146,4 +198,10 @@ void grid_t::apply_delta(grid_delta gd)
     }
   }
   walkers = new_walkers;
+  this->suicide = gd.suicide;
+}
+
+bool grid_t::get_suicide()
+{
+  return suicide;
 }

@@ -3,9 +3,17 @@
 
 #include "_fwd.h"
 #include "context.h"
-#include "slicer.h"
+#include "influence.h"
+#include "slave.h"
+#include "master.h"
+#include "world.h"
+#include "grid.h"
+#include "structure.h"
+#include "walker.h"
 #include "random_walker.h"
 #include "misc_utils.h"
+
+extern master_t *openwalker_master;
 
 void openwalker_init(int seed);
 

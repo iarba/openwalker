@@ -4,6 +4,7 @@
 #include <glm/glm.hpp>
 #include "_fwd.h"
 #include "context.h"
+#include "influence.h"
 #include "properties.h"
 
 typedef double direction_t;
@@ -30,11 +31,12 @@ public:
 class walker_t
 {
 public:
-  walker_t(glm::dvec2 position, context_t *ctx);
+  walker_t(glm::dvec2 position);
   virtual ~walker_t();
   glm::dvec2 get_position();
   bool get_suicide();
-  virtual walker_delta compute_delta() const;
+  virtual walker_delta compute_delta(context_t ctx) const;
+  virtual void append_influence_delta(influence_delta &id, context_t ctx) const;
   void apply_delta(walker_delta wd);
 protected:
   properties_t properties;
@@ -42,7 +44,6 @@ protected:
   direction_t direction = dir_east;
   double speed = 1;
   glm::dvec2 position;
-  context_t *ctx;
 private:
 };
 

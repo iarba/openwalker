@@ -1,9 +1,8 @@
 #include "walker.h"
 
-walker_t::walker_t(glm::dvec2 position, context_t *ctx)
+walker_t::walker_t(glm::dvec2 position)
 {
   this->position = position;
-  this->ctx = ctx;
 }
 
 walker_t::~walker_t()
@@ -20,10 +19,14 @@ bool walker_t::get_suicide()
   return this->suicide;
 }
 
-walker_delta walker_t::compute_delta() const
+walker_delta walker_t::compute_delta(context_t ctx) const
 {
   walker_delta wd;
   return wd;
+}
+
+void walker_t::append_influence_delta(influence_delta &id, context_t ctx) const
+{
 }
 
 void walker_t::apply_delta(walker_delta wd)

@@ -3,6 +3,8 @@
 
 #include <map>
 
+typedef int oid_t;
+
 typedef std::pair<int, int> namer_t;
 
 typedef void* value_t;
