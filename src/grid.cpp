@@ -28,6 +28,12 @@ cell_t::cell_t()
 {
 }
 
+void cell_t::copy_into(cell_t *other)
+{
+  other->persistent = this->persistent;
+  other->temporary = this->temporary;
+}
+
 void cell_t::discard()
 {
   temporary.clear();
@@ -49,7 +55,7 @@ void cell_t::unset(namer_t name)
   persistent.erase(name);
 }
 
-value_t cell_t::get(namer_t name, value_t def, bool *found)
+value_t cell_t::get(namer_t name, value_t def, bool *found, properties_t *delta_persistent_setter, properties_t *delta_temporary_setter)
 {
   value_t rval = def;
   bool aux;
@@ -64,13 +70,36 @@ value_t cell_t::get(namer_t name, value_t def, bool *found)
     *found = true;
     rval = it -> second;
   }
+  if(delta_temporary_setter)
+  {
+    it = delta_temporary_setter->find(name);
+    if(it != delta_temporary_setter->end())
+    {
+      *found = true;
+      rval = it -> second;
+    }
+  }
   it = persistent.find(name);
   if(it != persistent.end())
   {
     *found = true;
     rval = it -> second;
   }
+  if(delta_persistent_setter)
+  {
+    it = delta_persistent_setter->find(name);
+    if(it != delta_persistent_setter->end())
+    {
+      *found = true;
+      rval = it -> second;
+    }
+  }
   return rval;
+}
+
+value_t cell_t::get(namer_t name, value_t def, bool *found)
+{
+  return get(name, def, found, NULL, NULL);
 }
 
 value_t cell_t::get(namer_t name)
@@ -95,6 +124,7 @@ void grid_t::load()
 grid_t *grid_t::grid_constructor::instantiate(grid_t *g)
 {
   grid_t *ng = new grid_t(g->size);
+  g->copy_into(ng);
   return ng;
 }
 
@@ -124,6 +154,28 @@ grid_t::~grid_t()
   {
     delete it.second;
   }
+}
+
+void grid_t::copy_into(grid_t *other)
+{
+  // assuming size and cell memory allocation is handled by constructor
+  for(int i = 0; i < this->size.x; i++)
+  {
+    for(int j = 0; j < this->size.y; j++)
+    {
+      glm::ivec2 where = {i, j};
+      this->at(where)->copy_into(other->at(where));
+    }
+  }
+  for(auto it : this->structures)
+  {
+    other->structures[it.first] = cloner_t::g_cloner_get()->create_structure(it.second);
+  }
+  for(auto it : this->walkers)
+  {
+    other->walkers[it.first] = cloner_t::g_cloner_get()->create_walker(it.second);
+  }
+  other->suicide = this->suicide;
 }
 
 glm::ivec2 grid_t::get_size()

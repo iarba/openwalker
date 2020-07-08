@@ -32,10 +32,12 @@ class cell_t
 {
 public:
   cell_t();
+  virtual void copy_into(cell_t *other);
   void discard();
   void set(namer_t name, value_t value);
   void set_persistent(namer_t name, value_t value);
   void unset(namer_t name);
+  value_t get(namer_t name, value_t def, bool *found, properties_t *delta_persistent_setter, properties_t *delta_temporary_setter);
   value_t get(namer_t name, value_t def, bool *found);
   value_t get(namer_t name);
 private:
@@ -54,6 +56,7 @@ public:
 
   grid_t(glm::ivec2 size);
   ~grid_t();
+  void copy_into(grid_t *other);
   glm::ivec2 get_size();
   cell_t *at(glm::ivec2 position);
   structure_t *get_structure(oid_t id);

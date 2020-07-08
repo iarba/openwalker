@@ -15,8 +15,9 @@ public:
   };
 
   road(glm::ivec2 position);
+  virtual ~road();
+  virtual void copy_into(road *other);
   void append_influence_delta(influence_delta &id, context_t ctx) const;
-  ~road();
 };
 
 #endif // TEST_TEST_H

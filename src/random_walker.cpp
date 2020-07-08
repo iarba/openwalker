@@ -15,6 +15,7 @@ walker_t *random_walker_t::random_walker_constructor::instantiate(walker_t *w)
 {
   random_walker_t *rw = (random_walker_t *)w;
   random_walker_t *nrw = new random_walker_t(rw->position, rw->required_pathfinding_property, rw->required_pathfinding_min_value, rw->required_pathfinding_max_value, rw->required_pathfinding_def_value);
+  rw->copy_into(nrw);
   return nrw;
 }
 
@@ -29,6 +30,15 @@ random_walker_t::random_walker_t(glm::dvec2 position, namer_t required_pathfindi
 
 random_walker_t::~random_walker_t()
 {
+}
+
+void random_walker_t::copy_into(random_walker_t *other)
+{
+  this->walker_t::copy_into(other);
+  other->required_pathfinding_property = this->required_pathfinding_property;
+  other->required_pathfinding_min_value = this->required_pathfinding_min_value;
+  other->required_pathfinding_max_value = this->required_pathfinding_max_value;
+  other->required_pathfinding_def_value = this->required_pathfinding_def_value;
 }
 
 walker_delta random_walker_t::compute_delta(context_t ctx) const

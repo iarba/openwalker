@@ -32,6 +32,7 @@ public:
 
   structure_t(glm::ivec2 position);
   virtual ~structure_t();
+  virtual void copy_into(structure_t *other);
   glm::ivec2 get_position();
   virtual structure_delta compute_delta(context_t ctx) const;
   virtual void append_influence_delta(influence_delta &id, context_t ctx) const;

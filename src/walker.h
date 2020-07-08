@@ -46,6 +46,7 @@ public:
 
   walker_t(glm::dvec2 position);
   virtual ~walker_t();
+  virtual void copy_into(walker_t *other);
   glm::dvec2 get_position();
   bool get_suicide();
   virtual walker_delta compute_delta(context_t ctx) const;

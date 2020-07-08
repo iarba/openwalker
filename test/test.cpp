@@ -14,6 +14,7 @@ structure_t *road::road_constructor::instantiate(structure_t *s)
 {
   road *r = (road *)s;
   road *nr = new road(r->position);
+  r->copy_into(nr);
   return nr;
 }
 
@@ -27,13 +28,24 @@ void run()
   md.wd.grid_deltas[1].structure_spawns[3] = new road({4, 4});
   md.wd.grid_deltas[1].structure_spawns[4] = new road({2, 4});
   openwalker_master->apply_delta(md); // injection
+  md = master_delta();
   openwalker_master->tick();
-  md.wd.grid_spawns.clear();
-  md.wd.grid_deltas[1].structure_spawns.clear();
   md.wd.grid_deltas[1].walker_spawns[1] = new random_walker_t({3, 3}, test__walkable, (value_t)1, (value_t)1, (value_t)0);
   openwalker_master->apply_delta(md); // injection
+  md = master_delta();
+  md.wd.grid_deltas.clear();
+  openwalker_master->tick();
+  md.wd.grid_spawns[42] = cloner_t::g_cloner_get()->create_grid(openwalker_master->get_grid(1));
+  openwalker_master->apply_delta(md); // injection
+  openwalker_master->tick();
+  openwalker_master->tick();
   openwalker_master->tick();
   if(openwalker_master->get_grid(1)->get_structure(4)->get_clone_identifier() != cloner_registry__road_cloner)
+  {
+    throw std::logic_error("incorrect cloner");
+  }
+  
+  if(openwalker_master->get_grid(42)->get_structure(4)->get_clone_identifier() != cloner_registry__road_cloner)
   {
     throw std::logic_error("incorrect cloner");
   }
@@ -46,6 +58,11 @@ road::road(glm::ivec2 position) : structure_t(position)
 
 road::~road()
 {
+}
+
+void road::copy_into(road *other)
+{
+  this->structure_t::copy_into(other);
 }
 
 void road::append_influence_delta(influence_delta &id, context_t ctx) const

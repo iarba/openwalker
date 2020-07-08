@@ -15,9 +15,10 @@ void structure_t::load()
   cloner_t::g_cloner_get()->reg_structure(cloner_registry__structure_cloner, new structure_constructor());
 }
 
-structure_t *structure_t::structure_constructor::instantiate(structure_t *g)
+structure_t *structure_t::structure_constructor::instantiate(structure_t *s)
 {
-  structure_t *ns = new structure_t(g->position);
+  structure_t *ns = new structure_t(s->position);
+  s->copy_into(ns);
   return ns;
 }
 
@@ -29,6 +30,13 @@ structure_t::structure_t(glm::ivec2 position)
 
 structure_t::~structure_t()
 {
+}
+
+void structure_t::copy_into(structure_t *other)
+{
+  other->suicide = this->suicide;
+  other->position = this->position;
+  other->properties = this->properties;
 }
 
 glm::ivec2 structure_t::get_position()

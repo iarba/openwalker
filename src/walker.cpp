@@ -22,6 +22,7 @@ void walker_t::load()
 walker_t *walker_t::walker_constructor::instantiate(walker_t *w)
 {
   walker_t *nw = new walker_t(w->position);
+  w->copy_into(nw);
   return nw;
 }
 
@@ -33,6 +34,15 @@ walker_t::walker_t(glm::dvec2 position)
 
 walker_t::~walker_t()
 {
+}
+
+void walker_t::copy_into(walker_t *other)
+{
+  other->suicide = this->suicide;
+  other->position = this->position;
+  other->direction = this->direction;
+  other->speed = this->speed;
+  other->properties = this->properties;
 }
 
 glm::dvec2 walker_t::get_position()
