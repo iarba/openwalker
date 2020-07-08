@@ -12,10 +12,13 @@ public:
   class road_constructor : public abstract_structure_constructor_base
   {
     virtual structure_t *instantiate(structure_t *s);
+    virtual structure_t *deserialise(std::istream &is);
   };
 
   road(glm::ivec2 position);
+  road(std::istream &is);
   virtual ~road();
+  void serialise(std::ostream &os);
   virtual void copy_into(road *other);
   void append_influence_delta(influence_delta &id, context_t ctx) const;
 };

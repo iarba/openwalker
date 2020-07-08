@@ -1,4 +1,5 @@
 #include "test.h"
+#include <sstream>
 
 def(cloner_registry, road_cloner);
 
@@ -15,6 +16,12 @@ structure_t *road::road_constructor::instantiate(structure_t *s)
   road *r = (road *)s;
   road *nr = new road(r->position);
   r->copy_into(nr);
+  return nr;
+}
+
+structure_t *road::road_constructor::deserialise(std::istream &is)
+{
+  road *nr = new road(is);
   return nr;
 }
 
@@ -56,8 +63,18 @@ road::road(glm::ivec2 position) : structure_t(position)
   clone_identifier = cloner_registry__road_cloner;
 }
 
+road::road(std::istream &is) : structure_t(is)
+{
+  clone_identifier = cloner_registry__road_cloner;
+}
+
 road::~road()
 {
+}
+
+void road::serialise(std::ostream &os)
+{
+  this->structure_t::serialise(os);
 }
 
 void road::copy_into(road *other)
@@ -82,6 +99,28 @@ int main()
   {
     throw std::logic_error("incorrect cloner");
   }
+  std::stringstream ios;
+  ces->serialise(ios);
+  world_t *dbg = new world_t(ios);
+  if(dbg->get_grid(42)->get_structure(1)->get_clone_identifier() != cloner_registry__road_cloner)
+  {
+    throw std::logic_error("incorrect serialiser");
+  }
+  dbg->serialise(ios);
+  delete dbg;
+  dbg = new world_t(ios);
+  if(dbg->get_grid(42)->get_structure(1)->get_clone_identifier() != cloner_registry__road_cloner)
+  {
+    throw std::logic_error("incorrect series serialiser");
+  }
+  dbg->serialise(ios);
+  delete dbg;
+  dbg = new world_t(ios);
+  if(dbg->get_grid(42)->get_structure(1)->get_clone_identifier() != cloner_registry__road_cloner)
+  {
+    throw std::logic_error("incorrect series serialiser");
+  }
+  delete dbg;
   delete ces;
   openwalker_destroy();
   return 0;

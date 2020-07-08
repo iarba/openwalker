@@ -14,10 +14,13 @@ public:
   class random_walker_constructor : public abstract_walker_constructor_base
   {
     virtual walker_t *instantiate(walker_t *g);
+    virtual walker_t *deserialise(std::istream &is);
   };
 
   random_walker_t(glm::dvec2 position, namer_t required_pathfinding_property, value_t required_pathfinding_min_value, value_t required_pathfinding_max_value, value_t required_pathfinding_def_value);
+  random_walker_t(std::istream &is);
   virtual ~random_walker_t();
+  virtual void serialise(std::ostream &os);
   virtual void copy_into(random_walker_t *other);
   virtual walker_delta compute_delta(context_t ctx) const;
 protected:

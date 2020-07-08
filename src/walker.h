@@ -22,6 +22,7 @@ class abstract_walker_constructor_base
 {
 public:
   virtual walker_t *instantiate(walker_t *w) = 0;
+  virtual walker_t *deserialise(std::istream &is) = 0;
 };
 
 class walker_delta
@@ -42,10 +43,13 @@ public:
   class walker_constructor : public abstract_walker_constructor_base
   {
     virtual walker_t *instantiate(walker_t *g);
+    virtual walker_t *deserialise(std::istream &is);
   };
 
   walker_t(glm::dvec2 position);
+  walker_t(std::istream &is);
   virtual ~walker_t();
+  virtual void serialise(std::ostream &os);
   virtual void copy_into(walker_t *other);
   glm::dvec2 get_position();
   bool get_suicide();

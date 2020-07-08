@@ -12,6 +12,7 @@ class abstract_structure_constructor_base
 {
 public:
   virtual structure_t *instantiate(structure_t *s) = 0;
+  virtual structure_t *deserialise(std::istream &is) = 0;
 };
 
 class structure_delta
@@ -28,10 +29,13 @@ public:
   class structure_constructor : public abstract_structure_constructor_base
   {
     virtual structure_t *instantiate(structure_t *g);
+    virtual structure_t *deserialise(std::istream &is);
   };
 
   structure_t(glm::ivec2 position);
+  structure_t(std::istream &is);
   virtual ~structure_t();
+  virtual void serialise(std::ostream &os);
   virtual void copy_into(structure_t *other);
   glm::ivec2 get_position();
   virtual structure_delta compute_delta(context_t ctx) const;

@@ -4,6 +4,7 @@
 #include "_fwd.h"
 #include "grid.h"
 #include "properties.h"
+#include <iostream>
 
 class world_delta
 {
@@ -17,7 +18,9 @@ class world_t
 {
 public:
   world_t();
+  world_t(std::istream &is);
   virtual ~world_t();
+  virtual void serialise(std::ostream &os);
   grid_t *get_grid(oid_t id);
   world_delta compute_delta(context_t ctx) const;
   void apply_delta(world_delta wd);

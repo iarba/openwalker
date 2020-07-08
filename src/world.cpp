@@ -19,6 +19,18 @@ world_t::world_t()
 {
 }
 
+world_t::world_t(std::istream &is)
+{
+  int count;
+  is >> count;
+  while(count--)
+  {
+    oid_t where;
+    is >> where;
+    grids[where] = cloner_t::g_cloner_get()->create_grid(is);
+  }
+}
+
 world_t::~world_t()
 {
   for(auto it : grids)
@@ -26,6 +38,16 @@ world_t::~world_t()
     delete it.second;
   }
   grids.clear();
+}
+
+void world_t::serialise(std::ostream &os)
+{
+  os << " " << grids.size() << " ";
+  for(auto it : grids)
+  {
+    os << " " << it.first << " ";
+    it.second->serialise(os);
+  }
 }
 
 grid_t *world_t::get_grid(oid_t id)

@@ -26,14 +26,40 @@ walker_t *walker_t::walker_constructor::instantiate(walker_t *w)
   return nw;
 }
 
+walker_t *walker_t::walker_constructor::deserialise(std::istream &is)
+{
+  walker_t *nw = new walker_t(is);
+  return nw;
+}
+
 walker_t::walker_t(glm::dvec2 position)
 {
   this->position = position;
   clone_identifier = cloner_registry__walker_cloner;
 }
 
+walker_t::walker_t(std::istream &is)
+{
+  is >> suicide;
+  is >> position.x >> position.y;
+  is >> direction;
+  is >> speed;
+  is >> properties;
+  clone_identifier = cloner_registry__walker_cloner;
+}
+
 walker_t::~walker_t()
 {
+}
+
+void walker_t::serialise(std::ostream &os)
+{
+  os << " " << get_clone_identifier() << " "; // only base class is required to do this.
+  os << " " << suicide << " ";
+  os << ""  << position.x << " " << position.y << " ";
+  os << " " << direction << " ";
+  os << " " << speed << " ";
+  os << " " << properties << " ";
 }
 
 void walker_t::copy_into(walker_t *other)

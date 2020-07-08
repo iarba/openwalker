@@ -55,6 +55,13 @@ grid_t *cloner_t::create_grid(grid_t *g)
   return grid_constructors[g->get_clone_identifier()]->instantiate(g);
 }
 
+grid_t *cloner_t::create_grid(std::istream &is)
+{
+  namer_t identifier;
+  is >> identifier;
+  return grid_constructors[identifier]->deserialise(is);
+}
+
 void cloner_t::reg_structure(namer_t where, abstract_structure_constructor_base *asc)
 {
   structure_constructors[where] = asc;
@@ -65,6 +72,13 @@ structure_t *cloner_t::create_structure(structure_t *s)
   return structure_constructors[s->get_clone_identifier()]->instantiate(s);
 }
 
+structure_t *cloner_t::create_structure(std::istream &is)
+{
+  namer_t identifier;
+  is >> identifier;
+  return structure_constructors[identifier]->deserialise(is);
+}
+
 void cloner_t::reg_walker(namer_t where, abstract_walker_constructor_base *awc)
 {
   walker_constructors[where] = awc;
@@ -73,4 +87,11 @@ void cloner_t::reg_walker(namer_t where, abstract_walker_constructor_base *awc)
 walker_t *cloner_t::create_walker(walker_t *w)
 {
   return walker_constructors[w->get_clone_identifier()]->instantiate(w);
+}
+
+walker_t *cloner_t::create_walker(std::istream &is)
+{
+  namer_t identifier;
+  is >> identifier;
+  return walker_constructors[identifier]->deserialise(is);
 }

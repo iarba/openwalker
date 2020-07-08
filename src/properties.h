@@ -2,6 +2,7 @@
 #define PROPERTIES_H
 
 #include <map>
+#include <iostream>
 
 typedef int oid_t;
 
@@ -34,5 +35,13 @@ void z_example_load()
   imp(z_example, bar);
 }
 */
+
+std::ostream& operator<<(std::ostream &os, const namer_t &data);
+
+std::istream& operator>>(std::istream &is, namer_t &data);
+
+std::ostream& operator<<(std::ostream &os, const properties_t &data);
+
+std::istream& operator>>(std::istream &is, properties_t &data);
 
 #endif // PROPERTIES_H

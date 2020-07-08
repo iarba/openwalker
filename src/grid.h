@@ -14,6 +14,7 @@ class abstract_grid_constructor_base
 {
 public:
   virtual grid_t *instantiate(grid_t *g) = 0;
+  virtual grid_t *deserialise(std::istream &is) = 0;
 };
 
 class grid_delta
@@ -32,6 +33,8 @@ class cell_t
 {
 public:
   cell_t();
+  cell_t(std::istream& is);
+  void serialise(std::ostream& os);
   virtual void copy_into(cell_t *other);
   void discard();
   void set(namer_t name, value_t value);
@@ -52,10 +55,13 @@ public:
   class grid_constructor : public abstract_grid_constructor_base
   {
     virtual grid_t *instantiate(grid_t *g);
+    virtual grid_t *deserialise(std::istream &is);
   };
 
   grid_t(glm::ivec2 size);
+  grid_t(std::istream& is);
   ~grid_t();
+  virtual void serialise(std::ostream& os);
   void copy_into(grid_t *other);
   glm::ivec2 get_size();
   cell_t *at(glm::ivec2 position);

@@ -19,6 +19,12 @@ walker_t *random_walker_t::random_walker_constructor::instantiate(walker_t *w)
   return nrw;
 }
 
+walker_t *random_walker_t::random_walker_constructor::deserialise(std::istream &is)
+{
+  walker_t *nrw = new random_walker_t(is);
+  return nrw;
+}
+
 random_walker_t::random_walker_t(glm::dvec2 position, namer_t required_pathfinding_property, value_t required_pathfinding_min_value, value_t required_pathfinding_max_value, value_t required_pathfinding_def_value) : walker_t(position)
 {
   this->required_pathfinding_property = required_pathfinding_property;
@@ -28,8 +34,26 @@ random_walker_t::random_walker_t(glm::dvec2 position, namer_t required_pathfindi
   clone_identifier = cloner_registry__random_walker_cloner;
 }
 
+random_walker_t::random_walker_t(std::istream &is) : walker_t(is)
+{
+  is >> required_pathfinding_property;
+  is >> required_pathfinding_min_value;
+  is >> required_pathfinding_max_value;
+  is >> required_pathfinding_def_value;
+  clone_identifier = cloner_registry__random_walker_cloner;
+}
+
 random_walker_t::~random_walker_t()
 {
+}
+
+void random_walker_t::serialise(std::ostream &os)
+{
+  this->walker_t::serialise(os);
+  os << " " << required_pathfinding_property << " ";
+  os << " " << required_pathfinding_min_value << " ";
+  os << " " << required_pathfinding_max_value << " ";
+  os << " " << required_pathfinding_def_value << " ";
 }
 
 void random_walker_t::copy_into(random_walker_t *other)

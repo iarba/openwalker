@@ -28,6 +28,16 @@ cell_t::cell_t()
 {
 }
 
+cell_t::cell_t(std::istream& is)
+{
+  is >> temporary >> persistent;
+}
+
+void cell_t::serialise(std::ostream& os)
+{
+  os << " " << temporary << " " << persistent << " ";
+}
+
 void cell_t::copy_into(cell_t *other)
 {
   other->persistent = this->persistent;
@@ -128,6 +138,12 @@ grid_t *grid_t::grid_constructor::instantiate(grid_t *g)
   return ng;
 }
 
+grid_t *grid_t::grid_constructor::deserialise(std::istream &is)
+{
+  grid_t *ng = new grid_t(is);
+  return ng;
+}
+
 grid_t::grid_t(glm::ivec2 size)
 {
   this->size = size;
@@ -135,6 +151,41 @@ grid_t::grid_t(glm::ivec2 size)
   for(int i = 0; i < size.x; i++)
   {
     grid[i] = new cell_t[size.y];
+  }
+  clone_identifier = cloner_registry__grid_cloner;
+}
+
+grid_t::grid_t(std::istream& is)
+{
+  is >> size.x >> size.y;
+  grid = new cell_t*[size.x];
+  for(int i = 0; i < size.x; i++)
+  {
+    grid[i] = new cell_t[size.y];
+  }
+  is >> suicide;
+  for(int i = 0; i < this->size.x; i++)
+  {
+    for(int j = 0; j < this->size.y; j++)
+    {
+      glm::ivec2 where = {i, j};
+      grid[i][j] = cell_t(is);
+    }
+  }
+  int count;
+  is >> count;
+  while(count--)
+  {
+    oid_t where;
+    is >> where;
+    structures[where] = cloner_t::g_cloner_get()->create_structure(is);
+  }
+  is >> count;
+  while(count--)
+  {
+    oid_t where;
+    is >> where;
+    walkers[where] = cloner_t::g_cloner_get()->create_walker(is);
   }
   clone_identifier = cloner_registry__grid_cloner;
 }
@@ -153,6 +204,33 @@ grid_t::~grid_t()
   for(auto it : this->walkers)
   {
     delete it.second;
+  }
+}
+
+void grid_t::serialise(std::ostream& os)
+{
+  os << " " << get_clone_identifier() << " "; // only base class is required to do this.
+  os << " " << size.x << " " << size.y << " ";
+  os << " " << suicide << " ";
+  for(int i = 0; i < this->size.x; i++)
+  {
+    for(int j = 0; j < this->size.y; j++)
+    {
+      glm::ivec2 where = {i, j};
+      at(where)->serialise(os);
+    }
+  }
+  os << " " << structures.size() << " ";
+  for(auto it : this->structures)
+  {
+    os << " " << it.first << " ";
+    it.second->serialise(os);
+  }
+  os << " " << walkers.size() << " ";
+  for(auto it : this->walkers)
+  {
+    os << " " << it.first << " ";
+    it.second->serialise(os);
   }
 }
 
