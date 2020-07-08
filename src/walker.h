@@ -30,7 +30,9 @@ class walker_delta
 public:
   walker_delta();
   walker_delta(const walker_delta *other);
+  walker_delta(std::istream &is);
   ~walker_delta();
+  void serialise(std::ostream &os);
   direction_t delta_direction = 0;
   double delta_speed = 0;
   glm::dvec2 delta_position = {0, 0};

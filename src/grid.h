@@ -22,7 +22,9 @@ class grid_delta
 public:
   grid_delta();
   grid_delta(const grid_delta *other);
+  grid_delta(std::istream &is);
   ~grid_delta();
+  void serialise(std::ostream &os);
   std::map<oid_t, structure_t *> structure_spawns;
   std::map<oid_t, structure_delta*> structure_deltas;
   std::map<oid_t, walker_t *> walker_spawns;

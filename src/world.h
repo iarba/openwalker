@@ -11,7 +11,9 @@ class world_delta
 public:
   world_delta();
   world_delta(const world_delta *other);
+  world_delta(std::istream &is);
   ~world_delta();
+  void serialise(std::ostream &os);
   std::map<oid_t, grid_t *> grid_spawns;
   std::map<oid_t, grid_delta *> grid_deltas;
 };

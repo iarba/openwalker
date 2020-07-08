@@ -137,6 +137,10 @@ int main()
   {
     throw std::logic_error("incorrect series serialiser");
   }
+  stream_forwarding_node_t *sfn = new stream_forwarding_node_t(ces, &ios);
+  openwalker_master->tick();
+  node_delta nd(ios);
+  delete sfn;
   delete dbg;
   delete ces;
   openwalker_destroy();

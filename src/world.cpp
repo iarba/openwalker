@@ -5,6 +5,37 @@ world_delta::world_delta()
 {
 }
 
+world_delta::world_delta(const world_delta *other)
+{
+  for(auto it : other->grid_spawns)
+  {
+    this->grid_spawns[it.first] = cloner_t::g_cloner_get()->create_grid(it.second);
+  }
+  for(auto it : other->grid_deltas)
+  {
+    this->grid_deltas[it.first] = new grid_delta(it.second);
+  }
+}
+
+world_delta::world_delta(std::istream &is)
+{
+  int count;
+  is >> count;
+  while(count--)
+  {
+    oid_t where;
+    is >> where;
+    grid_spawns[where] = cloner_t::g_cloner_get()->create_grid(is);
+  }
+  is >> count;
+  while(count--)
+  {
+    oid_t where;
+    is >> where;
+    grid_deltas[where] = new grid_delta(is);
+  }
+}
+
 world_delta::~world_delta()
 {
   for(auto it : this->grid_spawns)
@@ -19,15 +50,19 @@ world_delta::~world_delta()
   this->grid_deltas.clear();
 }
 
-world_delta::world_delta(const world_delta *other)
+void world_delta::serialise(std::ostream &os)
 {
-  for(auto it : other->grid_spawns)
+  os << " " << this->grid_spawns.size() << " ";
+  for(auto it : this->grid_spawns)
   {
-    this->grid_spawns[it.first] = cloner_t::g_cloner_get()->create_grid(it.second);
+    os << " " << it.first << " ";
+    it.second->serialise(os);
   }
-  for(auto it : other->grid_deltas)
+  os << " " << this->grid_deltas.size() << " ";
+  for(auto it : this->grid_deltas)
   {
-    this->grid_deltas[it.first] = it.second;
+    os << " " << it.first << " ";
+    it.second->serialise(os);
   }
 }
 

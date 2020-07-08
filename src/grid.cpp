@@ -27,6 +27,38 @@ grid_delta::grid_delta(const grid_delta *other)
   this->suicide = other->suicide;
 }
 
+grid_delta::grid_delta(std::istream &is)
+{
+  is >> suicide;
+  inf_delta = influence_delta(is);
+  int count;
+  oid_t where;
+  is >> count;
+  while(count--)
+  {
+    is >> where;
+    structure_spawns[where] = cloner_t::g_cloner_get()->create_structure(is);
+  }
+  is >> count;
+  while(count--)
+  {
+    is >> where;
+    structure_deltas[where] = new structure_delta(is);
+  }
+  is >> count;
+  while(count--)
+  {
+    is >> where;
+    walker_spawns[where] = cloner_t::g_cloner_get()->create_walker(is);
+  }
+  is >> count;
+  while(count--)
+  {
+    is >> where;
+    walker_deltas[where] = new walker_delta(is);
+  }
+}
+
 grid_delta::~grid_delta()
 {
   for(auto it : this->structure_spawns)
@@ -44,6 +76,36 @@ grid_delta::~grid_delta()
   for(auto it : this->walker_deltas)
   {
     delete it.second;
+  }
+}
+
+void grid_delta::serialise(std::ostream &os)
+{
+  os << " " << suicide << " ";
+  inf_delta.serialise(os);
+  os << " " << structure_spawns.size() << " ";
+  for(auto it : this->structure_spawns)
+  {
+    os << " " << it.first << " ";
+    it.second->serialise(os);
+  }
+  os << " " << structure_deltas.size() << " ";
+  for(auto it : this->structure_deltas)
+  {
+    os << " " << it.first << " ";
+    it.second->serialise(os);
+  }
+  os << " " << walker_spawns.size() << " ";
+  for(auto it : this->walker_spawns)
+  {
+    os << " " << it.first << " ";
+    it.second->serialise(os);
+  }
+  os << " " << walker_deltas.size() << " ";
+  for(auto it : this->walker_deltas)
+  {
+    os << " " << it.first << " ";
+    it.second->serialise(os);
   }
 }
 

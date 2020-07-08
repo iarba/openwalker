@@ -12,11 +12,31 @@ node_delta::node_delta(const node_delta *other)
   }
 }
 
+node_delta::node_delta(std::istream &is)
+{
+  bool wd_present;
+  is >> wd_present;
+  wd = wd_present? new world_delta(is) : NULL;
+}
+
 node_delta::~node_delta()
 {
   if(wd)
   {
     delete wd;
+  }
+}
+
+void node_delta::serialise(std::ostream &os)
+{
+  if(wd)
+  {
+    os << " " << true << " ";
+    wd->serialise(os);
+  }
+  else
+  {
+    os << " " << false << " ";
   }
 }
 
@@ -87,4 +107,22 @@ void node_t::apply_delta(node_delta *nd)
   {
     world_t::apply_delta(nd->wd);
   }
+}
+
+stream_forwarding_node_t::stream_forwarding_node_t(node_t *parent, std::ostream *os) : node_t(parent)
+{
+  this->os = os;
+  self_apply = false;
+}
+
+stream_forwarding_node_t::~stream_forwarding_node_t()
+{
+}
+
+void stream_forwarding_node_t::feed(node_delta *nd)
+{
+  this->node_t::feed(nd);
+  node_lock.lock();
+  nd->serialise(*os);
+  node_lock.unlock();
 }

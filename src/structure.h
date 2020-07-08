@@ -20,7 +20,9 @@ class structure_delta
 public:
   structure_delta();
   structure_delta(const structure_delta *other);
+  structure_delta(std::istream &is);
   ~structure_delta();
+  void serialise(std::ostream &os);
   bool suicide = false;
 };
 

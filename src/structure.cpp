@@ -9,8 +9,18 @@ structure_delta::structure_delta(const structure_delta *other)
   this->suicide = other->suicide;
 }
 
+structure_delta::structure_delta(std::istream &is)
+{
+  is >> suicide;
+}
+
 structure_delta::~structure_delta()
 {
+}
+
+void structure_delta::serialise(std::ostream &os)
+{
+  os << " " << suicide << " ";
 }
 
 def(cloner_registry, structure_cloner);

@@ -14,8 +14,26 @@ walker_delta::walker_delta(const walker_delta *other)
   this->delta_properties = other->delta_properties;
 }
 
+walker_delta::walker_delta(std::istream &is)
+{
+  is >> delta_direction;
+  is >> delta_speed;
+  is >> delta_position.x >> delta_position.y;
+  is >> suicide;
+  is >> delta_properties;
+}
+
 walker_delta::~walker_delta()
 {
+}
+
+void walker_delta::serialise(std::ostream &os)
+{
+  os << " " << delta_direction << " ";
+  os << " " << delta_speed << " ";
+  os << " " << delta_position.x << " " << delta_position.y << " ";
+  os << " " << suicide << " ";
+  os << " " << delta_properties << " ";
 }
 
 def(cloner_registry, walker_cloner);
