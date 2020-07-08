@@ -28,7 +28,9 @@ public:
 class walker_delta
 {
 public:
-  walker_delta instantiate();
+  walker_delta();
+  walker_delta(const walker_delta *other);
+  ~walker_delta();
   direction_t delta_direction = 0;
   double delta_speed = 0;
   glm::dvec2 delta_position = {0, 0};
@@ -53,9 +55,9 @@ public:
   virtual void copy_into(walker_t *other);
   glm::dvec2 get_position();
   bool get_suicide();
-  virtual walker_delta compute_delta(context_t ctx) const;
+  virtual walker_delta *compute_delta(context_t ctx) const;
   virtual void append_influence_delta(influence_delta &id, context_t ctx) const;
-  void apply_delta(walker_delta wd);
+  void apply_delta(walker_delta *wd);
   namer_t get_clone_identifier();
 protected:
   namer_t clone_identifier;

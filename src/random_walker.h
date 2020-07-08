@@ -22,7 +22,7 @@ public:
   virtual ~random_walker_t();
   virtual void serialise(std::ostream &os);
   virtual void copy_into(random_walker_t *other);
-  virtual walker_delta compute_delta(context_t ctx) const;
+  virtual walker_delta *compute_delta(context_t ctx) const;
 protected:
   namer_t required_pathfinding_property;
   value_t required_pathfinding_min_value;

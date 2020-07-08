@@ -1,12 +1,12 @@
 #ifndef CONSOLE_EXPLORER_SLAVE
 #define CONSOLE_EXPLORER_SLAVE
 
-#include "slave.h"
+#include "node.h"
 
-class console_explorer_slave_t : public local_slave_t
+class console_explorer_slave_t : public node_t
 {
 public:
-  console_explorer_slave_t(master_t *m);
+  console_explorer_slave_t(node_t *n);
   virtual ~console_explorer_slave_t();
   void feed_command(std::string com);
 protected:

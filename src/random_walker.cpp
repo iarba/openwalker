@@ -65,9 +65,9 @@ void random_walker_t::copy_into(random_walker_t *other)
   other->required_pathfinding_def_value = this->required_pathfinding_def_value;
 }
 
-walker_delta random_walker_t::compute_delta(context_t ctx) const
+walker_delta *random_walker_t::compute_delta(context_t ctx) const
 {
-  walker_delta wd = this->walker_t::compute_delta(ctx);
+  walker_delta *wd = this->walker_t::compute_delta(ctx);
   double dist_to_parse = this->speed;
   double direction = this->direction;
   glm::dvec2 position = this->position;
@@ -107,7 +107,7 @@ walker_delta random_walker_t::compute_delta(context_t ctx) const
     if(possible_directions.size() == 0)
     {
       dist_to_parse = 0;
-      wd.suicide = true;
+      wd->suicide = true;
     }
     else
     {
@@ -121,7 +121,7 @@ walker_delta random_walker_t::compute_delta(context_t ctx) const
     }
   }
   position = position + glm::dvec2(cos(direction), sin(direction)) * dist_to_parse;
-  wd.delta_position = position - this->position;
-  wd.delta_direction = direction - this->direction;
+  wd->delta_position = position - this->position;
+  wd->delta_direction = direction - this->direction;
   return wd;
 }

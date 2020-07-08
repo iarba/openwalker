@@ -20,11 +20,13 @@ public:
 class grid_delta
 {
 public:
-  grid_delta instantiate();
+  grid_delta();
+  grid_delta(const grid_delta *other);
+  ~grid_delta();
   std::map<oid_t, structure_t *> structure_spawns;
-  std::map<oid_t, structure_delta> structure_deltas;
+  std::map<oid_t, structure_delta*> structure_deltas;
   std::map<oid_t, walker_t *> walker_spawns;
-  std::map<oid_t, walker_delta> walker_deltas;
+  std::map<oid_t, walker_delta*> walker_deltas;
   influence_delta inf_delta;
   bool suicide = false;
 };
@@ -67,8 +69,8 @@ public:
   cell_t *at(glm::ivec2 position);
   structure_t *get_structure(oid_t id);
   walker_t *get_walker(oid_t id);
-  grid_delta compute_delta(context_t ctx) const;
-  void apply_delta(grid_delta gd);
+  grid_delta *compute_delta(context_t ctx) const;
+  void apply_delta(grid_delta *gd);
   bool get_suicide();
   namer_t get_clone_identifier();
 protected:

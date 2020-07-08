@@ -1,10 +1,16 @@
 #include "structure.h"
 
-structure_delta structure_delta::instantiate()
+structure_delta::structure_delta()
 {
-  structure_delta sd;
-  sd.suicide = this->suicide;
-  return sd;
+}
+
+structure_delta::structure_delta(const structure_delta *other)
+{
+  this->suicide = other->suicide;
+}
+
+structure_delta::~structure_delta()
+{
 }
 
 def(cloner_registry, structure_cloner);
@@ -66,9 +72,9 @@ glm::ivec2 structure_t::get_position()
   return this->position;
 }
 
-structure_delta structure_t::compute_delta(context_t ctx) const
+structure_delta *structure_t::compute_delta(context_t ctx) const
 {
-  structure_delta sd;
+  structure_delta *sd = new structure_delta();
   return sd;
 }
 
@@ -76,9 +82,9 @@ void structure_t::append_influence_delta(influence_delta &id, context_t ctx) con
 {
 }
 
-void structure_t::apply_delta(structure_delta sd)
+void structure_t::apply_delta(structure_delta *sd)
 {
-  this->suicide = sd.suicide;
+  this->suicide = sd->suicide;
 }
 
 bool structure_t::get_suicide()

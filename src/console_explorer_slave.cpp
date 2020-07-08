@@ -5,9 +5,10 @@
 
 #define EUT(x) std::cerr << "unidentified token: " << x;
 
-console_explorer_slave_t::console_explorer_slave_t(master_t *m) : local_slave_t(m)
+console_explorer_slave_t::console_explorer_slave_t(node_t *n) : node_t(n)
 {
   ctx.world = this;
+  
 }
 
 console_explorer_slave_t::~console_explorer_slave_t()

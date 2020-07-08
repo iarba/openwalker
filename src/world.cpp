@@ -1,18 +1,34 @@
 #include "world.h"
 #include "clone.h"
 
-world_delta world_delta::instantiate()
+world_delta::world_delta()
 {
-  world_delta wd;
+}
+
+world_delta::~world_delta()
+{
   for(auto it : this->grid_spawns)
   {
-    wd.grid_spawns[it.first] = cloner_t::g_cloner_get()->create_grid(it.second);
+    delete it.second;
   }
+  this->grid_spawns.clear();
   for(auto it : this->grid_deltas)
   {
-    wd.grid_deltas[it.first] = it.second.instantiate();
+    delete it.second;
   }
-  return wd;
+  this->grid_deltas.clear();
+}
+
+world_delta::world_delta(const world_delta *other)
+{
+  for(auto it : other->grid_spawns)
+  {
+    this->grid_spawns[it.first] = cloner_t::g_cloner_get()->create_grid(it.second);
+  }
+  for(auto it : other->grid_deltas)
+  {
+    this->grid_deltas[it.first] = it.second;
+  }
 }
 
 world_t::world_t()
@@ -60,32 +76,30 @@ grid_t *world_t::get_grid(oid_t id)
   return NULL;
 }
 
-world_delta world_t::compute_delta(context_t ctx) const
+world_delta *world_t::compute_delta(context_t ctx) const
 {
-  world_delta wd;
+  world_delta *wd = new world_delta();
   for(auto it : this->grids)
   {
     ctx.grid_id = it.first;
-    wd.grid_deltas[it.first] = it.second->compute_delta(ctx);;
+    wd->grid_deltas[it.first] = it.second->compute_delta(ctx);;
   }
   return wd;
 }
 
-void world_t::apply_delta(world_delta wd)
+void world_t::apply_delta(world_delta *wd)
 {
-  for(auto it : wd.grid_spawns)
+  for(auto it : wd->grid_spawns)
   {
-    grids[it.first] = it.second;
+    grids[it.first] = cloner_t::g_cloner_get()->create_grid(it.second);
   }
-  std::map<oid_t, grid_t *> new_grids = grids;
-  for(auto it : wd.grid_deltas)
+  for(auto it : wd->grid_deltas)
   {
     grids[it.first]->apply_delta(it.second);
     if(grids[it.first]->get_suicide())
     {
       delete grids[it.first];
-      new_grids.erase(it.first);
+      grids.erase(it.first);
     }
   }
-  grids = new_grids;
 }

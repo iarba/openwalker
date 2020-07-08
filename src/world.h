@@ -9,9 +9,11 @@
 class world_delta
 {
 public:
-  world_delta instantiate();
+  world_delta();
+  world_delta(const world_delta *other);
+  ~world_delta();
   std::map<oid_t, grid_t *> grid_spawns;
-  std::map<oid_t, grid_delta> grid_deltas;
+  std::map<oid_t, grid_delta *> grid_deltas;
 };
 
 class world_t
@@ -22,8 +24,8 @@ public:
   virtual ~world_t();
   virtual void serialise(std::ostream &os);
   grid_t *get_grid(oid_t id);
-  world_delta compute_delta(context_t ctx) const;
-  void apply_delta(world_delta wd);
+  world_delta *compute_delta(context_t ctx) const;
+  void apply_delta(world_delta *wd);
 private:
   std::map<oid_t, grid_t *> grids;
 };

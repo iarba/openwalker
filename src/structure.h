@@ -18,7 +18,9 @@ public:
 class structure_delta
 {
 public:
-  structure_delta instantiate();
+  structure_delta();
+  structure_delta(const structure_delta *other);
+  ~structure_delta();
   bool suicide = false;
 };
 
@@ -38,9 +40,9 @@ public:
   virtual void serialise(std::ostream &os);
   virtual void copy_into(structure_t *other);
   glm::ivec2 get_position();
-  virtual structure_delta compute_delta(context_t ctx) const;
+  virtual structure_delta *compute_delta(context_t ctx) const;
   virtual void append_influence_delta(influence_delta &id, context_t ctx) const;
-  void apply_delta(structure_delta wd);
+  void apply_delta(structure_delta *wd);
   bool get_suicide();
   namer_t get_clone_identifier();
 protected:

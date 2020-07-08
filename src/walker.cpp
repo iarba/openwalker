@@ -1,14 +1,21 @@
 #include "walker.h"
 
-walker_delta walker_delta::instantiate()
+walker_delta::walker_delta()
+{
+}
+
+walker_delta::walker_delta(const walker_delta *other)
 {
   walker_delta wd;
-  wd.delta_direction = this->delta_direction;
-  wd.delta_speed = this->delta_speed;
-  wd.delta_position = this->delta_position;
-  wd.suicide = this->suicide;
-  wd.delta_properties = this->delta_properties;
-  return wd;
+  this->delta_direction = other->delta_direction;
+  this->delta_speed = other->delta_speed;
+  this->delta_position = other->delta_position;
+  this->suicide = other->suicide;
+  this->delta_properties = other->delta_properties;
+}
+
+walker_delta::~walker_delta()
+{
 }
 
 def(cloner_registry, walker_cloner);
@@ -81,9 +88,9 @@ bool walker_t::get_suicide()
   return this->suicide;
 }
 
-walker_delta walker_t::compute_delta(context_t ctx) const
+walker_delta *walker_t::compute_delta(context_t ctx) const
 {
-  walker_delta wd;
+  walker_delta *wd = new walker_delta();
   return wd;
 }
 
@@ -91,13 +98,13 @@ void walker_t::append_influence_delta(influence_delta &id, context_t ctx) const
 {
 }
 
-void walker_t::apply_delta(walker_delta wd)
+void walker_t::apply_delta(walker_delta *wd)
 {
-  this->direction +=wd.delta_direction;
-  this->speed +=wd.delta_speed;
-  this->position += wd.delta_position;
-  this->suicide = wd.suicide;
-  for(auto it : wd.delta_properties)
+  this->direction +=wd->delta_direction;
+  this->speed +=wd->delta_speed;
+  this->position += wd->delta_position;
+  this->suicide = wd->suicide;
+  for(auto it : wd->delta_properties)
   {
     this->properties[it.first] = it.second;
   }

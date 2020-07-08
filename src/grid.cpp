@@ -1,27 +1,50 @@
 #include "grid.h"
 
-grid_delta grid_delta::instantiate()
+grid_delta::grid_delta()
+{
+}
+
+grid_delta::grid_delta(const grid_delta *other)
 {
   grid_delta gd;
+  for(auto it : other->structure_spawns)
+  {
+    this->structure_spawns[it.first] = cloner_t::g_cloner_get()->create_structure(it.second);
+  }
+  for(auto it : other->structure_deltas)
+  {
+    this->structure_deltas[it.first] = new structure_delta(it.second);
+  }
+  for(auto it : other->walker_spawns)
+  {
+    this->walker_spawns[it.first] = cloner_t::g_cloner_get()->create_walker(it.second);
+  }
+  for(auto it : other->walker_deltas)
+  {
+    this->walker_deltas[it.first] = new walker_delta(it.second);
+  }
+  this->inf_delta = other->inf_delta;
+  this->suicide = other->suicide;
+}
+
+grid_delta::~grid_delta()
+{
   for(auto it : this->structure_spawns)
   {
-    gd.structure_spawns[it.first] = cloner_t::g_cloner_get()->create_structure(it.second);
+    delete it.second;
   }
   for(auto it : this->structure_deltas)
   {
-    gd.structure_deltas[it.first] = it.second.instantiate();
+    delete it.second;
   }
   for(auto it : this->walker_spawns)
   {
-    gd.walker_spawns[it.first] = cloner_t::g_cloner_get()->create_walker(it.second);
+    delete it.second;
   }
   for(auto it : this->walker_deltas)
   {
-    gd.walker_deltas[it.first] = it.second.instantiate();
+    delete it.second;
   }
-  gd.inf_delta = this->inf_delta.instantiate();
-  gd.suicide = this->suicide;
-  return gd;
 }
 
 cell_t::cell_t()
@@ -286,33 +309,33 @@ walker_t *grid_t::get_walker(oid_t id)
   return NULL;
 }
 
-grid_delta grid_t::compute_delta(context_t ctx) const
+grid_delta *grid_t::compute_delta(context_t ctx) const
 {
-  grid_delta gd;
+  grid_delta *gd = new grid_delta();
   for(auto it : this->structures)
   {
     ctx.element_id = it.first;
-    gd.structure_deltas[it.first] = it.second->compute_delta(ctx);
+    gd->structure_deltas[it.first] = it.second->compute_delta(ctx);
   }
   for(auto it : this->walkers)
   {
     ctx.element_id = it.first;
-    gd.walker_deltas[it.first] = it.second->compute_delta(ctx);
+    gd->walker_deltas[it.first] = it.second->compute_delta(ctx);
   }
   for(auto it : this->structures)
   {
     ctx.element_id = it.first;
-    it.second->append_influence_delta(gd.inf_delta, ctx);
+    it.second->append_influence_delta(gd->inf_delta, ctx);
   }
   for(auto it : this->walkers)
   {
     ctx.element_id = it.first;
-    it.second->append_influence_delta(gd.inf_delta, ctx);
+    it.second->append_influence_delta(gd->inf_delta, ctx);
   }
   return gd;
 }
 
-void grid_t::apply_delta(grid_delta gd)
+void grid_t::apply_delta(grid_delta *gd)
 {
   for(int i = 0; i < this->size.x; i++)
   {
@@ -321,7 +344,7 @@ void grid_t::apply_delta(grid_delta gd)
       at({i, j})->discard();
     }
   }
-  for(auto it : gd.inf_delta.cell_persistent_setters)
+  for(auto it : gd->inf_delta.cell_persistent_setters)
   {
     cell_t *c = at(it.first);
     for(auto it2 : it.second)
@@ -329,7 +352,7 @@ void grid_t::apply_delta(grid_delta gd)
       c->set_persistent(it2.first, it2.second);
     }
   }
-  for(auto it : gd.inf_delta.cell_temporary_setters)
+  for(auto it : gd->inf_delta.cell_temporary_setters)
   {
     cell_t *c = at(it.first);
     for(auto it2 : it.second)
@@ -337,37 +360,33 @@ void grid_t::apply_delta(grid_delta gd)
       c->set(it2.first, it2.second);
     }
   }
-  for(auto it : gd.structure_spawns)
+  for(auto it : gd->structure_spawns)
   {
-    structures[it.first] = it.second;
+    structures[it.first] = cloner_t::g_cloner_get()->create_structure(it.second);
   }
-  std::map<oid_t, structure_t *> new_structures = structures;
-  for(auto it : gd.structure_deltas)
+  for(auto it : gd->structure_deltas)
   {
     structures[it.first]->apply_delta(it.second);
     if(structures[it.first]->get_suicide())
     {
       delete structures[it.first];
-      new_structures.erase(it.first);
+      structures.erase(it.first);
     }
   }
-  structures = new_structures;
-  for(auto it : gd.walker_spawns)
+  for(auto it : gd->walker_spawns)
   {
-    walkers[it.first] = it.second;
+    walkers[it.first] = cloner_t::g_cloner_get()->create_walker(it.second);
   }
-  std::map<oid_t, walker_t *> new_walkers = walkers;
-  for(auto it : gd.walker_deltas)
+  for(auto it : gd->walker_deltas)
   {
     walkers[it.first]->apply_delta(it.second);
     if(walkers[it.first]->get_suicide())
     {
       delete walkers[it.first];
-      new_walkers.erase(it.first);
+      walkers.erase(it.first);
     }
   }
-  walkers = new_walkers;
-  this->suicide = gd.suicide;
+  this->suicide = gd->suicide;
 }
 
 bool grid_t::get_suicide()
