@@ -1,5 +1,29 @@
 #include "grid.h"
 
+grid_delta grid_delta::instantiate()
+{
+  grid_delta gd;
+  for(auto it : this->structure_spawns)
+  {
+    gd.structure_spawns[it.first] = cloner_t::g_cloner_get()->create_structure(it.second);
+  }
+  for(auto it : this->structure_deltas)
+  {
+    gd.structure_deltas[it.first] = it.second.instantiate();
+  }
+  for(auto it : this->walker_spawns)
+  {
+    gd.walker_spawns[it.first] = cloner_t::g_cloner_get()->create_walker(it.second);
+  }
+  for(auto it : this->walker_deltas)
+  {
+    gd.walker_deltas[it.first] = it.second.instantiate();
+  }
+  gd.inf_delta = this->inf_delta.instantiate();
+  gd.suicide = this->suicide;
+  return gd;
+}
+
 cell_t::cell_t()
 {
 }
@@ -60,6 +84,20 @@ value_t cell_t::get(namer_t name)
   throw std::logic_error("property not found");
 }
 
+def(cloner_registry, grid_cloner);
+
+void grid_t::load()
+{
+  imp(cloner_registry, grid_cloner);
+  cloner_t::g_cloner_get()->reg_grid(cloner_registry__grid_cloner, new grid_constructor());
+}
+
+grid_t *grid_t::grid_constructor::instantiate(grid_t *g)
+{
+  grid_t *ng = new grid_t(g->size);
+  return ng;
+}
+
 grid_t::grid_t(glm::ivec2 size)
 {
   this->size = size;
@@ -68,6 +106,7 @@ grid_t::grid_t(glm::ivec2 size)
   {
     grid[i] = new cell_t[size.y];
   }
+  clone_identifier = cloner_registry__grid_cloner;
 }
 
 grid_t::~grid_t()
@@ -204,4 +243,9 @@ void grid_t::apply_delta(grid_delta gd)
 bool grid_t::get_suicide()
 {
   return suicide;
+}
+
+namer_t grid_t::get_clone_identifier()
+{
+  return clone_identifier;
 }

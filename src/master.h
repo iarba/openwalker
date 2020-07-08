@@ -19,6 +19,7 @@ struct command_t
 class master_delta
 {
 public:
+  master_delta instantiate();
   world_delta wd;
 };
 

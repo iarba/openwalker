@@ -10,6 +10,12 @@
 class random_walker_t : public walker_t
 {
 public:
+  static void load();
+  class random_walker_constructor : public abstract_walker_constructor_base
+  {
+    virtual walker_t *instantiate(walker_t *g);
+  };
+
   random_walker_t(glm::dvec2 position, namer_t required_pathfinding_property, value_t required_pathfinding_min_value, value_t required_pathfinding_max_value, value_t required_pathfinding_def_value);
   virtual ~random_walker_t();
   virtual walker_delta compute_delta(context_t ctx) const;

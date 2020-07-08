@@ -27,4 +27,9 @@ class grid_delta;
 class structure_delta;
 class walker_delta;
 
+class cloner_t;
+class abstract_grid_constructor_base;
+class abstract_structure_constructor_base;
+class abstract_walker_constructor_base;
+
 #endif // _FWD_H

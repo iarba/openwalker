@@ -8,6 +8,7 @@
 class world_delta
 {
 public:
+  world_delta instantiate();
   std::map<oid_t, grid_t *> grid_spawns;
   std::map<oid_t, grid_delta> grid_deltas;
 };

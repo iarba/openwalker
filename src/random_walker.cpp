@@ -1,6 +1,22 @@
 #include "random_walker.h"
 #include <set>
 #include "misc_utils.h"
+#include "clone.h"
+
+def(cloner_registry, random_walker_cloner);
+
+void random_walker_t::load()
+{
+  imp(cloner_registry, random_walker_cloner);
+  cloner_t::g_cloner_get()->reg_walker(cloner_registry__random_walker_cloner, new random_walker_t::random_walker_constructor());
+}
+
+walker_t *random_walker_t::random_walker_constructor::instantiate(walker_t *w)
+{
+  random_walker_t *rw = (random_walker_t *)w;
+  random_walker_t *nrw = new random_walker_t(rw->position, rw->required_pathfinding_property, rw->required_pathfinding_min_value, rw->required_pathfinding_max_value, rw->required_pathfinding_def_value);
+  return nrw;
+}
 
 random_walker_t::random_walker_t(glm::dvec2 position, namer_t required_pathfinding_property, value_t required_pathfinding_min_value, value_t required_pathfinding_max_value, value_t required_pathfinding_def_value) : walker_t(position)
 {
@@ -8,6 +24,7 @@ random_walker_t::random_walker_t(glm::dvec2 position, namer_t required_pathfindi
   this->required_pathfinding_min_value = required_pathfinding_min_value;
   this->required_pathfinding_max_value = required_pathfinding_max_value;
   this->required_pathfinding_def_value = required_pathfinding_def_value;
+  clone_identifier = cloner_registry__random_walker_cloner;
 }
 
 random_walker_t::~random_walker_t()

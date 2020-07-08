@@ -1,4 +1,19 @@
 #include "world.h"
+#include "clone.h"
+
+world_delta world_delta::instantiate()
+{
+  world_delta wd;
+  for(auto it : this->grid_spawns)
+  {
+    wd.grid_spawns[it.first] = cloner_t::g_cloner_get()->create_grid(it.second);
+  }
+  for(auto it : this->grid_deltas)
+  {
+    wd.grid_deltas[it.first] = it.second.instantiate();
+  }
+  return wd;
+}
 
 world_t::world_t()
 {

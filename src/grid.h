@@ -8,10 +8,18 @@
 #include "context.h"
 #include "properties.h"
 #include "influence.h"
+#include "clone.h"
+
+class abstract_grid_constructor_base
+{
+public:
+  virtual grid_t *instantiate(grid_t *g) = 0;
+};
 
 class grid_delta
 {
 public:
+  grid_delta instantiate();
   std::map<oid_t, structure_t *> structure_spawns;
   std::map<oid_t, structure_delta> structure_deltas;
   std::map<oid_t, walker_t *> walker_spawns;
@@ -38,6 +46,12 @@ private:
 class grid_t
 {
 public:
+  static void load();
+  class grid_constructor : public abstract_grid_constructor_base
+  {
+    virtual grid_t *instantiate(grid_t *g);
+  };
+
   grid_t(glm::ivec2 size);
   ~grid_t();
   glm::ivec2 get_size();
@@ -47,6 +61,9 @@ public:
   grid_delta compute_delta(context_t ctx) const;
   void apply_delta(grid_delta gd);
   bool get_suicide();
+  namer_t get_clone_identifier();
+protected:
+  namer_t clone_identifier;
 private:
   std::map<oid_t, structure_t *> structures;
   std::map<oid_t, walker_t *> walkers;

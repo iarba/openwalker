@@ -2,6 +2,13 @@
 #include <chrono>
 #include <functional>
 
+master_delta master_delta::instantiate()
+{
+  master_delta md;
+  md.wd = this->wd.instantiate();
+  return md;
+}
+
 master_t::master_t() : world_t()
 {
   duty_thread = std::thread(std::bind(&master_t::duty, this));
@@ -29,7 +36,7 @@ void master_t::apply_delta(master_delta md)
   master_lock.lock();
   for(auto listener : listeners)
   {
-    listener->feed(md);
+    listener->feed(md.instantiate());
   }
   world_t::apply_delta(md.wd);
   master_lock.unlock();
