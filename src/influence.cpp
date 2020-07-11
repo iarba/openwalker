@@ -1,4 +1,5 @@
 #include "influence.h"
+#include "misc_utils.h"
 
 influence_delta::influence_delta()
 {
@@ -8,17 +9,17 @@ influence_delta::influence_delta(std::istream &is)
 {
   int count;
   glm::ivec2 where;
-  is >> count;
+  ow_assert(is >> count);
   while(count--)
   {
-    is >> where.x >> where.y;
-    is >> cell_persistent_setters[where];
+    ow_assert(is >> where.x >> where.y);
+    ow_assert(is >> cell_persistent_setters[where]);
   }
-  is >> count;
+  ow_assert(is >> count);
   while(count--)
   {
-    is >> where.x >> where.y;
-    is >> cell_temporary_setters[where];
+    ow_assert(is >> where.x >> where.y);
+    ow_assert(is >> cell_temporary_setters[where]);
   }
 }
 

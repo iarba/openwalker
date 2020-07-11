@@ -34,4 +34,12 @@ private:
   std::condition_variable cv;
 };
 
+#define ow_assert(condition) ow_assert_msg(condition, "assertion failure")
+
+#define ow_assert_msg(condition, message) if(condition){}else{throw std::logic_error(message);}
+
+#define ow_safe(body) ow_safe_val(body, );
+#define ow_safe_val(body, val) try{body;}catch(std::exception &e){return val;}
+#define ow_safe_cont(body) try{body;}catch(std::exception &e){}
+
 #endif // MISC_UTILS_H

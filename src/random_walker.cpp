@@ -36,10 +36,10 @@ random_walker_t::random_walker_t(glm::dvec2 position, namer_t required_pathfindi
 
 random_walker_t::random_walker_t(std::istream &is) : walker_t(is)
 {
-  is >> required_pathfinding_property;
-  is >> required_pathfinding_min_value;
-  is >> required_pathfinding_max_value;
-  is >> required_pathfinding_def_value;
+  ow_assert(is >> required_pathfinding_property);
+  ow_assert(is >> required_pathfinding_min_value);
+  ow_assert(is >> required_pathfinding_max_value);
+  ow_assert(is >> required_pathfinding_def_value);
   clone_identifier = cloner_registry__random_walker_cloner;
 }
 

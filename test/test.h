@@ -1,7 +1,7 @@
 #ifndef TEST_TEST_H
 #define TEST_TEST_H
 
-#include "../src/main.h"
+#include "openwalker/openwalker.h"
 
 def_zone(test);
 def(test, walkable);

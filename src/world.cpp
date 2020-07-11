@@ -1,5 +1,6 @@
 #include "world.h"
 #include "clone.h"
+#include "misc_utils.h"
 
 world_delta::world_delta()
 {
@@ -20,18 +21,18 @@ world_delta::world_delta(const world_delta *other)
 world_delta::world_delta(std::istream &is)
 {
   int count;
-  is >> count;
+  ow_assert(is >> count);
   while(count--)
   {
     oid_t where;
-    is >> where;
+    ow_assert(is >> where);
     grid_spawns[where] = cloner_t::g_cloner_get()->create_grid(is);
   }
-  is >> count;
+  ow_assert(is >> count);
   while(count--)
   {
     oid_t where;
-    is >> where;
+    ow_assert(is >> where);
     grid_deltas[where] = new grid_delta(is);
   }
 }
@@ -73,11 +74,11 @@ world_t::world_t()
 world_t::world_t(std::istream &is)
 {
   int count;
-  is >> count;
+  ow_assert(is >> count);
   while(count--)
   {
     oid_t where;
-    is >> where;
+    ow_assert(is >> where);
     grids[where] = cloner_t::g_cloner_get()->create_grid(is);
   }
 }

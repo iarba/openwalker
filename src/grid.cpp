@@ -1,4 +1,5 @@
 #include "grid.h"
+#include "misc_utils.h"
 
 grid_delta::grid_delta()
 {
@@ -29,32 +30,32 @@ grid_delta::grid_delta(const grid_delta *other)
 
 grid_delta::grid_delta(std::istream &is)
 {
-  is >> suicide;
+  ow_assert(is >> suicide);
   inf_delta = influence_delta(is);
   int count;
   oid_t where;
-  is >> count;
+  ow_assert(is >> count);
   while(count--)
   {
-    is >> where;
+    ow_assert(is >> where);
     structure_spawns[where] = cloner_t::g_cloner_get()->create_structure(is);
   }
-  is >> count;
+  ow_assert(is >> count);
   while(count--)
   {
-    is >> where;
+    ow_assert(is >> where);
     structure_deltas[where] = new structure_delta(is);
   }
-  is >> count;
+  ow_assert(is >> count);
   while(count--)
   {
-    is >> where;
+    ow_assert(is >> where);
     walker_spawns[where] = cloner_t::g_cloner_get()->create_walker(is);
   }
-  is >> count;
+  ow_assert(is >> count);
   while(count--)
   {
-    is >> where;
+    ow_assert(is >> where);
     walker_deltas[where] = new walker_delta(is);
   }
 }
@@ -115,7 +116,7 @@ cell_t::cell_t()
 
 cell_t::cell_t(std::istream& is)
 {
-  is >> temporary >> persistent;
+  ow_assert(is >> temporary >> persistent);
 }
 
 void cell_t::serialise(std::ostream& os)
@@ -242,13 +243,13 @@ grid_t::grid_t(glm::ivec2 size)
 
 grid_t::grid_t(std::istream& is)
 {
-  is >> size.x >> size.y;
+  ow_assert(is >> size.x >> size.y);
   grid = new cell_t*[size.x];
   for(int i = 0; i < size.x; i++)
   {
     grid[i] = new cell_t[size.y];
   }
-  is >> suicide;
+  ow_assert(is >> suicide);
   for(int i = 0; i < this->size.x; i++)
   {
     for(int j = 0; j < this->size.y; j++)
@@ -258,18 +259,18 @@ grid_t::grid_t(std::istream& is)
     }
   }
   int count;
-  is >> count;
+  ow_assert(is >> count);
   while(count--)
   {
     oid_t where;
-    is >> where;
+    ow_assert(is >> where);
     structures[where] = cloner_t::g_cloner_get()->create_structure(is);
   }
-  is >> count;
+  ow_assert(is >> count);
   while(count--)
   {
     oid_t where;
-    is >> where;
+    ow_assert(is >> where);
     walkers[where] = cloner_t::g_cloner_get()->create_walker(is);
   }
   clone_identifier = cloner_registry__grid_cloner;

@@ -1,4 +1,5 @@
 #include "structure.h"
+#include "misc_utils.h"
 
 structure_delta::structure_delta()
 {
@@ -11,7 +12,7 @@ structure_delta::structure_delta(const structure_delta *other)
 
 structure_delta::structure_delta(std::istream &is)
 {
-  is >> suicide;
+  ow_assert(is >> suicide);
 }
 
 structure_delta::~structure_delta()
@@ -52,9 +53,9 @@ structure_t::structure_t(glm::ivec2 position)
 
 structure_t::structure_t(std::istream &is)
 {
-  is >> position.x >> position.y;
-  is >> properties;
-  is >> suicide;
+  ow_assert(is >> position.x >> position.y);
+  ow_assert(is >> properties);
+  ow_assert(is >> suicide);
   clone_identifier = cloner_registry__structure_cloner;
 }
 

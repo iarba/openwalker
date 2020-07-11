@@ -13,6 +13,10 @@
 class command_t
 {
 public:
+  command_t();
+  command_t(std::istream &is);
+  ~command_t();
+  void serialise(std::ostream &os);
   int opcode = OW_CMD_NOP;
   explicit operator bool() const;
 };
@@ -55,6 +59,22 @@ public:
   stream_forwarding_node_t(node_t *parent, std::ostream *os, std::istream *is = NULL);
   virtual ~stream_forwarding_node_t();
   virtual void feed(node_delta *nd);
+protected:
+  std::ostream *os;
+  std::istream *is;
+  int delay = 10;
+private:
+  void duty();
+  bool kill = false;
+  std::thread duty_thread;
+};
+
+class stream_fetching_node_t : public node_t
+{
+public:
+  stream_fetching_node_t(std::ostream *os, std::istream *is);
+  virtual ~stream_fetching_node_t();
+  virtual void receive_com(command_t c);
 protected:
   std::ostream *os;
   std::istream *is;

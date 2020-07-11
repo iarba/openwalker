@@ -1,5 +1,24 @@
 #include "node.h"
 #include <functional>
+#include "misc_utils.h"
+
+command_t::command_t()
+{
+}
+
+command_t::command_t(std::istream &is)
+{
+  ow_assert(is >> opcode);
+}
+
+command_t::~command_t()
+{
+}
+
+void command_t::serialise(std::ostream &os)
+{
+  os << " " << opcode << " ";
+}
 
 command_t::operator bool() const
 {
@@ -21,7 +40,7 @@ node_delta::node_delta(const node_delta *other)
 node_delta::node_delta(std::istream &is)
 {
   bool wd_present;
-  is >> wd_present;
+  ow_assert(is >> wd_present);
   wd = wd_present? new world_delta(is) : NULL;
 }
 
@@ -115,7 +134,6 @@ void node_t::remove_listener(node_t *n)
 
 void node_t::set_forwarding(bool value)
 {
-  std::cout << "setting forwarding enable to " << value << std::endl;
   forwarding_enabled = value;
 }
 
@@ -150,12 +168,10 @@ stream_forwarding_node_t::~stream_forwarding_node_t()
 
 void stream_forwarding_node_t::feed(node_delta *nd)
 {
-  printf("fwd called\n");
   this->node_t::feed(nd);
   node_lock.lock();
   if(forwarding_enabled)
   {
-    printf("forwarding\n");
     nd->serialise(*os);
   }
   node_lock.unlock();
@@ -171,8 +187,46 @@ void stream_forwarding_node_t::duty()
       node_lock.unlock();
       return;
     }
-    // ?
     node_lock.unlock();
+    ow_safe(command_t c(*is);receive_com(c););
+    std::this_thread::sleep_for(std::chrono::milliseconds(delay));
+  }
+}
+
+stream_fetching_node_t::stream_fetching_node_t(std::ostream *os, std::istream *is) : node_t(NULL)
+{
+  this->os = os;
+  this->is = is;
+  self_apply = false;
+  duty_thread = std::thread(std::bind(&stream_fetching_node_t::duty, this));
+}
+
+stream_fetching_node_t::~stream_fetching_node_t()
+{
+  kill = true;
+  duty_thread.join();
+}
+
+void stream_fetching_node_t::receive_com(command_t c)
+{
+  this->node_t::receive_com(c); // pretty pointless since master = NULL
+  node_lock.lock();
+  c.serialise(*os);
+  node_lock.unlock();
+}
+
+void stream_fetching_node_t::duty()
+{
+  while(true)
+  {
+    node_lock.lock();
+    if(kill)
+    {
+      node_lock.unlock();
+      return;
+    }
+    node_lock.unlock();
+    ow_safe(node_delta *nd = new node_delta(*is);feed(nd);delete nd;);
     std::this_thread::sleep_for(std::chrono::milliseconds(delay));
   }
 }

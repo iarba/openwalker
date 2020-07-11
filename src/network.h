@@ -5,13 +5,16 @@
 #include <mutex>
 #include <asio.hpp>
 #include <vector>
+#include <string>
 #include "node.h"
 
 class server_t
 {
 public:
   server_t(node_t *endpoint);
+  server_t(std::string host, int port);
   ~server_t();
+  node_t *get_endpoint();
   void listen_local();
   void listen_global(int port = 7777);
 protected:
@@ -26,7 +29,7 @@ private:
   std::thread duty_thread;
   asio::io_context ioc;
   std::vector<asio::ip::tcp::acceptor *> acceptors;
-  std::map<asio::ip::tcp::iostream *, stream_forwarding_node_t *> connections;
+  std::map<asio::ip::tcp::iostream *, node_t *> connections;
 };
 
 #endif // NETWORK_H

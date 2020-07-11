@@ -1,4 +1,5 @@
 #include "walker.h"
+#include "misc_utils.h"
 
 walker_delta::walker_delta()
 {
@@ -16,11 +17,11 @@ walker_delta::walker_delta(const walker_delta *other)
 
 walker_delta::walker_delta(std::istream &is)
 {
-  is >> delta_direction;
-  is >> delta_speed;
-  is >> delta_position.x >> delta_position.y;
-  is >> suicide;
-  is >> delta_properties;
+  ow_assert(is >> delta_direction);
+  ow_assert(is >> delta_speed);
+  ow_assert(is >> delta_position.x >> delta_position.y);
+  ow_assert(is >> suicide);
+  ow_assert(is >> delta_properties);
 }
 
 walker_delta::~walker_delta()
@@ -65,11 +66,11 @@ walker_t::walker_t(glm::dvec2 position)
 
 walker_t::walker_t(std::istream &is)
 {
-  is >> suicide;
-  is >> position.x >> position.y;
-  is >> direction;
-  is >> speed;
-  is >> properties;
+  ow_assert(is >> suicide);
+  ow_assert(is >> position.x >> position.y);
+  ow_assert(is >> direction);
+  ow_assert(is >> speed);
+  ow_assert(is >> properties);
   clone_identifier = cloner_registry__walker_cloner;
 }
 

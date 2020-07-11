@@ -1,4 +1,5 @@
 #include "properties.h"
+#include "misc_utils.h"
 
 std::ostream& operator<<(std::ostream &os, const namer_t &data)
 {
@@ -8,7 +9,7 @@ std::ostream& operator<<(std::ostream &os, const namer_t &data)
 
 std::istream& operator>>(std::istream &is, namer_t &data)
 {
-  is >> data.first >> data.second;
+  ow_assert(is >> data.first >> data.second);
   return is;
 }
 
@@ -25,12 +26,12 @@ std::ostream& operator<<(std::ostream &os, const properties_t &data)
 std::istream& operator>>(std::istream &is, properties_t &data)
 {
   int count;
-  is >> count;
+  ow_assert(is >> count);
   while(count--)
   {
     namer_t n;
     value_t v;
-    is >> n >> v;
+    ow_assert(is >> n >> v);
     data[n] = v;
   }
   return is;

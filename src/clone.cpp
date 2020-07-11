@@ -1,4 +1,5 @@
 #include "clone.h"
+#include "misc_utils.h"
 
 cloner_t *g_cloner = NULL;
 
@@ -58,7 +59,7 @@ grid_t *cloner_t::create_grid(grid_t *g)
 grid_t *cloner_t::create_grid(std::istream &is)
 {
   namer_t identifier;
-  is >> identifier;
+  ow_assert(is >> identifier);
   return grid_constructors[identifier]->deserialise(is);
 }
 
@@ -75,7 +76,7 @@ structure_t *cloner_t::create_structure(structure_t *s)
 structure_t *cloner_t::create_structure(std::istream &is)
 {
   namer_t identifier;
-  is >> identifier;
+  ow_assert(is >> identifier);
   return structure_constructors[identifier]->deserialise(is);
 }
 
@@ -92,6 +93,6 @@ walker_t *cloner_t::create_walker(walker_t *w)
 walker_t *cloner_t::create_walker(std::istream &is)
 {
   namer_t identifier;
-  is >> identifier;
+  ow_assert(is >> identifier);
   return walker_constructors[identifier]->deserialise(is);
 }
