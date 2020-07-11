@@ -34,3 +34,39 @@ std::vector<std::string> tokenize(std::string origin)
   }
   return tokens;
 }
+
+b_streambuf::b_streambuf() : std::stringbuf()
+{
+}
+
+b_streambuf::~b_streambuf()
+{
+}
+
+int b_streambuf::overflow(int c)
+{
+  int rval = this->std::stringbuf::overflow(c);
+  cv.notify_all();
+  return rval;
+}
+
+std::streamsize b_streambuf::xsputn(const char* s, std::streamsize n)
+{
+  std::streamsize rval = this->std::stringbuf::xsputn(s, n);
+  cv.notify_all();
+  return rval;
+}
+
+int b_streambuf::underflow()
+{
+  std::unique_lock<std::mutex> l(lock);
+  cv.wait(l, [this]{return this->in_avail() > 0;});
+  return this->std::stringbuf::underflow();
+}
+
+int b_streambuf::uflow()
+{
+  std::unique_lock<std::mutex> l(lock);
+  cv.wait(l, [this]{return this->in_avail() > 0;});
+  return this->std::stringbuf::uflow();
+}

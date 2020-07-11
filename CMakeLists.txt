@@ -7,7 +7,7 @@ file(GLOB_RECURSE TEST_SOURCES "test/*.cpp")
 add_subdirectory(dep/glm)
 
 include_directories(src)
-include_directories(dep/asio-1.12.2/include)
+include_directories(dep/asio-1.16.1/include)
 
 find_package(Threads)
 

@@ -1,4 +1,5 @@
 #include "node.h"
+#include <functional>
 
 node_delta::node_delta()
 {
@@ -109,14 +110,24 @@ void node_t::apply_delta(node_delta *nd)
   }
 }
 
-stream_forwarding_node_t::stream_forwarding_node_t(node_t *parent, std::ostream *os) : node_t(parent)
+stream_forwarding_node_t::stream_forwarding_node_t(node_t *parent, std::ostream *os, std::istream *is) : node_t(parent)
 {
   this->os = os;
+  this->is = is;
   self_apply = false;
+  if(is)
+  {
+    duty_thread = std::thread(std::bind(&stream_forwarding_node_t::duty, this));
+  }
 }
 
 stream_forwarding_node_t::~stream_forwarding_node_t()
 {
+  kill = true;
+  if(is)
+  {
+    duty_thread.join();
+  }
 }
 
 void stream_forwarding_node_t::feed(node_delta *nd)
@@ -125,4 +136,19 @@ void stream_forwarding_node_t::feed(node_delta *nd)
   node_lock.lock();
   nd->serialise(*os);
   node_lock.unlock();
+}
+
+void stream_forwarding_node_t::duty()
+{
+  while(true)
+  {
+    node_lock.lock();
+    if(kill)
+    {
+      node_lock.unlock();
+      return;
+    }
+    node_lock.unlock();
+    std::this_thread::sleep_for(std::chrono::milliseconds(delay));
+  }
 }

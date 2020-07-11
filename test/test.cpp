@@ -117,6 +117,7 @@ int main()
     throw std::logic_error("incorrect cloner");
   }
   std::stringstream ios;
+  ios.std::iostream::rdbuf(new b_streambuf());
   ces->serialise(ios);
   world_t *dbg = new world_t(ios);
   if(dbg->get_grid(42)->get_structure(1)->get_clone_identifier() != cloner_registry__road_cloner)
@@ -143,6 +144,7 @@ int main()
   delete sfn;
   delete dbg;
   delete ces;
+  delete ios.std::iostream::rdbuf();
   openwalker_destroy();
   return 0;
 }

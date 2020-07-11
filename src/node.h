@@ -5,6 +5,7 @@
 #include <mutex>
 #include <set>
 #include <iostream>
+#include <thread>
 
 class command_t
 {
@@ -44,11 +45,17 @@ private:
 class stream_forwarding_node_t : public node_t
 {
 public:
-  stream_forwarding_node_t(node_t *parent, std::ostream *os);
+  stream_forwarding_node_t(node_t *parent, std::ostream *os, std::istream *is = NULL);
   virtual ~stream_forwarding_node_t();
   virtual void feed(node_delta *nd);
 protected:
   std::ostream *os;
+  std::istream *is;
+  int delay = 10;
+private:
+  void duty();
+  bool kill = false;
+  std::thread duty_thread;
 };
 
 #endif // NODE_H
