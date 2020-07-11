@@ -5,6 +5,7 @@
 #include "context.h"
 #include "influence.h"
 #include "console_explorer_slave.h"
+#include "network.h"
 #include "master.h"
 #include "clone.h"
 #include "world.h"

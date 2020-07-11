@@ -1,6 +1,11 @@
 #include "node.h"
 #include <functional>
 
+command_t::operator bool() const
+{
+  return this->opcode;
+}
+
 node_delta::node_delta()
 {
 }
@@ -70,9 +75,12 @@ void node_t::serialise(std::ostream &os)
 void node_t::feed(node_delta *nd)
 {
   node_lock.lock();
-  for(auto listener : listeners)
+  if(forwarding_enabled)
   {
-    listener->feed(nd);
+    for(auto listener : listeners)
+    {
+      listener->feed(nd);
+    }
   }
   if(self_apply)
   {
@@ -84,7 +92,10 @@ void node_t::feed(node_delta *nd)
 void node_t::receive_com(command_t c)
 {
   node_lock.lock();
-  parent->receive_com(c);
+  if(parent)
+  {
+    parent->receive_com(c);
+  }
   node_lock.unlock();
 }
 
@@ -102,6 +113,12 @@ void node_t::remove_listener(node_t *n)
   node_lock.unlock();
 }
 
+void node_t::set_forwarding(bool value)
+{
+  std::cout << "setting forwarding enable to " << value << std::endl;
+  forwarding_enabled = value;
+}
+
 void node_t::apply_delta(node_delta *nd)
 {
   if(nd->wd)
@@ -112,6 +129,7 @@ void node_t::apply_delta(node_delta *nd)
 
 stream_forwarding_node_t::stream_forwarding_node_t(node_t *parent, std::ostream *os, std::istream *is) : node_t(parent)
 {
+  forwarding_enabled = false;
   this->os = os;
   this->is = is;
   self_apply = false;
@@ -132,9 +150,14 @@ stream_forwarding_node_t::~stream_forwarding_node_t()
 
 void stream_forwarding_node_t::feed(node_delta *nd)
 {
+  printf("fwd called\n");
   this->node_t::feed(nd);
   node_lock.lock();
-  nd->serialise(*os);
+  if(forwarding_enabled)
+  {
+    printf("forwarding\n");
+    nd->serialise(*os);
+  }
   node_lock.unlock();
 }
 
@@ -148,6 +171,7 @@ void stream_forwarding_node_t::duty()
       node_lock.unlock();
       return;
     }
+    // ?
     node_lock.unlock();
     std::this_thread::sleep_for(std::chrono::milliseconds(delay));
   }

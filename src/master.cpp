@@ -13,6 +13,20 @@ master_t::~master_t()
   duty_thread.join();
 }
 
+void master_t::receive_com(command_t c)
+{
+  if(c)
+  {
+    node_lock.lock();
+    if(c.opcode == OW_CMD_PAUSE)
+    {
+      autorun = !autorun;
+    }
+    node_lock.unlock();
+  }
+  this->node_t::receive_com(c);
+}
+
 node_delta *master_t::compute_delta()
 {
   node_lock.lock();

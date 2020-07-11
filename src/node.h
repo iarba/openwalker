@@ -7,9 +7,14 @@
 #include <iostream>
 #include <thread>
 
+#define OW_CMD_NOP 0
+#define OW_CMD_PAUSE 1
+
 class command_t
 {
-  int opcode;
+public:
+  int opcode = OW_CMD_NOP;
+  explicit operator bool() const;
 };
 
 class node_delta
@@ -33,9 +38,11 @@ public:
   virtual void receive_com(command_t c);
   void add_listener(node_t *n);
   void remove_listener(node_t *n);
+  void set_forwarding(bool value);
 protected:
   virtual void apply_delta(node_delta *nd);
   bool self_apply = true;
+  bool forwarding_enabled = true;
   node_t *parent = NULL;
   std::mutex node_lock;
 private:

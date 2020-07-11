@@ -10,11 +10,11 @@ class master_t : public node_t
 public:
   master_t();
   virtual ~master_t();
-//  void receive_com(command_t c);
+  void receive_com(command_t c);
   void tick();
 protected:
   bool autorun = false;
-  int delay = 1;
+  int delay = 500;
 private:
   node_delta *compute_delta();
   void duty();

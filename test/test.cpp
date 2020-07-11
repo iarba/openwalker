@@ -1,6 +1,8 @@
 #include "test.h"
 #include <sstream>
 
+#define port 7777
+
 def(cloner_registry, road_cloner);
 
 void load()
@@ -110,6 +112,11 @@ int main()
 {
   openwalker_init(1234);
   load();
+  server_t *srv = NULL;
+  srv = new server_t(openwalker_master);
+  srv->listen_global(port);
+  std::cout << "a test port has been opened on port " << port << "\n";
+  getchar();
   console_explorer_slave_t *ces = new console_explorer_slave_t(openwalker_master);
   run();
   if(ces->get_grid(1)->get_structure(4)->get_clone_identifier() != cloner_registry__road_cloner)
@@ -139,12 +146,22 @@ int main()
     throw std::logic_error("incorrect series serialiser");
   }
   stream_forwarding_node_t *sfn = new stream_forwarding_node_t(ces, &ios);
+  sfn->set_forwarding(true);
   openwalker_master->tick();
   node_delta nd(ios);
+  command_t c;
+  c.opcode=OW_CMD_PAUSE;
+  openwalker_master->receive_com(c);
   delete sfn;
+  std::cout << "testing finished, master is unpaused, press enter to terminate\n";
+  getchar();
   delete dbg;
   delete ces;
   delete ios.std::iostream::rdbuf();
+  if(srv)
+  {
+    delete srv;
+  }
   openwalker_destroy();
   return 0;
 }
