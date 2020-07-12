@@ -3,6 +3,7 @@ project(openwalker)
 
 file(GLOB_RECURSE SOURCES "src/*.cpp")
 file(GLOB_RECURSE TEST_SOURCES "test/*.cpp")
+file(GLOB_RECURSE TSTLIB_SOURCES "tstlib/*.cpp")
 file(GLOB_RECURSE PROXY_SOURCES "proxy/*.cpp")
 
 add_subdirectory(dep/glm)
@@ -22,8 +23,11 @@ link_libraries(glm)
 add_library(openwalker STATIC ${SOURCES})
 target_link_libraries(openwalker ${CMAKE_THREAD_LIBS_INIT})
 
+add_library(tstlib STATIC ${TSTLIB_SOURCES})
+target_link_libraries(tstlib openwalker)
+
 add_executable(test ${TEST_SOURCES})
-target_link_libraries(test openwalker)
+target_link_libraries(test openwalker tstlib)
 
 add_executable(ow_proxy ${PROXY_SOURCES})
-target_link_libraries(ow_proxy openwalker)
+target_link_libraries(ow_proxy openwalker tstlib)

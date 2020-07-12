@@ -3,8 +3,11 @@
 
 #include "openwalker/openwalker.h"
 
+def(cloner_registry, road_cloner);
 def_zone(test);
 def(test, walkable);
+
+void tst_load();
 
 class road : public structure_t
 {

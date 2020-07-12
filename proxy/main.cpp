@@ -1,9 +1,11 @@
 #include "openwalker/openwalker.h"
+#include "../tstlib/test.h"
 
 int main(int argc, char **argv)
 {
   server_t *s = NULL;
   openwalker_init(2313);
+  tst_load();
   try
   {
     std::vector<std::string> args;
