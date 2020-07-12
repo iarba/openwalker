@@ -5,6 +5,7 @@
 int main(int argc, char **argv)
 {
   server_t *s = NULL;
+  openwalker_set_logger(&std::cout);
   openwalker_init(2313);
   ow_f_lib_init();
   tst_load();

@@ -146,12 +146,17 @@ void server_t::duty()
     server_lock.lock();
     for(auto it : connections)
     {
-      if((it.second) && (it.first->socket().is_open()))
-      {
+      if(!it.second)
+      { // listener created socket
+        new_connections[it.first] = it.second;
+        continue;
+      }
+      if(it.first->socket().is_open())
+      { // socket is responsive
         new_connections[it.first] = it.second;
       }
       else
-      {
+      { // socket is NOT responsive
         ow_safe_cont(it.first->socket().shutdown(asio::ip::tcp::socket::shutdown_type::shutdown_both);)
         delete it.second;
         delete it.first;

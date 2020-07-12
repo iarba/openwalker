@@ -12,10 +12,12 @@
 #include "structure.h"
 #include "walker.h"
 #include "misc_utils.h"
-
-extern master_t *openwalker_master;
+#include "log.h"
+#include <iostream>
 
 void openwalker_init(int seed);
+
+void openwalker_set_logger(std::ostream *logger);
 
 void openwalker_destroy();
 

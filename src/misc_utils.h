@@ -8,6 +8,7 @@
 #include <sstream>
 #include <mutex>
 #include <condition_variable>
+#include "log.h"
 
 bool eq(double a, double b);
 
@@ -39,7 +40,7 @@ private:
 #define ow_assert_msg(condition, message) if(condition){}else{throw std::logic_error(message);}
 
 #define ow_safe(body) ow_safe_val(body, );
-#define ow_safe_val(body, val) try{body;}catch(std::exception &e){return val;}
-#define ow_safe_cont(body) try{body;}catch(std::exception &e){}
+#define ow_safe_val(body, val) try{body;}catch(std::exception &e){ow_l_lock();ow_l_error(<<"caught critical(return) exception " << e.what() << "\n");ow_l_debug(<<"context [" << #body <<"]\n");ow_l_unlock();return val;}
+#define ow_safe_cont(body) try{body;}catch(std::exception &e){ow_l_lock();ow_l_warn(<<"caught non-critical(continue) exception " << e.what() << "\n");ow_l_debug(<<"context [" << #body << "]\n");ow_l_unlock();}
 
 #endif // MISC_UTILS_H

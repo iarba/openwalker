@@ -1,23 +1,27 @@
 #include "main.h"
 
-master_t *openwalker_master = NULL;
+std::stringstream def_logger;
 
 void openwalker_init(int seed)
 {
+  def_logger.setstate(std::ios_base::badbit);
+  if(!ow_l)
+  {
+    ow_l = &def_logger;
+  }
   srand(seed);
   cloner_t::load();
   grid_t::load();
   structure_t::load();
   walker_t::load();
-  openwalker_master = new master_t();
+}
+
+void openwalker_set_logger(std::ostream *logger)
+{
+  ow_l = logger;
 }
 
 void openwalker_destroy()
 {
-  if(openwalker_master)
-  {
-    delete openwalker_master;
-    openwalker_master = NULL;
-  }
   cloner_t::destroy();
 }

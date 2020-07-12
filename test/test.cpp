@@ -5,9 +5,9 @@
 
 #define port 7777
 
-void run()
+void run(master_t *master)
 {
-  openwalker_master->tick();
+  master->tick();
   node_delta *nd = new node_delta();
   nd->wd = new world_delta();
   nd->wd->grid_deltas[1] = new grid_delta();
@@ -18,38 +18,38 @@ void run()
   nd->wd->grid_deltas[1]->structure_spawns[3] = new road({4, 4});
   nd->wd->grid_deltas[1]->structure_spawns[4] = new road({2, 4});
 
-  openwalker_master->feed(nd); // injection
+  master->feed(nd); // injection
   delete nd->wd;
   nd->wd = new world_delta();
   nd->wd->grid_deltas[1] = new grid_delta();
 
-  openwalker_master->tick();
+  master->tick();
 
   nd->wd->grid_deltas[1]->walker_spawns[1] = new random_walker_t({3, 3}, test__walkable, (value_t)1, (value_t)1, (value_t)0);
 
-  openwalker_master->feed(nd); // injection
+  master->feed(nd); // injection
   delete nd->wd;
   nd->wd = new world_delta();
   nd->wd->grid_deltas[1] = new grid_delta();
 
-  openwalker_master->tick();
+  master->tick();
 
-  nd->wd->grid_spawns[42] = cloner_t::g_cloner_get()->create_grid(openwalker_master->get_grid(1));
+  nd->wd->grid_spawns[42] = cloner_t::g_cloner_get()->create_grid(master->get_grid(1));
 
-  openwalker_master->feed(nd); // injection
+  master->feed(nd); // injection
   delete nd->wd;
   nd->wd = new world_delta();
   nd->wd->grid_deltas[1] = new grid_delta();
 
-  openwalker_master->tick();
-  openwalker_master->tick();
-  openwalker_master->tick();
+  master->tick();
+  master->tick();
+  master->tick();
 
-  if(openwalker_master->get_grid(1)->get_structure(4)->get_clone_identifier() != cloner_registry__road_cloner)
+  if(master->get_grid(1)->get_structure(4)->get_clone_identifier() != cloner_registry__road_cloner)
   {
     throw std::logic_error("incorrect cloner");
   }  
-  if(openwalker_master->get_grid(42)->get_structure(4)->get_clone_identifier() != cloner_registry__road_cloner)
+  if(master->get_grid(42)->get_structure(4)->get_clone_identifier() != cloner_registry__road_cloner)
   {
     throw std::logic_error("incorrect cloner");
   }
@@ -58,16 +58,18 @@ void run()
 
 int main()
 {
+  openwalker_set_logger(&std::cout);
   openwalker_init(1234);
   ow_f_lib_init();
   tst_load();
   server_t *srv = NULL;
-  srv = new server_t(openwalker_master);
+  master_t *master = new master_t();
+  srv = new server_t(master);
   srv->listen_global(port);
   std::cout << "a test port has been opened on port " << port << "\n";
   getchar();
-  console_explorer_slave_t *ces = new console_explorer_slave_t(openwalker_master);
-  run();
+  console_explorer_slave_t *ces = new console_explorer_slave_t(master);
+  run(master);
   if(ces->get_grid(1)->get_structure(4)->get_clone_identifier() != cloner_registry__road_cloner)
   {
     throw std::logic_error("incorrect cloner");
@@ -96,11 +98,11 @@ int main()
   }
   stream_forwarding_node_t *sfn = new stream_forwarding_node_t(ces, &ios);
   sfn->set_forwarding(true);
-  openwalker_master->tick();
+  master->tick();
   node_delta nd(ios);
   command_t c;
   c.opcode=OW_CMD_PAUSE;
-  openwalker_master->receive_com(c);
+  master->receive_com(c);
   delete sfn;
   std::cout << "testing finished, master is unpaused, press enter to terminate\n";
   getchar();
@@ -111,6 +113,7 @@ int main()
   {
     delete srv;
   }
+  delete master;
   openwalker_destroy();
   return 0;
 }
