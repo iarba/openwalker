@@ -82,6 +82,10 @@ node_t::~node_t()
   {
     parent->remove_listener(this);
   }
+  for(auto listener : listeners)
+  {
+    listener->forget(this);
+  }
 }
 
 void node_t::serialise(std::ostream &os)
@@ -135,6 +139,16 @@ void node_t::remove_listener(node_t *n)
 void node_t::set_forwarding(bool value)
 {
   forwarding_enabled = value;
+}
+
+void node_t::forget(node_t *n)
+{
+  node_lock.lock();
+  if(n == parent)
+  {
+    parent = NULL;
+  }
+  node_lock.unlock();
 }
 
 void node_t::apply_delta(node_delta *nd)

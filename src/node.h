@@ -43,6 +43,7 @@ public:
   void add_listener(node_t *n);
   void remove_listener(node_t *n);
   void set_forwarding(bool value);
+  void forget(node_t *n);
 protected:
   virtual void apply_delta(node_delta *nd);
   bool self_apply = true;

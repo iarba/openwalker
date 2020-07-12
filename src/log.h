@@ -19,7 +19,7 @@ void ow_l_unlock();
 #define D_PRINT get_current_time()
 #define L_PRINT "@" << __FILE__ << ":" << __LINE__
 
-#define ow_l_head(level, action) ow_l_lock(); *ow_l << "\n" << T_PRINT << D_PRINT << " " << #level << L_PRINT << "\n" action; ow_l_unlock();
+#define ow_l_head(level, action) ow_l_lock(); *ow_l << "\n" << T_PRINT << D_PRINT << " " << #level << L_PRINT << "\n" action << "\n"; ow_l_unlock();
 
 #define OW_L_LV_DEBUG
 #ifdef OW_L_LV_DEBUG
@@ -41,6 +41,8 @@ void ow_l_unlock();
 #else
 #define ow_l_info(action) 
 #endif // OW_L_LV_INFO
+
+#define ow_l_notice ow_l_info
 
 #define OW_L_LV_WARN
 #ifdef OW_L_LV_WARN

@@ -27,12 +27,12 @@ int main(int argc, char **argv)
       {
         ow_assert_msg(false, "user termination");
       }
-      std::cerr << "unrecognised command - " << cmd << "\n";
+      ow_l_error(<< "unrecognised command - " << cmd);
     }
   }
   catch(std::exception &e)
   {
-    std::cerr << "Termination due to [" << e.what() << "]\n";
+    ow_l_warn(<< "Termination die to [" << e.what() << "]");
     if(s)
     {
       delete s;

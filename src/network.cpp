@@ -119,6 +119,7 @@ void server_t::accept(asio::ip::tcp::acceptor *origin, const asio::error_code er
 {
   if(!error)
   {
+    ow_l_notice(<<"received new connection from " << stream->socket().remote_endpoint().address().to_string());
     server_lock.lock();
     connections[stream] = new stream_forwarding_node_t(endpoint, stream, stream);
     connections[stream]->set_forwarding(true);
@@ -127,6 +128,8 @@ void server_t::accept(asio::ip::tcp::acceptor *origin, const asio::error_code er
   }
   else
   {
+    ow_l_warn(<<"received error while accepting new connection - " << error);
+    start_accepting(origin);
   }
 }
 
