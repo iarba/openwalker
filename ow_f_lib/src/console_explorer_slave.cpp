@@ -1,5 +1,4 @@
 #include "console_explorer_slave.h"
-#include "misc_utils.h"
 #include <iostream>
 #include <vector>
 

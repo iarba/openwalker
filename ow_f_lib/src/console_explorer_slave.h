@@ -1,7 +1,7 @@
 #ifndef CONSOLE_EXPLORER_SLAVE
 #define CONSOLE_EXPLORER_SLAVE
 
-#include "node.h"
+#include <openwalker/openwalker.h>
 
 class console_explorer_slave_t : public node_t
 {

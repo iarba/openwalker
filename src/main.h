@@ -4,7 +4,6 @@
 #include "_fwd.h"
 #include "context.h"
 #include "influence.h"
-#include "console_explorer_slave.h"
 #include "network.h"
 #include "master.h"
 #include "clone.h"
@@ -12,7 +11,6 @@
 #include "grid.h"
 #include "structure.h"
 #include "walker.h"
-#include "random_walker.h"
 #include "misc_utils.h"
 
 extern master_t *openwalker_master;

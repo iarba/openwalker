@@ -1,7 +1,7 @@
 #ifndef RANDOM_WALKER_H
 #define RANDOM_WALKER_H
 
-#include "walker.h"
+#include <openwalker/openwalker.h>
 
 // a random walker moves in 4 directions - N E S W
 // a random walker stops when it grid-allignes, then chooses a new direction

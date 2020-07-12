@@ -1,10 +1,12 @@
-#include "openwalker/openwalker.h"
+#include <openwalker/openwalker.h>
+#include <ow_f_lib/ow_f_lib.h>
 #include "../tstlib/test.h"
 
 int main(int argc, char **argv)
 {
   server_t *s = NULL;
   openwalker_init(2313);
+  ow_f_lib_init();
   tst_load();
   try
   {

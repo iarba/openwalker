@@ -1,7 +1,5 @@
 #include "random_walker.h"
 #include <set>
-#include "misc_utils.h"
-#include "clone.h"
 
 def(cloner_registry, random_walker_cloner);
 

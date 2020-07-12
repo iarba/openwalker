@@ -1,7 +1,8 @@
 #ifndef TEST_TEST_H
 #define TEST_TEST_H
 
-#include "openwalker/openwalker.h"
+#include <openwalker/openwalker.h>
+#include <ow_f_lib/ow_f_lib.h>
 
 def(cloner_registry, road_cloner);
 def_zone(test);

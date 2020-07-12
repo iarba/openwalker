@@ -9,7 +9,6 @@ void openwalker_init(int seed)
   grid_t::load();
   structure_t::load();
   walker_t::load();
-  random_walker_t::load();
   openwalker_master = new master_t();
 }
 

@@ -1,4 +1,5 @@
 #include <openwalker/openwalker.h>
+#include <ow_f_lib/ow_f_lib.h>
 #include "../tstlib/test.h"
 #include <sstream>
 
@@ -58,6 +59,7 @@ void run()
 int main()
 {
   openwalker_init(1234);
+  ow_f_lib_init();
   tst_load();
   server_t *srv = NULL;
   srv = new server_t(openwalker_master);
