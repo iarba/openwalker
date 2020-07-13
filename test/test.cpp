@@ -64,6 +64,7 @@ int main()
   tst_load();
   server_t *srv = NULL;
   master_t *master = new master_t();
+  master->allow(master_config__def_user, test__ev_toggle_pause);
   srv = new server_t(master);
   srv->listen_global(port);
   std::cout << "a test port has been opened on port " << port << "\n";
@@ -101,6 +102,8 @@ int main()
   master->tick();
   node_delta nd(ios);
   command_t c;
+  c.ev_code = test__ev_toggle_pause;
+  c.usr = master_config__def_user;
   master->receive_com(c);
   delete sfn;
   std::cout << "testing finished, master is unpaused, press enter to terminate\n";

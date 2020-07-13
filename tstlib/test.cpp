@@ -14,6 +14,12 @@ void road_unsetter(context_t ctx)
   g->at(s->get_position())->unset(test__walkable);
 }
 
+void master_pause_toggler(context_t ctx)
+{
+  ctx.world->dirt->set(master_config__autorun, (value_t) !ctx.world->dirt->get(master_config__autorun));
+  ((master_t *)ctx.world)->update();
+}
+
 void tst_load()
 {
   imp_zone(test);
@@ -23,6 +29,7 @@ void tst_load()
   imp(test, ev_road_unset);
   event_register(test__ev_road_set, ow_event_helpers::ret_0, road_setter);
   event_register(test__ev_road_unset, ow_event_helpers::ret_0, road_unsetter);
+  event_register(test__ev_toggle_pause, ow_event_helpers::ret_0, master_pause_toggler);
   cloner_t::g_cloner_get()->reg_structure(cloner_registry__road_cloner, new road::road_constructor());
 }
 

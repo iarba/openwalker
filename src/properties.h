@@ -12,7 +12,7 @@ typedef void* value_t;
 
 typedef std::map<namer_t, value_t> properties_t;
 
-inline static int zone_allocator = 0;
+inline int zone_allocator = 0;
 
 #define zone_to_zalloc(zone) zone_allocator_ ## zone
 #define zone_and_namer_to_namer(zone, namer) zone ## __ ## namer

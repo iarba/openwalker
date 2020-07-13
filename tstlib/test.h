@@ -9,6 +9,7 @@ def_zone(test);
 def(test, walkable);
 def(test, ev_road_set);
 def(test, ev_road_unset);
+def(test, ev_toggle_pause);
 
 void tst_load();
 

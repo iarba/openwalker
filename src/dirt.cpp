@@ -1,5 +1,9 @@
 #include "dirt.h"
 
+void null_eraser(value_t v)
+{
+}
+
 void dirt_t::load()
 {
   imp_zone(dirt_index);
@@ -20,7 +24,7 @@ dirt_t::~dirt_t()
   dirt_entries.clear();
 }
 
-void erase_dirt_t(void *p)
+void erase_dirt_t(value_t p)
 {
   dirt_t *pp = (dirt_t *)p;
   delete pp;
@@ -43,7 +47,7 @@ void dirt_t::unlock()
   dirt_lock.unlock();
 }
 
-void *dirt_t::get(namer_t where)
+value_t dirt_t::get(namer_t where)
 {
   auto it = dirt_entries.find(where);
   if(it == dirt_entries.end())
@@ -81,7 +85,7 @@ dirt_context_t::~dirt_context_t()
 {
 }
 
-void erase_dirt_context_t(void *p)
+void erase_dirt_context_t(value_t p)
 {
   dirt_context_t *pp = (dirt_context_t *)p;
   delete pp;

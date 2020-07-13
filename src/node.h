@@ -7,11 +7,8 @@
 #include <iostream>
 #include <thread>
 #include <vector>
-
-#define OW_CMD_NOP 0
-#define OW_CMD_SIGNUP
-#define OW_CMD_SIGNIN
-#define OW_CMD_EXECUTE_EVENT
+#include "event.h"
+#include "properties.h"
 
 class command_t
 {
@@ -20,8 +17,9 @@ public:
   command_t(std::istream &is);
   ~command_t();
   void serialise(std::ostream &os);
-  int opcode = OW_CMD_NOP;
-  explicit operator bool() const;
+  namer_t usr;
+  namer_t ev_code = ow_d_events__nop;
+  properties_t args;
 };
 
 class node_delta

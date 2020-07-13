@@ -8,7 +8,7 @@ command_t::command_t()
 
 command_t::command_t(std::istream &is)
 {
-  ow_assert(is >> opcode);
+  ow_assert(is >> usr >> ev_code >> args);
 }
 
 command_t::~command_t()
@@ -17,12 +17,7 @@ command_t::~command_t()
 
 void command_t::serialise(std::ostream &os)
 {
-  os << " " << opcode << " ";
-}
-
-command_t::operator bool() const
-{
-  return this->opcode;
+  os << " " << usr << " " << ev_code << " " << args << " ";
 }
 
 node_delta::node_delta()
