@@ -6,7 +6,10 @@
 #include "context.h"
 #include "influence.h"
 #include "properties.h"
+#include "event.h"
 #include <map>
+#include <vector>
+#include <functional>
 
 class abstract_structure_constructor_base
 {
@@ -47,7 +50,11 @@ public:
   void apply_delta(structure_delta *wd);
   bool get_suicide();
   namer_t get_clone_identifier();
+  void append_triggers(std::vector<std::pair<event_t, context_t>> &triggers, context_t ctx, std::function<double()> roll);
+  void trigger_create(context_t ctx);
+  void trigger_delete(context_t ctx);
 protected:
+  instance_event_handler_t ieh;
   namer_t clone_identifier;
   bool suicide = false;
   properties_t properties;

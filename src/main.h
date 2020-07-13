@@ -13,6 +13,7 @@
 #include "walker.h"
 #include "misc_utils.h"
 #include "log.h"
+#include "event.h"
 #include <iostream>
 
 void openwalker_init(int seed);

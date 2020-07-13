@@ -8,41 +8,56 @@ world_delta::world_delta()
 
 world_delta::world_delta(const world_delta *other)
 {
-  for(auto it : other->grid_spawns)
+  this->is_slice_not_triggers = other->is_slice_not_triggers;
+  if(is_slice_not_triggers)
   {
-    this->grid_spawns[it.first] = cloner_t::g_cloner_get()->create_grid(it.second);
+    for(auto it : other->grid_spawns)
+    {
+      this->grid_spawns[it.first] = cloner_t::g_cloner_get()->create_grid(it.second);
+    }
+    for(auto it : other->grid_deltas)
+    {
+      this->grid_deltas[it.first] = new grid_delta(it.second);
+    }
   }
-  for(auto it : other->grid_deltas)
+  else
   {
-    this->grid_deltas[it.first] = new grid_delta(it.second);
+    this->triggers = other->triggers;
   }
-  this->triggers = other->triggers;
 }
 
 world_delta::world_delta(std::istream &is)
 {
-  int count;
-  ow_assert(is >> count);
-  while(count--)
+  ow_assert(is >> is_slice_not_triggers);
+  if(is_slice_not_triggers)
   {
-    oid_t where;
-    ow_assert(is >> where);
-    grid_spawns[where] = cloner_t::g_cloner_get()->create_grid(is);
+    int count;
+    ow_assert(is >> count);
+    while(count--)
+    {
+      oid_t where;
+      ow_assert(is >> where);
+      grid_spawns[where] = cloner_t::g_cloner_get()->create_grid(is);
+    }
+    ow_assert(is >> count);
+    while(count--)
+    {
+      oid_t where;
+      ow_assert(is >> where);
+      grid_deltas[where] = new grid_delta(is);
+    }
   }
-  ow_assert(is >> count);
-  while(count--)
+  else
   {
-    oid_t where;
-    ow_assert(is >> where);
-    grid_deltas[where] = new grid_delta(is);
-  }
-  ow_assert(is >> count);
-  while(count--)
-  {
-    context_t ctx;
-    ow_assert(is >> ctx);
-    event_t e(is);
-    triggers.push_back({e, ctx});
+    int count;
+    ow_assert(is >> count);
+    while(count--)
+    {
+      context_t ctx;
+      ow_assert(is >> ctx);
+      event_t e(is);
+      triggers.push_back({e, ctx});
+    }
   }
 }
 
@@ -63,23 +78,30 @@ world_delta::~world_delta()
 
 void world_delta::serialise(std::ostream &os)
 {
-  os << " " << this->grid_spawns.size() << " ";
-  for(auto it : this->grid_spawns)
+  os << " " << this->is_slice_not_triggers << " ";
+  if(is_slice_not_triggers)
   {
-    os << " " << it.first << " ";
-    it.second->serialise(os);
+    os << " " << this->grid_spawns.size() << " ";
+    for(auto it : this->grid_spawns)
+    {
+      os << " " << it.first << " ";
+      it.second->serialise(os);
+    }
+    os << " " << this->grid_deltas.size() << " ";
+    for(auto it : this->grid_deltas)
+    {
+      os << " " << it.first << " ";
+      it.second->serialise(os);
+    }
   }
-  os << " " << this->grid_deltas.size() << " ";
-  for(auto it : this->grid_deltas)
+  else
   {
-    os << " " << it.first << " ";
-    it.second->serialise(os);
-  }
-  os << " " << this->triggers.size() << " ";
-  for(auto it : this->triggers)
-  {
-    it.first.serialise(os);
-    os << " " << it.second << " ";
+    os << " " << this->triggers.size() << " ";
+    for(auto it : this->triggers)
+    {
+      it.first.serialise(os);
+      os << " " << it.second << " ";
+    }
   }
 }
 
@@ -90,6 +112,7 @@ world_t::world_t()
 world_t::world_t(std::istream &is)
 {
   int count;
+  ow_assert(is >> is_slice_not_triggers);
   ow_assert(is >> count);
   while(count--)
   {
@@ -110,6 +133,7 @@ world_t::~world_t()
 
 void world_t::serialise(std::ostream &os)
 {
+  os << " " << is_slice_not_triggers << " ";
   os << " " << grids.size() << " ";
   for(auto it : grids)
   {
@@ -131,27 +155,58 @@ grid_t *world_t::get_grid(oid_t id)
 world_delta *world_t::compute_delta(context_t ctx) const
 {
   world_delta *wd = new world_delta();
-  for(auto it : this->grids)
+  wd->is_slice_not_triggers = this->is_slice_not_triggers;
+  if(is_slice_not_triggers)
   {
-    ctx.grid_id = it.first;
-    wd->grid_deltas[it.first] = it.second->compute_delta(ctx);;
+    for(auto it : this->grids)
+    {
+      ctx.grid_id = it.first;
+      wd->grid_deltas[it.first] = it.second->compute_delta(ctx);
+    }
+  }
+  else
+  {
+    for(auto it : this->grids)
+    {
+      ctx.grid_id = it.first;
+      it.second->append_triggers(wd->triggers, ctx, rand);
+    }
   }
   return wd;
 }
 
 void world_t::apply_delta(world_delta *wd)
 {
-  for(auto it : wd->grid_spawns)
+  if(wd->is_slice_not_triggers)
   {
-    grids[it.first] = cloner_t::g_cloner_get()->create_grid(it.second);
-  }
-  for(auto it : wd->grid_deltas)
-  {
-    grids[it.first]->apply_delta(it.second);
-    if(grids[it.first]->get_suicide())
+    context_t ctx;
+    ctx.world = this;
+    for(auto it : wd->grid_spawns)
     {
-      delete grids[it.first];
-      grids.erase(it.first);
+      ctx.grid_id = it.first;
+      grids[it.first] = cloner_t::g_cloner_get()->create_grid(it.second);
+      grids[it.first]->trigger_create(ctx);
+    }
+    for(auto it : wd->grid_deltas)
+    {
+      grids[it.first]->apply_delta(it.second, ctx);
+      if(grids[it.first]->get_suicide())
+      {
+        ctx.grid_id = it.first;
+        grids[it.first]->trigger_delete(ctx);
+        delete grids[it.first];
+        grids.erase(it.first);
+      }
     }
   }
+  else
+  {
+    for(auto it : wd->triggers)
+    {
+      context_t ctx = it.second;
+      ctx.world = this; // masquerade
+      it.first.trigger(ctx);
+    }
+  }
+  is_slice_not_triggers = !wd->is_slice_not_triggers;
 }

@@ -7,6 +7,8 @@
 def(cloner_registry, road_cloner);
 def_zone(test);
 def(test, walkable);
+def(test, ev_road_set);
+def(test, ev_road_unset);
 
 void tst_load();
 

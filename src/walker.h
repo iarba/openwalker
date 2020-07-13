@@ -6,6 +6,9 @@
 #include "context.h"
 #include "influence.h"
 #include "properties.h"
+#include "event.h"
+#include <vector>
+#include <functional>
 
 typedef double direction_t;
 
@@ -61,7 +64,11 @@ public:
   virtual void append_influence_delta(influence_delta &id, context_t ctx) const;
   void apply_delta(walker_delta *wd);
   namer_t get_clone_identifier();
+  void append_triggers(std::vector<std::pair<event_t, context_t>> &triggers, context_t ctx, std::function<double()> roll);
+  void trigger_create(context_t ctx);
+  void trigger_delete(context_t ctx);
 protected:
+  instance_event_handler_t ieh;
   namer_t clone_identifier;
   properties_t properties;
   bool suicide = false;

@@ -13,6 +13,7 @@ public:
   void serialise(std::ostream &os);
   std::map<glm::ivec2, properties_t, ivec2comparator> cell_persistent_setters;
   std::map<glm::ivec2, properties_t, ivec2comparator> cell_temporary_setters;
+  std::map<glm::ivec2, properties_t, ivec2comparator> cell_unsetters;
   influence_delta operator+(const influence_delta &other);
 };
 

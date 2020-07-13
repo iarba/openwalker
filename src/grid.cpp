@@ -273,6 +273,7 @@ grid_t::grid_t(std::istream& is)
     ow_assert(is >> where);
     walkers[where] = cloner_t::g_cloner_get()->create_walker(is);
   }
+  ow_assert(is >> ieh);
   clone_identifier = cloner_registry__grid_cloner;
 }
 
@@ -318,6 +319,7 @@ void grid_t::serialise(std::ostream& os)
     os << " " << it.first << " ";
     it.second->serialise(os);
   }
+  os << " " << ieh << " ";
 }
 
 void grid_t::copy_into(grid_t *other)
@@ -340,6 +342,7 @@ void grid_t::copy_into(grid_t *other)
     other->walkers[it.first] = cloner_t::g_cloner_get()->create_walker(it.second);
   }
   other->suicide = this->suicide;
+  other->ieh = this->ieh;
 }
 
 glm::ivec2 grid_t::get_size()
@@ -398,13 +401,21 @@ grid_delta *grid_t::compute_delta(context_t ctx) const
   return gd;
 }
 
-void grid_t::apply_delta(grid_delta *gd)
+void grid_t::apply_delta(grid_delta *gd, context_t ctx)
 {
   for(int i = 0; i < this->size.x; i++)
   {
     for(int j = 0; j < this->size.y; j++)
     {
       at({i, j})->discard();
+    }
+  }
+  for(auto it : gd->inf_delta.cell_unsetters)
+  {
+    cell_t *c = at(it.first);
+    for(auto it2 : it.second)
+    {
+      c->unset(it2.first);
     }
   }
   for(auto it : gd->inf_delta.cell_persistent_setters)
@@ -425,26 +436,34 @@ void grid_t::apply_delta(grid_delta *gd)
   }
   for(auto it : gd->structure_spawns)
   {
+    ctx.element_id = it.first;
     structures[it.first] = cloner_t::g_cloner_get()->create_structure(it.second);
+    structures[it.first]->trigger_create(ctx);
   }
   for(auto it : gd->structure_deltas)
   {
     structures[it.first]->apply_delta(it.second);
     if(structures[it.first]->get_suicide())
     {
+      ctx.element_id = it.first;
+      structures[it.first]->trigger_delete(ctx);
       delete structures[it.first];
       structures.erase(it.first);
     }
   }
   for(auto it : gd->walker_spawns)
   {
+    ctx.element_id = it.first;
     walkers[it.first] = cloner_t::g_cloner_get()->create_walker(it.second);
+    walkers[it.first]->trigger_create(ctx);
   }
   for(auto it : gd->walker_deltas)
   {
     walkers[it.first]->apply_delta(it.second);
     if(walkers[it.first]->get_suicide())
     {
+      ctx.element_id = it.first;
+      walkers[it.first]->trigger_delete(ctx);
       delete walkers[it.first];
       walkers.erase(it.first);
     }
@@ -460,4 +479,39 @@ bool grid_t::get_suicide()
 namer_t grid_t::get_clone_identifier()
 {
   return clone_identifier;
+}
+
+void grid_t::append_triggers(std::vector<std::pair<event_t, context_t>> &triggers, context_t ctx, std::function<double()> roll)
+{
+  for(auto ev : ieh.on_random)
+  {
+    if(ev.chance(ctx) > roll())
+    triggers.push_back({ev, ctx});
+  }
+  for(auto it : structures)
+  {
+    ctx.element_id = it.first;
+    it.second->append_triggers(triggers, ctx, roll);
+  }
+  for(auto it : walkers)
+  {
+    ctx.element_id = it.first;
+    it.second->append_triggers(triggers, ctx, roll);
+  }
+}
+
+void grid_t::trigger_create(context_t ctx)
+{
+  for(auto &event : ieh.on_create)
+  {
+    event.trigger(ctx);
+  }
+}
+
+void grid_t::trigger_delete(context_t ctx)
+{
+  for(auto &event : ieh.on_delete)
+  {
+    event.trigger(ctx);
+  }
 }

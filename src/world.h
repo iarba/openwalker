@@ -17,6 +17,7 @@ public:
   world_delta(std::istream &is);
   ~world_delta();
   void serialise(std::ostream &os);
+  bool is_slice_not_triggers = true;
   std::map<oid_t, grid_t *> grid_spawns;
   std::map<oid_t, grid_delta *> grid_deltas;
   std::vector<std::pair<event_t, context_t>> triggers;
@@ -32,8 +33,9 @@ public:
   grid_t *get_grid(oid_t id);
   world_delta *compute_delta(context_t ctx) const;
   void apply_delta(world_delta *wd);
-private:
+protected:
   std::map<oid_t, grid_t *> grids;
+  bool is_slice_not_triggers = true;
 };
 
 #endif // WORLD_H

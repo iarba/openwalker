@@ -71,6 +71,7 @@ walker_t::walker_t(std::istream &is)
   ow_assert(is >> direction);
   ow_assert(is >> speed);
   ow_assert(is >> properties);
+  ow_assert(is >> ieh);
   clone_identifier = cloner_registry__walker_cloner;
 }
 
@@ -86,6 +87,7 @@ void walker_t::serialise(std::ostream &os)
   os << " " << direction << " ";
   os << " " << speed << " ";
   os << " " << properties << " ";
+  os << " " << ieh << " ";
 }
 
 void walker_t::copy_into(walker_t *other)
@@ -95,6 +97,7 @@ void walker_t::copy_into(walker_t *other)
   other->direction = this->direction;
   other->speed = this->speed;
   other->properties = this->properties;
+  other->ieh = this->ieh;
 }
 
 glm::dvec2 walker_t::get_position()
@@ -132,4 +135,29 @@ void walker_t::apply_delta(walker_delta *wd)
 namer_t walker_t::get_clone_identifier()
 {
   return clone_identifier;
+}
+
+void walker_t::append_triggers(std::vector<std::pair<event_t, context_t>> &triggers, context_t ctx, std::function<double()> roll)
+{
+  for(auto ev : ieh.on_random)
+  {
+    if(ev.chance(ctx) > roll())
+    triggers.push_back({ev, ctx});
+  }
+}
+
+void walker_t::trigger_create(context_t ctx)
+{
+  for(auto &event : ieh.on_create)
+  {
+    event.trigger(ctx);
+  }
+}
+
+void walker_t::trigger_delete(context_t ctx)
+{
+  for(auto &event : ieh.on_delete)
+  {
+    event.trigger(ctx);
+  }
 }

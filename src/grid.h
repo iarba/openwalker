@@ -9,6 +9,9 @@
 #include "properties.h"
 #include "influence.h"
 #include "clone.h"
+#include "event.h"
+#include <vector>
+#include <functional>
 
 class abstract_grid_constructor_base
 {
@@ -64,7 +67,7 @@ public:
 
   grid_t(glm::ivec2 size);
   grid_t(std::istream& is);
-  ~grid_t();
+  virtual ~grid_t();
   virtual void serialise(std::ostream& os);
   void copy_into(grid_t *other);
   glm::ivec2 get_size();
@@ -72,17 +75,21 @@ public:
   structure_t *get_structure(oid_t id);
   walker_t *get_walker(oid_t id);
   grid_delta *compute_delta(context_t ctx) const;
-  void apply_delta(grid_delta *gd);
+  void apply_delta(grid_delta *gd, context_t ctx);
   bool get_suicide();
   namer_t get_clone_identifier();
+  void append_triggers(std::vector<std::pair<event_t, context_t>> &triggers, context_t ctx, std::function<double()> roll);
+  void trigger_create(context_t ctx);
+  void trigger_delete(context_t ctx);
 protected:
+  instance_event_handler_t ieh;
   namer_t clone_identifier;
-private:
   std::map<oid_t, structure_t *> structures;
   std::map<oid_t, walker_t *> walkers;
   glm::ivec2 size;
   cell_t **grid;
   bool suicide = false;
+private:
 };
 
 #endif // GRID_H

@@ -56,6 +56,7 @@ structure_t::structure_t(std::istream &is)
   ow_assert(is >> position.x >> position.y);
   ow_assert(is >> properties);
   ow_assert(is >> suicide);
+  ow_assert(is >> ieh);
   clone_identifier = cloner_registry__structure_cloner;
 }
 
@@ -69,6 +70,7 @@ void structure_t::serialise(std::ostream &os)
   os << " " << position.x << " " << position.y << " ";
   os << " " << properties << " ";
   os << " " << suicide << " ";
+  os << " " << ieh << " ";
 }
 
 void structure_t::copy_into(structure_t *other)
@@ -76,6 +78,7 @@ void structure_t::copy_into(structure_t *other)
   other->suicide = this->suicide;
   other->position = this->position;
   other->properties = this->properties;
+  other->ieh = this->ieh;
 }
 
 glm::ivec2 structure_t::get_position()
@@ -106,4 +109,29 @@ bool structure_t::get_suicide()
 namer_t structure_t::get_clone_identifier()
 {
   return clone_identifier;
+}
+
+void structure_t::append_triggers(std::vector<std::pair<event_t, context_t>> &triggers, context_t ctx, std::function<double()> roll)
+{
+  for(auto ev : ieh.on_random)
+  {
+    if(ev.chance(ctx) > roll())
+    triggers.push_back({ev, ctx});
+  }
+}
+
+void structure_t::trigger_create(context_t ctx)
+{
+  for(auto &event : ieh.on_create)
+  {
+    event.trigger(ctx);
+  }
+}
+
+void structure_t::trigger_delete(context_t ctx)
+{
+  for(auto &event : ieh.on_delete)
+  {
+    event.trigger(ctx);
+  }
 }
