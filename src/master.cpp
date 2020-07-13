@@ -44,6 +44,10 @@ void master_t::receive_com(command_t c)
       if(context_dirt->allowed_event_ids.find(c.ev_code) != context_dirt->allowed_event_ids.end())
       {
         ev_code = c.ev_code;
+        for(auto it : c.args)
+        {
+          context_dirt->set(it.first, it.second);
+        }
       }
     }
   }
