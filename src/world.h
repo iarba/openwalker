@@ -4,7 +4,10 @@
 #include "_fwd.h"
 #include "grid.h"
 #include "properties.h"
+#include "event.h"
 #include <iostream>
+#include <map>
+#include <vector>
 
 class world_delta
 {
@@ -16,6 +19,7 @@ public:
   void serialise(std::ostream &os);
   std::map<oid_t, grid_t *> grid_spawns;
   std::map<oid_t, grid_delta *> grid_deltas;
+  std::vector<std::pair<event_t, context_t>> triggers;
 };
 
 class world_t

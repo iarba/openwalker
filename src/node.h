@@ -6,6 +6,7 @@
 #include <set>
 #include <iostream>
 #include <thread>
+#include <vector>
 
 #define OW_CMD_NOP 0
 #define OW_CMD_PAUSE 1

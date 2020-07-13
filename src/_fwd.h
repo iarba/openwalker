@@ -1,6 +1,8 @@
 #ifndef _FWD_H
 #define _FWD_H
 
+class event_t;
+
 class master_t;
 
 class slave_t;

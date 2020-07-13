@@ -16,6 +16,7 @@ world_delta::world_delta(const world_delta *other)
   {
     this->grid_deltas[it.first] = new grid_delta(it.second);
   }
+  this->triggers = other->triggers;
 }
 
 world_delta::world_delta(std::istream &is)
@@ -35,6 +36,14 @@ world_delta::world_delta(std::istream &is)
     ow_assert(is >> where);
     grid_deltas[where] = new grid_delta(is);
   }
+  ow_assert(is >> count);
+  while(count--)
+  {
+    context_t ctx;
+    ow_assert(is >> ctx);
+    event_t e(is);
+    triggers.push_back({e, ctx});
+  }
 }
 
 world_delta::~world_delta()
@@ -49,6 +58,7 @@ world_delta::~world_delta()
     delete it.second;
   }
   this->grid_deltas.clear();
+  this->triggers.clear();
 }
 
 void world_delta::serialise(std::ostream &os)
@@ -64,6 +74,12 @@ void world_delta::serialise(std::ostream &os)
   {
     os << " " << it.first << " ";
     it.second->serialise(os);
+  }
+  os << " " << this->triggers.size() << " ";
+  for(auto it : this->triggers)
+  {
+    it.first.serialise(os);
+    os << " " << it.second << " ";
   }
 }
 
