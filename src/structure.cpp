@@ -64,7 +64,7 @@ structure_t::~structure_t()
 {
 }
 
-void structure_t::serialise(std::ostream &os)
+void structure_t::serialise(std::ostream &os) const
 {
   os << " " << get_clone_identifier() << " "; // only base class is required to do this.
   os << " " << position.x << " " << position.y << " ";
@@ -73,7 +73,7 @@ void structure_t::serialise(std::ostream &os)
   os << " " << ieh << " ";
 }
 
-void structure_t::copy_into(structure_t *other)
+void structure_t::copy_into(structure_t *other) const
 {
   other->suicide = this->suicide;
   other->position = this->position;
@@ -81,7 +81,7 @@ void structure_t::copy_into(structure_t *other)
   other->ieh = this->ieh;
 }
 
-glm::ivec2 structure_t::get_position()
+glm::ivec2 structure_t::get_position() const
 {
   return this->position;
 }
@@ -101,17 +101,17 @@ void structure_t::apply_delta(structure_delta *sd)
   this->suicide = sd->suicide;
 }
 
-bool structure_t::get_suicide()
+bool structure_t::get_suicide() const
 {
   return this->suicide;
 }
 
-namer_t structure_t::get_clone_identifier()
+namer_t structure_t::get_clone_identifier() const
 {
   return clone_identifier;
 }
 
-void structure_t::append_triggers(std::vector<std::pair<event_t, context_t>> &triggers, context_t ctx, std::function<double()> roll)
+void structure_t::append_triggers(std::vector<std::pair<event_t, context_t>> &triggers, context_t ctx, std::function<double()> roll) const
 {
   for(auto ev : ieh.on_random)
   {

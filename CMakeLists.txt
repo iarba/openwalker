@@ -7,6 +7,7 @@ if(NOT OW_SKIP_TEST)
   file(GLOB_RECURSE TEST_SOURCES "test/*.cpp")
   file(GLOB_RECURSE TSTLIB_SOURCES "tstlib/*.cpp")
   file(GLOB_RECURSE PROXY_SOURCES "proxy/*.cpp")
+  file(GLOB_RECURSE GOL_SOURCES "gol/*.cpp")
 endif()
 
 add_subdirectory(dep/glm)
@@ -32,6 +33,9 @@ target_link_libraries(ow_f_lib openwalker)
 set(OW_LIBS openwalker ow_f_lib)
 
 if(NOT OW_SKIP_TEST)
+  add_executable(gol ${GOL_SOURCES})
+  target_link_libraries(gol ${OW_LIBS})
+
   add_library(tstlib STATIC ${TSTLIB_SOURCES})
   target_link_libraries(tstlib ${OW_LIBS})
 

@@ -42,15 +42,15 @@ public:
   structure_t(glm::ivec2 position);
   structure_t(std::istream &is);
   virtual ~structure_t();
-  virtual void serialise(std::ostream &os);
-  virtual void copy_into(structure_t *other);
-  glm::ivec2 get_position();
+  virtual void serialise(std::ostream &os) const;
+  virtual void copy_into(structure_t *other) const;
+  glm::ivec2 get_position() const;
   virtual structure_delta *compute_delta(context_t ctx) const;
   virtual void append_influence_delta(influence_delta &id, context_t ctx) const;
   void apply_delta(structure_delta *wd);
-  bool get_suicide();
-  namer_t get_clone_identifier();
-  void append_triggers(std::vector<std::pair<event_t, context_t>> &triggers, context_t ctx, std::function<double()> roll);
+  bool get_suicide() const;
+  namer_t get_clone_identifier() const;
+  void append_triggers(std::vector<std::pair<event_t, context_t>> &triggers, context_t ctx, std::function<double()> roll) const;
   void trigger_create(context_t ctx);
   void trigger_delete(context_t ctx);
 protected:
