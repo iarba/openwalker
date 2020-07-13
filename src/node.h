@@ -9,7 +9,9 @@
 #include <vector>
 
 #define OW_CMD_NOP 0
-#define OW_CMD_PAUSE 1
+#define OW_CMD_SIGNUP
+#define OW_CMD_SIGNIN
+#define OW_CMD_EXECUTE_EVENT
 
 class command_t
 {

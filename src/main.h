@@ -14,6 +14,7 @@
 #include "misc_utils.h"
 #include "log.h"
 #include "event.h"
+#include "dirt.h"
 #include <iostream>
 
 void openwalker_init(int seed);

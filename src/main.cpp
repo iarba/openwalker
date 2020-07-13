@@ -10,6 +10,7 @@ void openwalker_init(int seed)
     ow_l = &def_logger;
   }
   srand(seed);
+  dirt_t::load();
   event_load();
   cloner_t::load();
   grid_t::load();

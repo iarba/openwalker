@@ -101,7 +101,6 @@ int main()
   master->tick();
   node_delta nd(ios);
   command_t c;
-  c.opcode=OW_CMD_PAUSE;
   master->receive_com(c);
   delete sfn;
   std::cout << "testing finished, master is unpaused, press enter to terminate\n";

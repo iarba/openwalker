@@ -18,10 +18,6 @@ void master_t::receive_com(command_t c)
   if(c)
   {
     node_lock.lock();
-    if(c.opcode == OW_CMD_PAUSE)
-    {
-      autorun = !autorun;
-    }
     node_lock.unlock();
   }
   this->node_t::receive_com(c);
