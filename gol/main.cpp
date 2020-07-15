@@ -30,7 +30,7 @@ int main(int argc, char **argv)
   world_delta *wd = new world_delta();
   nd->wd = wd;
   // we need a new grid
-  glm::ivec2 size = {50, 50};
+  glm::ivec2 size = {10, 10};
   wd->grid_spawns[1] = new cranking_grid(size);
   // and within the grid, we need some cells
   wd->grid_deltas[1] = new grid_delta();
@@ -61,8 +61,13 @@ int main(int argc, char **argv)
   // at this point we should notice that a previously inexistent cell at 4, 6 now exists
   ow_assert(m->get_grid(1)->get_structure(oid_of({5, 5}, size)) == NULL);
   ow_assert(m->get_grid(1)->get_structure(oid_of({4, 6}, size)));
+  // ait let's create a viewer for our game, and enjoy it for a few seconds
+  terminal_viewer_t *view = new terminal_viewer_t(m);
+  m->conf(true, 200);
+  getchar();
   // clean up after ourselves
-  delete wd;
+  delete view;
+  delete nd;
   delete m;
   // and clean openwalker
   openwalker_destroy();

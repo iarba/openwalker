@@ -21,6 +21,7 @@ public:
   void tick();
   void allow(namer_t usr, namer_t ev_code);
   void update();
+  void conf(bool autorun, int delay);
 protected:
   bool autorun = false;
   int delay = 500;

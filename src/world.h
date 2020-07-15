@@ -31,6 +31,7 @@ public:
   world_t(std::istream &is);
   virtual ~world_t();
   virtual void serialise(std::ostream &os);
+  void copy_into(world_t *other) const;
   grid_t *get_grid(oid_t id);
   world_delta *compute_delta(context_t ctx) const;
   void apply_delta(world_delta *wd);

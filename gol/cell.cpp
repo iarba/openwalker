@@ -67,7 +67,7 @@ void cell::append_influence_delta(influence_delta &id, context_t ctx) const
         // let's not hardcode
         p.x += g->get_size().x;
       }
-      if(p.x > g->get_size().x)
+      if(p.x >= g->get_size().x)
       {
         p.x -= g->get_size().x;
       }
@@ -75,7 +75,7 @@ void cell::append_influence_delta(influence_delta &id, context_t ctx) const
       {
         p.y += g->get_size().y;
       }
-      if(p.y > g->get_size().y)
+      if(p.y >= g->get_size().y)
       {
         p.y -= g->get_size().y;
       }

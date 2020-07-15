@@ -69,7 +69,7 @@ public:
   grid_t(std::istream& is);
   virtual ~grid_t();
   virtual void serialise(std::ostream& os) const;
-  virtual void copy_into(grid_t *other) const;
+  void copy_into(grid_t *other) const;
   glm::ivec2 get_size() const;
   cell_t *at(glm::ivec2 position) const;
   structure_t *get_structure(oid_t id) const;

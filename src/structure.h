@@ -43,7 +43,7 @@ public:
   structure_t(std::istream &is);
   virtual ~structure_t();
   virtual void serialise(std::ostream &os) const;
-  virtual void copy_into(structure_t *other) const;
+  void copy_into(structure_t *other) const;
   glm::ivec2 get_position() const;
   virtual structure_delta *compute_delta(context_t ctx) const;
   virtual void append_influence_delta(influence_delta &id, context_t ctx) const;

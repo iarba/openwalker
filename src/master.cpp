@@ -85,6 +85,13 @@ void master_t::update()
   node_lock.unlock();
 }
 
+void master_t::conf(bool autorun, int delay)
+{
+  dirt->set(master_config__autorun, autorun);
+  dirt->set(master_config__delay, delay);
+  update();
+}
+
 node_delta *master_t::compute_delta()
 {
   node_lock.lock();

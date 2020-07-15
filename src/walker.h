@@ -57,7 +57,7 @@ public:
   walker_t(std::istream &is);
   virtual ~walker_t();
   virtual void serialise(std::ostream &os) const;
-  virtual void copy_into(walker_t *other) const;
+  void copy_into(walker_t *other) const;
   glm::dvec2 get_position() const;
   bool get_suicide() const;
   virtual walker_delta *compute_delta(context_t ctx) const;

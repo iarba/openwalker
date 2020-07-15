@@ -142,6 +142,15 @@ void world_t::serialise(std::ostream &os)
   }
 }
 
+void world_t::copy_into(world_t *other) const
+{
+  other->is_slice_not_triggers = this->is_slice_not_triggers;
+  for(auto it : grids)
+  {
+    other->grids[it.first] = cloner_t::g_cloner_get()->create_grid(it.second);
+  }
+}
+
 grid_t *world_t::get_grid(oid_t id)
 {
   auto it = grids.find(id);
