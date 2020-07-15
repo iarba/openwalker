@@ -16,8 +16,8 @@ master_t::master_t() : node_t(NULL)
   dirt = new dirt_t();
   duty_thread = std::thread(std::bind(&master_t::duty, this));
   dirt_t *h_index = new dirt_t();
-  dirt->set(dirt_index__homes, h_index, dirt_t::get_eraser());
-  h_index->set(master_config__def_user, new dirt_context_t(), dirt_context_t::get_eraser());
+  dirt->set(dirt_index__homes, (value_t) h_index, dirt_t::get_eraser());
+  h_index->set(master_config__def_user, (value_t) new dirt_context_t(), dirt_context_t::get_eraser());
   dirt->set(master_config__autorun, (value_t) false);
   dirt->set(master_config__delay, (value_t) 500);
   this->update();
@@ -40,7 +40,7 @@ void master_t::receive_com(command_t c)
     dirt_context_t *context_dirt = (dirt_context_t *)homes_dirt->get(c.usr);
     if(context_dirt)
     {
-      dirt->set(dirt_index__context, context_dirt);
+      dirt->set(dirt_index__context, (value_t) context_dirt);
       if(context_dirt->allowed_event_ids.find(c.ev_code) != context_dirt->allowed_event_ids.end())
       {
         ev_code = c.ev_code;

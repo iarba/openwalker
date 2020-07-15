@@ -6,7 +6,7 @@ bool ivec2comparator::operator()(const glm::ivec2 &a, const glm::ivec2 &b) const
   {
     return true;
   }
-  if(a.y < b.y)
+  if((a.x == b.x) && (a.y < b.y))
   {
     return true;
   }

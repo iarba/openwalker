@@ -201,7 +201,7 @@ value_t cell_t::get(namer_t name, value_t def, bool *found)
 value_t cell_t::get(namer_t name)
 {
   bool found;
-  value_t rval = get(name, &found, NULL);
+  value_t rval = get(name, 0, &found);
   if(found)
   {
     return rval;
@@ -294,7 +294,7 @@ grid_t::~grid_t()
   }
 }
 
-void grid_t::serialise(std::ostream& os)
+void grid_t::serialise(std::ostream& os) const
 {
   os << " " << get_clone_identifier() << " "; // only base class is required to do this.
   os << " " << size.x << " " << size.y << " ";
@@ -322,7 +322,7 @@ void grid_t::serialise(std::ostream& os)
   os << " " << ieh << " ";
 }
 
-void grid_t::copy_into(grid_t *other)
+void grid_t::copy_into(grid_t *other) const
 {
   // assuming size and cell memory allocation is handled by constructor
   for(int i = 0; i < this->size.x; i++)
@@ -345,17 +345,17 @@ void grid_t::copy_into(grid_t *other)
   other->ieh = this->ieh;
 }
 
-glm::ivec2 grid_t::get_size()
+glm::ivec2 grid_t::get_size() const
 {
   return this->size;
 }
 
-cell_t *grid_t::at(glm::ivec2 position)
+cell_t *grid_t::at(glm::ivec2 position) const
 {
   return this->grid[position.x] + position.y;
 }
 
-structure_t *grid_t::get_structure(oid_t id)
+structure_t *grid_t::get_structure(oid_t id) const
 {
   auto it = structures.find(id);
   if(it != structures.end())
@@ -365,7 +365,7 @@ structure_t *grid_t::get_structure(oid_t id)
   return NULL;
 }
 
-walker_t *grid_t::get_walker(oid_t id)
+walker_t *grid_t::get_walker(oid_t id) const
 {
   auto it = walkers.find(id);
   if(it != walkers.end())
@@ -471,12 +471,12 @@ void grid_t::apply_delta(grid_delta *gd, context_t ctx)
   this->suicide = gd->suicide;
 }
 
-bool grid_t::get_suicide()
+bool grid_t::get_suicide() const
 {
   return suicide;
 }
 
-namer_t grid_t::get_clone_identifier()
+namer_t grid_t::get_clone_identifier() const
 {
   return clone_identifier;
 }

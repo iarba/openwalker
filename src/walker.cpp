@@ -79,7 +79,7 @@ walker_t::~walker_t()
 {
 }
 
-void walker_t::serialise(std::ostream &os)
+void walker_t::serialise(std::ostream &os) const
 {
   os << " " << get_clone_identifier() << " "; // only base class is required to do this.
   os << " " << suicide << " ";
@@ -90,7 +90,7 @@ void walker_t::serialise(std::ostream &os)
   os << " " << ieh << " ";
 }
 
-void walker_t::copy_into(walker_t *other)
+void walker_t::copy_into(walker_t *other) const
 {
   other->suicide = this->suicide;
   other->position = this->position;
@@ -100,12 +100,12 @@ void walker_t::copy_into(walker_t *other)
   other->ieh = this->ieh;
 }
 
-glm::dvec2 walker_t::get_position()
+glm::dvec2 walker_t::get_position() const
 {
   return this->position;
 }
 
-bool walker_t::get_suicide()
+bool walker_t::get_suicide() const
 {
   return this->suicide;
 }
@@ -132,7 +132,7 @@ void walker_t::apply_delta(walker_delta *wd)
   }
 }
 
-namer_t walker_t::get_clone_identifier()
+namer_t walker_t::get_clone_identifier() const
 {
   return clone_identifier;
 }

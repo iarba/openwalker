@@ -55,6 +55,11 @@ void cell::append_influence_delta(influence_delta &id, context_t ctx) const
   {
     for(int dy = -1; dy <= 1; dy++)
     {
+      if((dx == 0) && (dy == 0))
+      {
+        // we don't count ourselves as neighbors
+        continue;
+      }
       glm::ivec2 p = this->position + glm::ivec2(dx, dy);
       // wait, we want to wrap wround if needed. so (50, y) should point to (0, y) and (x, -1) to (x, 49)
       if(p.x < 0)
@@ -75,8 +80,7 @@ void cell::append_influence_delta(influence_delta &id, context_t ctx) const
         p.y -= g->get_size().y;
       }
       // that's it, we wrapped. now to commit changes
-      id.cell_temporary_setters[p][cell__neighbors] = (value_t)((long)id.cell_temporary_setters[p][cell__neighbors] + 1);
-      // don't ask about the crazy casts
+      id.cell_temporary_setters[p][cell__neighbors]++;
     }
   }
 }

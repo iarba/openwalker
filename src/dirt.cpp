@@ -52,7 +52,7 @@ value_t dirt_t::get(namer_t where)
   auto it = dirt_entries.find(where);
   if(it == dirt_entries.end())
   {
-    return NULL;
+    return 0;
   }
   return it->second.first;
 }
@@ -72,7 +72,7 @@ void dirt_t::erase(namer_t where)
   }
 }
 
-void dirt_t::set(namer_t where, void* p, eraser_t eraser)
+void dirt_t::set(namer_t where, value_t p, eraser_t eraser)
 {
   dirt_entries[where] = {p, eraser};
 }
