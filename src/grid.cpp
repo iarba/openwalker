@@ -515,3 +515,13 @@ void grid_t::trigger_delete(context_t ctx)
     event.trigger(ctx);
   }
 }
+
+std::map<oid_t, structure_t *> grid_t::get_structures()
+{
+  return structures;
+}
+
+std::map<oid_t, walker_t *> grid_t::get_walkers()
+{
+  return walkers;
+}

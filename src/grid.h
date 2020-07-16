@@ -81,6 +81,8 @@ public:
   void append_triggers(std::vector<std::pair<event_t, context_t>> &triggers, context_t ctx, std::function<double()> roll);
   void trigger_create(context_t ctx);
   void trigger_delete(context_t ctx);
+  std::map<oid_t, structure_t *> get_structures();
+  std::map<oid_t, walker_t *> get_walkers();
 protected:
   instance_event_handler_t ieh;
   namer_t clone_identifier;

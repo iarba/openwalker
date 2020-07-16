@@ -219,3 +219,8 @@ void world_t::apply_delta(world_delta *wd)
   }
   is_slice_not_triggers = !wd->is_slice_not_triggers;
 }
+
+std::map<oid_t, grid_t *> world_t::get_grids()
+{
+  return grids;
+}

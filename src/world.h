@@ -35,6 +35,7 @@ public:
   grid_t *get_grid(oid_t id);
   world_delta *compute_delta(context_t ctx) const;
   void apply_delta(world_delta *wd);
+  std::map<oid_t, grid_t *> get_grids();
   dirt_t *dirt;
 protected:
   std::map<oid_t, grid_t *> grids;
