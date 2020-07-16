@@ -10,6 +10,7 @@ public:
   world_t* world = NULL;
   oid_t grid_id = 0;
   oid_t element_id = 0;
+  glm::ivec2 cell_pos = {0, 0};
 };
 
 std::ostream& operator<<(std::ostream &os, const context_t &data);

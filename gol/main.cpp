@@ -62,7 +62,7 @@ int main(int argc, char **argv)
   ow_assert(m->get_grid(1)->get_structure(oid_of({5, 5}, size)) == NULL);
   ow_assert(m->get_grid(1)->get_structure(oid_of({4, 6}, size)));
   // ait let's create a viewer for our game, and enjoy it for a few seconds
-  terminal_viewer_t *view = new terminal_viewer_t(m);
+  terminal_viewer_t *view = (new terminal_viewer_t(m))->set_refreshing(true)->set({0, 0}, 1)->set_auto(true);
   m->conf(true, 200);
   getchar();
   // clean up after ourselves
