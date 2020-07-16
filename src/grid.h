@@ -12,6 +12,7 @@
 #include "event.h"
 #include <vector>
 #include <functional>
+#include <mutex>
 
 class abstract_grid_constructor_base
 {
@@ -91,6 +92,7 @@ protected:
   glm::ivec2 size;
   cell_t **grid;
   bool suicide = false;
+  mutable std::mutex critical_lock;
 private:
 };
 

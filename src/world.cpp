@@ -124,15 +124,18 @@ world_t::world_t(std::istream &is)
 
 world_t::~world_t()
 {
+  critical_lock.lock();
   for(auto it : grids)
   {
     delete it.second;
   }
   grids.clear();
+  critical_lock.unlock();
 }
 
 void world_t::serialise(std::ostream &os)
 {
+  critical_lock.lock();
   os << " " << is_slice_not_triggers << " ";
   os << " " << grids.size() << " ";
   for(auto it : grids)
@@ -140,15 +143,18 @@ void world_t::serialise(std::ostream &os)
     os << " " << it.first << " ";
     it.second->serialise(os);
   }
+  critical_lock.unlock();
 }
 
 void world_t::copy_into(world_t *other) const
 {
+  critical_lock.lock();
   other->is_slice_not_triggers = this->is_slice_not_triggers;
   for(auto it : grids)
   {
     other->grids[it.first] = cloner_t::g_cloner_get()->create_grid(it.second);
   }
+  critical_lock.unlock();
 }
 
 grid_t *world_t::get_grid(oid_t id)
@@ -163,6 +169,7 @@ grid_t *world_t::get_grid(oid_t id)
 
 world_delta *world_t::compute_delta(context_t ctx) const
 {
+  critical_lock.lock();
   world_delta *wd = new world_delta();
   wd->is_slice_not_triggers = this->is_slice_not_triggers;
   if(is_slice_not_triggers)
@@ -181,11 +188,13 @@ world_delta *world_t::compute_delta(context_t ctx) const
       it.second->append_triggers(wd->triggers, ctx, rand);
     }
   }
+  critical_lock.unlock();
   return wd;
 }
 
 void world_t::apply_delta(world_delta *wd)
 {
+  critical_lock.lock();
   if(wd->is_slice_not_triggers)
   {
     context_t ctx;
@@ -218,6 +227,7 @@ void world_t::apply_delta(world_delta *wd)
     }
   }
   is_slice_not_triggers = !wd->is_slice_not_triggers;
+  critical_lock.unlock();
 }
 
 std::map<oid_t, grid_t *> world_t::get_grids()

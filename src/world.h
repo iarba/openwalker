@@ -40,6 +40,8 @@ public:
 protected:
   std::map<oid_t, grid_t *> grids;
   bool is_slice_not_triggers = true;
+  mutable std::mutex critical_lock;
+private:
 };
 
 #endif // WORLD_H

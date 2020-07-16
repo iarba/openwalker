@@ -279,6 +279,7 @@ grid_t::grid_t(std::istream& is)
 
 grid_t::~grid_t()
 {
+  critical_lock.lock();
   for(int i = 0; i < this->size.x; i++)
   {
     delete[] grid[i];
@@ -292,10 +293,12 @@ grid_t::~grid_t()
   {
     delete it.second;
   }
+  critical_lock.unlock();
 }
 
 void grid_t::serialise(std::ostream& os) const
 {
+  critical_lock.lock();
   os << " " << get_clone_identifier() << " "; // only base class is required to do this.
   os << " " << size.x << " " << size.y << " ";
   os << " " << suicide << " ";
@@ -320,10 +323,12 @@ void grid_t::serialise(std::ostream& os) const
     it.second->serialise(os);
   }
   os << " " << ieh << " ";
+  critical_lock.unlock();
 }
 
 void grid_t::copy_into(grid_t *other) const
 {
+  critical_lock.lock();
   // assuming size and cell memory allocation is handled by constructor
   for(int i = 0; i < this->size.x; i++)
   {
@@ -343,6 +348,7 @@ void grid_t::copy_into(grid_t *other) const
   }
   other->suicide = this->suicide;
   other->ieh = this->ieh;
+  critical_lock.unlock();
 }
 
 glm::ivec2 grid_t::get_size() const
@@ -377,6 +383,7 @@ walker_t *grid_t::get_walker(oid_t id) const
 
 grid_delta *grid_t::compute_delta(context_t ctx) const
 {
+  critical_lock.lock();
   grid_delta *gd = new grid_delta();
   for(auto it : this->structures)
   {
@@ -398,11 +405,13 @@ grid_delta *grid_t::compute_delta(context_t ctx) const
     ctx.element_id = it.first;
     it.second->append_influence_delta(gd->inf_delta, ctx);
   }
+  critical_lock.unlock();
   return gd;
 }
 
 void grid_t::apply_delta(grid_delta *gd, context_t ctx)
 {
+  critical_lock.lock();
   for(int i = 0; i < this->size.x; i++)
   {
     for(int j = 0; j < this->size.y; j++)
@@ -469,6 +478,7 @@ void grid_t::apply_delta(grid_delta *gd, context_t ctx)
     }
   }
   this->suicide = gd->suicide;
+  critical_lock.unlock();
 }
 
 bool grid_t::get_suicide() const
@@ -483,6 +493,7 @@ namer_t grid_t::get_clone_identifier() const
 
 void grid_t::append_triggers(std::vector<std::pair<event_t, context_t>> &triggers, context_t ctx, std::function<double()> roll)
 {
+  critical_lock.lock();
   for(auto ev : ieh.on_random)
   {
     if(ev.chance(ctx) > roll())
@@ -498,22 +509,27 @@ void grid_t::append_triggers(std::vector<std::pair<event_t, context_t>> &trigger
     ctx.element_id = it.first;
     it.second->append_triggers(triggers, ctx, roll);
   }
+  critical_lock.unlock();
 }
 
 void grid_t::trigger_create(context_t ctx)
 {
+  critical_lock.lock();
   for(auto &event : ieh.on_create)
   {
     event.trigger(ctx);
   }
+  critical_lock.unlock();
 }
 
 void grid_t::trigger_delete(context_t ctx)
 {
+  critical_lock.lock();
   for(auto &event : ieh.on_delete)
   {
     event.trigger(ctx);
   }
+  critical_lock.unlock();
 }
 
 std::map<oid_t, structure_t *> grid_t::get_structures()
