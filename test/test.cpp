@@ -5,6 +5,10 @@
 
 #define port 7777
 
+void debug()
+{
+}
+
 void run(master_t *master)
 {
   master->tick();
@@ -12,7 +16,7 @@ void run(master_t *master)
   nd->wd = new world_delta();
   nd->wd->grid_deltas[1] = new grid_delta();
 
-  nd->wd->grid_spawns[1] = new grid_t({20, 20});  
+  nd->wd->grid_spawns[1] = new grid_t({25, 25});  
   nd->wd->grid_deltas[1]->structure_spawns[1] = new road({3, 3});
   nd->wd->grid_deltas[1]->structure_spawns[2] = new road({3, 4});
   nd->wd->grid_deltas[1]->structure_spawns[3] = new road({4, 4});
@@ -62,6 +66,7 @@ int main()
   openwalker_init(1234);
   ow_f_lib_init();
   tst_load();
+  debug();
   server_t *srv = NULL;
   master_t *master = new master_t();
   master->allow(master_config__def_user, test__ev_toggle_pause);

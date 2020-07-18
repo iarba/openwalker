@@ -45,7 +45,7 @@ random_walker_t::~random_walker_t()
 {
 }
 
-void random_walker_t::serialise(std::ostream &os)
+void random_walker_t::serialise(std::ostream &os) const
 {
   this->walker_t::serialise(os);
   os << " " << required_pathfinding_property << " ";
@@ -54,7 +54,7 @@ void random_walker_t::serialise(std::ostream &os)
   os << " " << required_pathfinding_def_value << " ";
 }
 
-void random_walker_t::copy_into(random_walker_t *other)
+void random_walker_t::copy_into(random_walker_t *other) const
 {
   this->walker_t::copy_into(other);
   other->required_pathfinding_property = this->required_pathfinding_property;

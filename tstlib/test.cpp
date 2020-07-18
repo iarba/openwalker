@@ -63,12 +63,12 @@ road::~road()
 {
 }
 
-void road::serialise(std::ostream &os)
+void road::serialise(std::ostream &os) const
 {
   this->structure_t::serialise(os);
 }
 
-void road::copy_into(road *other)
+void road::copy_into(road *other) const
 {
   this->structure_t::copy_into(other);
 }
