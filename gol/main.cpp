@@ -62,11 +62,13 @@ int main(int argc, char **argv)
   ow_assert(m->get_grid(1)->get_structure(oid_of({5, 5}, size)) == NULL);
   ow_assert(m->get_grid(1)->get_structure(oid_of({4, 6}, size)));
   // ait let's create a viewer for our game, and enjoy it for a few seconds
-  terminal_viewer_t *view = (new terminal_viewer_t(m))->set_refreshing(true)->set({0, 0}, 1)->set_auto(true);
+  manipulator_t *man = new manipulator_t(m);
+  sfml_viewer_t *v = (new sfml_viewer_t(m, man))->set(1);
   m->conf(true, 200);
-  getchar();
+  v->start_render();
   // clean up after ourselves
-  delete view;
+  delete v;
+  delete man;
   delete nd;
   delete m;
   // and clean openwalker

@@ -11,8 +11,10 @@ if(NOT OW_SKIP_TEST)
 endif()
 
 add_subdirectory(dep/glm)
+add_subdirectory(dep/SFML)
 
 include_directories(dep/asio-1.16.1/include)
+include_directories(dep/SFML/include)
 include_directories(include)
 include_directories(ow_f_lib/include)
 
@@ -22,7 +24,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_CXX_STANDARD 17)
 add_definitions(-DASIO_STANDALONE)
 
-link_libraries(glm)
+link_libraries(glm sfml-window sfml-graphics)
 
 add_library(openwalker STATIC ${SOURCES})
 target_link_libraries(openwalker ${CMAKE_THREAD_LIBS_INIT})
@@ -31,6 +33,8 @@ add_library(ow_f_lib STATIC ${OW_F_LIB_SOURCES})
 target_link_libraries(ow_f_lib openwalker)
 
 set(OW_LIBS openwalker ow_f_lib)
+
+file(COPY assets DESTINATION ${CMAKE_BINARY_DIR})
 
 if(NOT OW_SKIP_TEST)
   add_executable(gol ${GOL_SOURCES})
