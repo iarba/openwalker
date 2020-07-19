@@ -103,6 +103,11 @@ int main()
   tst_load();
   imp(test, gr1);
   imp(test, gr42);
+  imp(test, s1);
+  imp(test, s2);
+  imp(test, s3);
+  imp(test, s4);
+  imp(test, w1);
   debug();
   server_t *srv = NULL;
   master_t *master = new master_t();
