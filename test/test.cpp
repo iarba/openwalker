@@ -2,6 +2,8 @@
 #include <ow_f_lib/ow_f_lib.h>
 #include "../tstlib/test.h"
 #include <sstream>
+#include <vector>
+#include <set>
 
 #define port 7777
 
@@ -12,9 +14,34 @@ def(test, s2);
 def(test, s3);
 def(test, s4);
 def(test, w1);
+def_dyn_zone(tst_dyn);
+
+void test_dyn_namers()
+{
+  imp_dyn_zone(tst_dyn);
+  std::vector<namer_t> namers(2);
+  acquire_dyn(tst_dyn, namers[0]);
+  acquire_dyn(tst_dyn, namers[1]);
+  ow_assert(namers[0] != namers[1]);
+  for(auto it : namers)
+  {
+    release_dyn(tst_dyn, it);
+  }
+  std::set<namer_t> u_namers;
+  int target = 1 << 15;
+  int left = target;
+  while(left--)
+  {
+    namer_t n;
+    acquire_dyn(tst_dyn, n);
+    u_namers.insert(n);
+  }
+  ow_assert(u_namers.size() == target);
+}
 
 void debug()
 {
+  test_dyn_namers();
 }
 
 void run(master_t *master)
