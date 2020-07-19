@@ -2,6 +2,7 @@
 #define RANDOM_WALKER_H
 
 #include <openwalker/openwalker.h>
+#include <functional>
 
 // a random walker moves in 4 directions - N E S W
 // a random walker stops when it grid-allignes, then chooses a new direction
@@ -18,12 +19,17 @@ public:
   };
 
   random_walker_t(glm::dvec2 position, namer_t required_pathfinding_property, value_t required_pathfinding_min_value, value_t required_pathfinding_max_value, value_t required_pathfinding_def_value);
+  random_walker_t(glm::dvec2 position, namer_t nvp_namer);
   random_walker_t(std::istream &is);
   virtual ~random_walker_t();
   virtual void serialise(std::ostream &os) const;
   void copy_into(random_walker_t *other) const;
   virtual walker_delta *compute_delta(context_t ctx) const;
 protected:
+  void regenerate_pathfinding_checker();
+  bool use_nvp;
+  namer_t pathfinding_nvp;
+  std::function<bool(context_t)> pathfinding_checker;
   namer_t required_pathfinding_property;
   value_t required_pathfinding_min_value;
   value_t required_pathfinding_max_value;

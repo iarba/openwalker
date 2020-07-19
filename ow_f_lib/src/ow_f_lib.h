@@ -7,6 +7,7 @@
 #include "terminal_viewer.h"
 #include "manipulator.h"
 #include "sfml_viewer.h"
+#include "named_virtual_pointer.h"
 
 void ow_f_lib_init();
 
