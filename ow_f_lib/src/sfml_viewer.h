@@ -7,9 +7,7 @@
 #include "manipulator.h"
 
 def_zone(sfml_viewer_def_res);
-def(sfml_viewer_def_res, str_tex);
-def(sfml_viewer_def_res, wal_tex);
-def(sfml_viewer_def_res, cel_tex);
+def(sfml_viewer_def_res, tex);
 def(sfml_viewer_def_res, str_spr);
 def(sfml_viewer_def_res, wal_spr);
 def(sfml_viewer_def_res, cel_spr);

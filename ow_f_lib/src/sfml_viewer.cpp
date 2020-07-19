@@ -1,5 +1,19 @@
 #include "sfml_viewer.h"
 #include "object_viewer.h"
+#include <chrono>
+
+void printFPS()
+{
+  static std::chrono::time_point<std::chrono::system_clock> oldTime = std::chrono::high_resolution_clock::now();
+  static int fps;
+  fps++;
+  if(std::chrono::duration_cast<std::chrono::seconds>(std::chrono::high_resolution_clock::now() - oldTime) >= std::chrono::seconds{1})
+  {
+    oldTime = std::chrono::high_resolution_clock::now();
+    std::cout << "FPS: " << fps <<  "\n";
+    fps = 0;
+  }
+}
 
 bool namers_defined = false;
 
@@ -13,19 +27,15 @@ sfml_viewer_t::sfml_viewer_t(world_t *w, manipulator_t *man)
   {
     namers_defined = true;
     imp_zone(sfml_viewer_def_res);
-    imp(sfml_viewer_def_res, str_tex);
-    imp(sfml_viewer_def_res, wal_tex);
-    imp(sfml_viewer_def_res, cel_tex);
+    imp(sfml_viewer_def_res, tex);
     imp(sfml_viewer_def_res, str_spr);
     imp(sfml_viewer_def_res, wal_spr);
     imp(sfml_viewer_def_res, cel_spr);
   }
-  load_tex(sfml_viewer_def_res__str_tex, "assets/def_structure.png");
-  load_tex(sfml_viewer_def_res__wal_tex, "assets/def_walker.png");
-  load_tex(sfml_viewer_def_res__cel_tex, "assets/def_cell.png");
-  define_sprite(sfml_viewer_def_res__str_spr, sfml_viewer_def_res__str_tex, 0, 0, 256, 256);
-  define_sprite(sfml_viewer_def_res__wal_spr, sfml_viewer_def_res__wal_tex, 0, 0, 256, 256);
-  define_sprite(sfml_viewer_def_res__cel_spr, sfml_viewer_def_res__cel_tex, 0, 0, 256, 256);
+  load_tex(sfml_viewer_def_res__tex, "assets/def.png");
+  define_sprite(sfml_viewer_def_res__str_spr, sfml_viewer_def_res__tex, 256, 0, 256, 256);
+  define_sprite(sfml_viewer_def_res__wal_spr, sfml_viewer_def_res__tex, 0, 256, 256, 256);
+  define_sprite(sfml_viewer_def_res__cel_spr, sfml_viewer_def_res__tex, 0, 0, 256, 256);
 }
 
 sfml_viewer_t::~sfml_viewer_t()
@@ -51,8 +61,11 @@ void sfml_viewer_t::start_render()
   view_height = 600;
   reset_camera();
   update_camera();
+  window->setFramerateLimit(0);
+  window->setVerticalSyncEnabled(false);
   while(!man->is_closed())
   {
+    printFPS();
     sf::Event sfev;
     while(window->pollEvent(sfev))
     {
@@ -145,7 +158,7 @@ void sfml_viewer_t::set_walker_renderer(namer_t id, std::function<void(viewer_co
 
 sf::Sprite *sfml_viewer_t::get_sprite(namer_t s_id)
 {
-  return new sf::Sprite(*sprites[s_id]);
+  return sprites[s_id];
 }
 
 sf::Texture *sfml_viewer_t::get_texture(namer_t t_id)
@@ -226,7 +239,6 @@ void sfml_viewer_t::render_cell(viewer_context_t ctx, cell_t *c)
   spr->setPosition(SFML_VIEWER_DEF_CEL_SIZE * ctx.ctx.cell_pos.x, SFML_VIEWER_DEF_CEL_SIZE * ctx.ctx.cell_pos.y);
   spr->setScale(sf::Vector2f(SFML_VIEWER_DEF_CEL_SIZE / 256.0f, SFML_VIEWER_DEF_CEL_SIZE / 256.0f));
   draw(spr);
-  delete spr;
 }
 
 void sfml_viewer_t::render_structure(viewer_context_t ctx, structure_t *s)
@@ -240,7 +252,6 @@ void sfml_viewer_t::render_structure(viewer_context_t ctx, structure_t *s)
   spr->setPosition(SFML_VIEWER_DEF_CEL_SIZE * s->get_position().x, SFML_VIEWER_DEF_CEL_SIZE * s->get_position().y);
   spr->setScale(sf::Vector2f(SFML_VIEWER_DEF_CEL_SIZE / 256.0f, SFML_VIEWER_DEF_CEL_SIZE / 256.0f));
   draw(spr);
-  delete spr;
 }
 
 void sfml_viewer_t::render_walker(viewer_context_t ctx, walker_t *w)
@@ -254,5 +265,4 @@ void sfml_viewer_t::render_walker(viewer_context_t ctx, walker_t *w)
   spr->setPosition(SFML_VIEWER_DEF_CEL_SIZE * w->get_position().x, SFML_VIEWER_DEF_CEL_SIZE * w->get_position().y);
   spr->setScale(sf::Vector2f(SFML_VIEWER_DEF_CEL_SIZE / 256.0f, SFML_VIEWER_DEF_CEL_SIZE / 256.0f));
   draw(spr);
-  delete spr;
 }

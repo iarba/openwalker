@@ -33,6 +33,7 @@ add_library(ow_f_lib STATIC ${OW_F_LIB_SOURCES})
 target_link_libraries(ow_f_lib openwalker)
 
 set(OW_LIBS openwalker ow_f_lib)
+set(CMAKE_CXX_FLAGS "-Wall -Wextra -O3")
 
 file(COPY assets DESTINATION ${CMAKE_BINARY_DIR})
 
