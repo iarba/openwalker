@@ -38,7 +38,7 @@ void structure_t::load()
 
 structure_t *structure_t::structure_constructor::instantiate(structure_t *s)
 {
-  structure_t *ns = new structure_t(s->position);
+  structure_t *ns = new structure_t(s->position, s->size);
   s->copy_into(ns);
   return ns;
 }
@@ -49,15 +49,17 @@ structure_t *structure_t::structure_constructor::deserialise(std::istream &is)
   return ns;
 }
 
-structure_t::structure_t(glm::ivec2 position)
+structure_t::structure_t(glm::ivec2 position, glm::ivec2 size)
 {
   this->position = position;
+  this->size = size;
   clone_identifier = cloner_registry__structure_cloner;
 }
 
 structure_t::structure_t(std::istream &is)
 {
   ow_assert(is >> position.x >> position.y);
+  ow_assert(is >> size.x >> size.y);
   ow_assert(is >> properties);
   ow_assert(is >> suicide);
   ow_assert(is >> ieh);
@@ -72,6 +74,7 @@ void structure_t::serialise(std::ostream &os) const
 {
   os << " " << get_clone_identifier() << " "; // only base class is required to do this.
   os << " " << position.x << " " << position.y << " ";
+  os << " " << size.x << " " << size.y << " ";
   os << " " << properties << " ";
   os << " " << suicide << " ";
   os << " " << ieh << " ";
@@ -108,6 +111,11 @@ void structure_t::apply_delta(structure_delta *sd)
 bool structure_t::get_suicide() const
 {
   return this->suicide;
+}
+
+glm::ivec2 structure_t::get_size() const
+{
+  return this->size;
 }
 
 namer_t structure_t::get_clone_identifier() const

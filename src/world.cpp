@@ -185,7 +185,7 @@ world_delta *world_t::compute_delta(context_t ctx) const
     for(auto it : this->grids)
     {
       ctx.grid_id = it.first;
-      it.second->append_triggers(wd->triggers, ctx, rand);
+      it.second->append_triggers(wd->triggers, ctx, [](){return (double)rand()/(double)RAND_MAX;});
     }
   }
   critical_lock.unlock();

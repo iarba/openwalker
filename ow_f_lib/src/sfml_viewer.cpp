@@ -249,9 +249,16 @@ void sfml_viewer_t::render_structure(viewer_context_t ctx, structure_t *s)
     return;
   }
   sf::Sprite *spr = get_sprite(sfml_viewer_def_res__str_spr);
-  spr->setPosition(SFML_VIEWER_DEF_CEL_SIZE * s->get_position().x, SFML_VIEWER_DEF_CEL_SIZE * s->get_position().y);
+  glm::ivec2 sz = s->get_size();
   spr->setScale(sf::Vector2f(SFML_VIEWER_DEF_CEL_SIZE / 256.0f, SFML_VIEWER_DEF_CEL_SIZE / 256.0f));
-  draw(spr);
+  for(int dx = 0; dx < sz.x; dx++)
+  {
+    for(int dy = 0; dy < sz.y; dy++)
+    {
+      spr->setPosition(SFML_VIEWER_DEF_CEL_SIZE * (s->get_position().x + dx), SFML_VIEWER_DEF_CEL_SIZE * (s->get_position().y + dy));
+      draw(spr);
+    }
+  }
 }
 
 void sfml_viewer_t::render_walker(viewer_context_t ctx, walker_t *w)
