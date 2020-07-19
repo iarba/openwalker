@@ -1,6 +1,10 @@
 #include "grid.h"
 #include "misc_utils.h"
 
+abstract_grid_constructor_base::~abstract_grid_constructor_base()
+{
+}
+
 grid_delta::grid_delta()
 {
 }
@@ -254,7 +258,6 @@ grid_t::grid_t(std::istream& is)
   {
     for(int j = 0; j < this->size.y; j++)
     {
-      glm::ivec2 where = {i, j};
       grid[i][j] = cell_t(is);
     }
   }

@@ -24,6 +24,7 @@ inline direction_t dir_south_east = 7.0 * M_PI / 4.0;
 class abstract_walker_constructor_base
 {
 public:
+  virtual ~abstract_walker_constructor_base();
   virtual walker_t *instantiate(walker_t *w) = 0;
   virtual walker_t *deserialise(std::istream &is) = 0;
 };

@@ -16,10 +16,10 @@ master_t::master_t() : node_t(NULL)
   dirt = new dirt_t();
   duty_thread = std::thread(std::bind(&master_t::duty, this));
   dirt_t *h_index = new dirt_t();
-  dirt->set(dirt_index__homes, (value_t) h_index, dirt_t::get_eraser());
-  h_index->set(master_config__def_user, (value_t) new dirt_context_t(), dirt_context_t::get_eraser());
-  dirt->set(master_config__autorun, (value_t) false);
-  dirt->set(master_config__delay, (value_t) 500);
+  dirt->set_dirt(dirt_index__homes, h_index, dirt_t::get_eraser());
+  h_index->set_dirt(master_config__def_user, new dirt_context_t(), dirt_context_t::get_eraser());
+  dirt->set_val(master_config__autorun, false);
+  dirt->set_val(master_config__delay, 500);
   this->update();
 }
 
@@ -34,19 +34,19 @@ void master_t::receive_com(command_t c)
 {
   node_lock.lock();
   namer_t ev_code = ow_d_events__nop;
-  dirt_t *homes_dirt = (dirt_t *)dirt->get(dirt_index__homes);
+  dirt_t *homes_dirt = (dirt_t *)dirt->get_dirt(dirt_index__homes);
   if(homes_dirt)
   {
-    dirt_context_t *context_dirt = (dirt_context_t *)homes_dirt->get(c.usr);
+    dirt_context_t *context_dirt = (dirt_context_t *)homes_dirt->get_dirt(c.usr);
     if(context_dirt)
     {
-      dirt->set(dirt_index__context, (value_t) context_dirt);
+      dirt->set_dirt(dirt_index__context, context_dirt);
       if(context_dirt->allowed_event_ids.find(c.ev_code) != context_dirt->allowed_event_ids.end())
       {
         ev_code = c.ev_code;
         for(auto it : c.args)
         {
-          context_dirt->set(it.first, it.second);
+          context_dirt->set_val(it.first, it.second);
         }
       }
     }
@@ -58,17 +58,17 @@ void master_t::receive_com(command_t c)
   event_t event(ev_code);
   ow_safe_cont(event.trigger(ctx));
   dirt->unlock();
-  dirt->drop(dirt_index__context);
+  dirt->drop_dirt(dirt_index__context);
   this->node_t::receive_com(c);
 }
 
 void master_t::allow(namer_t usr, namer_t ev_code)
 {
   dirt->lock();
-  dirt_t *homes_dirt = (dirt_t *)dirt->get(dirt_index__homes);
+  dirt_t *homes_dirt = (dirt_t *)dirt->get_dirt(dirt_index__homes);
   if(homes_dirt)
   {
-    dirt_context_t *context_dirt = (dirt_context_t *)homes_dirt->get(usr);
+    dirt_context_t *context_dirt = (dirt_context_t *)homes_dirt->get_dirt(usr);
     if(context_dirt)
     {
       context_dirt->allowed_event_ids.insert(ev_code);
@@ -80,15 +80,15 @@ void master_t::allow(namer_t usr, namer_t ev_code)
 void master_t::update()
 {
   node_lock.lock();
-  autorun = (bool) dirt->get(master_config__autorun);
-  delay = (long) dirt->get(master_config__delay);
+  autorun = (bool) dirt->get_val(master_config__autorun);
+  delay = (long) dirt->get_val(master_config__delay);
   node_lock.unlock();
 }
 
 void master_t::conf(bool autorun, int delay)
 {
-  dirt->set(master_config__autorun, autorun);
-  dirt->set(master_config__delay, delay);
+  dirt->set_val(master_config__autorun, autorun);
+  dirt->set_val(master_config__delay, delay);
   update();
 }
 

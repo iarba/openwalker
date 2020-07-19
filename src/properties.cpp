@@ -1,6 +1,12 @@
 #include "properties.h"
 #include "misc_utils.h"
 
+void properties_load()
+{
+  imp_zone(null);
+  imp(null, null);
+}
+
 std::ostream& operator<<(std::ostream &os, const namer_t &data)
 {
   os << data.first << " " << data.second;

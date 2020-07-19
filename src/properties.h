@@ -4,9 +4,11 @@
 #include <map>
 #include <iostream>
 
-typedef int oid_t;
+void properties_load();
 
 typedef std::pair<int, int> namer_t;
+
+typedef namer_t oid_t;
 
 typedef intptr_t value_t;
 
@@ -36,6 +38,9 @@ void z_example_load()
   imp(z_example, bar);
 }
 */
+
+def_zone(null);
+def(null, null);
 
 std::ostream& operator<<(std::ostream &os, const namer_t &data);
 

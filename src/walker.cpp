@@ -1,6 +1,10 @@
 #include "walker.h"
 #include "misc_utils.h"
 
+abstract_walker_constructor_base::~abstract_walker_constructor_base()
+{
+}
+
 walker_delta::walker_delta()
 {
 }

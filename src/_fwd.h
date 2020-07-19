@@ -7,8 +7,6 @@ class master_t;
 
 class slave_t;
 
-typedef int oid_t;
-
 class context_t;
 
 class world_t; //----------

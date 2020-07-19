@@ -1,9 +1,9 @@
 #include "cranking_grid.h"
 
-oid_t oid_of(glm::ivec2 position, glm::ivec2 size)
+oid_t oid_of(glm::ivec2 position)
 {
   // we do as mentioned in the header
-  return position.x * size.y + position.y;
+  return {position.x, position.y};
 }
 
 grid_t *cranking_grid::cranking_grid_constructor::instantiate(grid_t *s)
@@ -25,7 +25,7 @@ cranking_grid::cranking_grid(glm::ivec2 size) : grid_t(size)
   clone_identifier = cell__grid;
 }
 
-cranking_grid::cranking_grid(std::istream &is) : grid_t(size)
+cranking_grid::cranking_grid(std::istream &is) : grid_t(is)
 {
   clone_identifier = cell__grid;
 }
@@ -46,17 +46,17 @@ grid_delta *cranking_grid::compute_delta(context_t ctx) const
     glm::ivec2 position = influence_entry.first;
     value_t value = influence_entry.second[cell__neighbors];
     // sneaky, right? we also need to fetch the cell at given location, if it exists
-    cell *c = (cell *)get_structure(oid_of(position, size));
+    cell *c = (cell *)get_structure(oid_of(position));
     // we implement the rules of game of life - look them up if you don't know them
     if(c && (value < 2 || value > 3))
     {
       // this cell needs to die, but don't touch it, instead we touch the delta
-      gd->structure_deltas[oid_of(position, size)]->suicide = true;
+      gd->structure_deltas[oid_of(position)]->suicide = true;
     }
     if(!c && value == 3)
     {
       // we need to create a cell
-      gd->structure_spawns[oid_of(position, size)] = new cell(position);
+      gd->structure_spawns[oid_of(position)] = new cell(position);
     }
   }
   return gd;

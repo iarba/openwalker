@@ -17,6 +17,7 @@
 class abstract_grid_constructor_base
 {
 public:
+  virtual ~abstract_grid_constructor_base();
   virtual grid_t *instantiate(grid_t *g) = 0;
   virtual grid_t *deserialise(std::istream &is) = 0;
 };

@@ -31,14 +31,15 @@ int main(int argc, char **argv)
   nd->wd = wd;
   // we need a new grid
   glm::ivec2 size = {10, 10};
-  wd->grid_spawns[1] = new cranking_grid(size);
+  oid_t g_oid = {1, 0};
+  wd->grid_spawns[g_oid] = new cranking_grid(size);
   // and within the grid, we need some cells
-  wd->grid_deltas[1] = new grid_delta();
-  wd->grid_deltas[1]->structure_spawns[oid_of({5, 5}, size)] = new cell({5, 5});
-  wd->grid_deltas[1]->structure_spawns[oid_of({5, 6}, size)] = new cell({5, 6});
-  wd->grid_deltas[1]->structure_spawns[oid_of({5, 7}, size)] = new cell({5, 7});
-  wd->grid_deltas[1]->structure_spawns[oid_of({6, 7}, size)] = new cell({6, 7});
-  wd->grid_deltas[1]->structure_spawns[oid_of({7, 6}, size)] = new cell({7, 6});
+  wd->grid_deltas[g_oid] = new grid_delta();
+  wd->grid_deltas[g_oid]->structure_spawns[oid_of({5, 5})] = new cell({5, 5});
+  wd->grid_deltas[g_oid]->structure_spawns[oid_of({5, 6})] = new cell({5, 6});
+  wd->grid_deltas[g_oid]->structure_spawns[oid_of({5, 7})] = new cell({5, 7});
+  wd->grid_deltas[g_oid]->structure_spawns[oid_of({6, 7})] = new cell({6, 7});
+  wd->grid_deltas[g_oid]->structure_spawns[oid_of({7, 6})] = new cell({7, 6});
   //
   //   ***
   //     *
@@ -47,8 +48,8 @@ int main(int argc, char **argv)
   // and now, we feed the delta to the master
   m->feed(nd);
   // now if we access data in the world, we can see that it's there
-  ow_assert(m->get_grid(1)->get_structure(oid_of({5, 5}, size)));
-  ow_assert(m->get_grid(1)->get_structure(oid_of({4, 6}, size)) == NULL);
+  ow_assert(m->get_grid(g_oid)->get_structure(oid_of({5, 5})));
+  ow_assert(m->get_grid(g_oid)->get_structure(oid_of({4, 6})) == NULL);
   // let's run a couple of cranks
   m->tick();
   m->tick();
@@ -59,11 +60,11 @@ int main(int argc, char **argv)
   m->tick();
   m->tick();
   // at this point we should notice that a previously inexistent cell at 4, 6 now exists
-  ow_assert(m->get_grid(1)->get_structure(oid_of({5, 5}, size)) == NULL);
-  ow_assert(m->get_grid(1)->get_structure(oid_of({4, 6}, size)));
+  ow_assert(m->get_grid(g_oid)->get_structure(oid_of({5, 5})) == NULL);
+  ow_assert(m->get_grid(g_oid)->get_structure(oid_of({4, 6})));
   // ait let's create a viewer for our game, and enjoy it for a few seconds
   manipulator_t *man = new manipulator_t(m);
-  sfml_viewer_t *v = (new sfml_viewer_t(m, man))->set(1);
+  sfml_viewer_t *v = (new sfml_viewer_t(m, man))->set(g_oid);
   m->conf(true, 200);
   v->start_render();
   // clean up after ourselves

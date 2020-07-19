@@ -7,9 +7,9 @@
 #include <mutex>
 #include <functional>
 
-typedef std::function<void(value_t)> eraser_t;
+typedef std::function<void(void *)> eraser_t;
 
-void null_eraser(value_t v);
+void null_eraser(void *v);
 
 def_zone(dirt_index);
 def(dirt_index, context);
@@ -24,12 +24,16 @@ public:
   static eraser_t get_eraser();
   void lock();
   void unlock();
-  value_t get(namer_t where);
-  void drop(namer_t where);
-  void erase(namer_t where);
-  void set(namer_t where, value_t p, eraser_t eraser = null_eraser);
+  value_t get_val(namer_t where);
+  void drop_val(namer_t where);
+  void set_val(namer_t where, value_t val);
+  void *get_dirt(namer_t where);
+  void drop_dirt(namer_t where);
+  void erase_dirt(namer_t where);
+  void set_dirt(namer_t where, void *p, eraser_t eraser = null_eraser);
 private:
-  std::map<namer_t, std::pair<value_t, eraser_t>> dirt_entries;
+  std::map<namer_t, value_t> dirt_entries;
+  std::map<namer_t, std::pair<void *, eraser_t>> sub_dirt;
   std::mutex dirt_lock;
   bool locked = false;
 };

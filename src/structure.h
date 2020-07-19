@@ -14,6 +14,7 @@
 class abstract_structure_constructor_base
 {
 public:
+  virtual ~abstract_structure_constructor_base();
   virtual structure_t *instantiate(structure_t *s) = 0;
   virtual structure_t *deserialise(std::istream &is) = 0;
 };

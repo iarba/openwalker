@@ -5,6 +5,14 @@
 
 #define port 7777
 
+def(test, gr1);
+def(test, gr42);
+def(test, s1);
+def(test, s2);
+def(test, s3);
+def(test, s4);
+def(test, w1);
+
 void debug()
 {
 }
@@ -14,46 +22,46 @@ void run(master_t *master)
   master->tick();
   node_delta *nd = new node_delta();
   nd->wd = new world_delta();
-  nd->wd->grid_deltas[1] = new grid_delta();
+  nd->wd->grid_deltas[test__gr1] = new grid_delta();
 
-  nd->wd->grid_spawns[1] = new grid_t({25, 25});  
-  nd->wd->grid_deltas[1]->structure_spawns[1] = new road({3, 3});
-  nd->wd->grid_deltas[1]->structure_spawns[2] = new road({3, 4});
-  nd->wd->grid_deltas[1]->structure_spawns[3] = new road({4, 4});
-  nd->wd->grid_deltas[1]->structure_spawns[4] = new road({2, 4});
-
-  master->feed(nd); // injection
-  delete nd->wd;
-  nd->wd = new world_delta();
-  nd->wd->grid_deltas[1] = new grid_delta();
-
-  master->tick();
-
-  nd->wd->grid_deltas[1]->walker_spawns[1] = new random_walker_t({3, 3}, test__walkable, (value_t)1, (value_t)1, (value_t)0);
+  nd->wd->grid_spawns[test__gr1] = new grid_t({25, 25});  
+  nd->wd->grid_deltas[test__gr1]->structure_spawns[test__s1] = new road({3, 3});
+  nd->wd->grid_deltas[test__gr1]->structure_spawns[test__s2] = new road({3, 4});
+  nd->wd->grid_deltas[test__gr1]->structure_spawns[test__s3] = new road({4, 4});
+  nd->wd->grid_deltas[test__gr1]->structure_spawns[test__s4] = new road({2, 4});
 
   master->feed(nd); // injection
   delete nd->wd;
   nd->wd = new world_delta();
-  nd->wd->grid_deltas[1] = new grid_delta();
+  nd->wd->grid_deltas[test__gr1] = new grid_delta();
 
   master->tick();
 
-  nd->wd->grid_spawns[42] = cloner_t::g_cloner_get()->create_grid(master->get_grid(1));
+  nd->wd->grid_deltas[test__gr1]->walker_spawns[test__w1] = new random_walker_t({3, 3}, test__walkable, (value_t)1, (value_t)1, (value_t)0);
 
   master->feed(nd); // injection
   delete nd->wd;
   nd->wd = new world_delta();
-  nd->wd->grid_deltas[1] = new grid_delta();
+  nd->wd->grid_deltas[test__gr1] = new grid_delta();
+
+  master->tick();
+
+  nd->wd->grid_spawns[test__gr42] = cloner_t::g_cloner_get()->create_grid(master->get_grid(test__gr1));
+
+  master->feed(nd); // injection
+  delete nd->wd;
+  nd->wd = new world_delta();
+  nd->wd->grid_deltas[test__gr1] = new grid_delta();
 
   master->tick();
   master->tick();
   master->tick();
 
-  if(master->get_grid(1)->get_structure(4)->get_clone_identifier() != cloner_registry__road_cloner)
+  if(master->get_grid(test__gr1)->get_structure(test__s4)->get_clone_identifier() != cloner_registry__road_cloner)
   {
     throw std::logic_error("incorrect cloner");
   }  
-  if(master->get_grid(42)->get_structure(4)->get_clone_identifier() != cloner_registry__road_cloner)
+  if(master->get_grid(test__gr1)->get_structure(test__s4)->get_clone_identifier() != cloner_registry__road_cloner)
   {
     throw std::logic_error("incorrect cloner");
   }
@@ -66,6 +74,8 @@ int main()
   openwalker_init(1234);
   ow_f_lib_init();
   tst_load();
+  imp(test, gr1);
+  imp(test, gr42);
   debug();
   server_t *srv = NULL;
   master_t *master = new master_t();
@@ -76,7 +86,7 @@ int main()
   getchar();
   console_explorer_slave_t *ces = new console_explorer_slave_t(master);
   run(master);
-  if(ces->get_grid(1)->get_structure(4)->get_clone_identifier() != cloner_registry__road_cloner)
+  if(ces->get_grid(test__gr1)->get_structure(test__s4)->get_clone_identifier() != cloner_registry__road_cloner)
   {
     throw std::logic_error("incorrect cloner");
   }
@@ -84,21 +94,21 @@ int main()
   ios.std::iostream::rdbuf(new b_streambuf());
   ces->serialise(ios);
   world_t *dbg = new world_t(ios);
-  if(dbg->get_grid(42)->get_structure(1)->get_clone_identifier() != cloner_registry__road_cloner)
+  if(dbg->get_grid(test__gr42)->get_structure(test__s1)->get_clone_identifier() != cloner_registry__road_cloner)
   {
     throw std::logic_error("incorrect serialiser");
   }
   dbg->serialise(ios);
   delete dbg;
   dbg = new world_t(ios);
-  if(dbg->get_grid(42)->get_structure(1)->get_clone_identifier() != cloner_registry__road_cloner)
+  if(dbg->get_grid(test__gr42)->get_structure(test__s1)->get_clone_identifier() != cloner_registry__road_cloner)
   {
     throw std::logic_error("incorrect series serialiser");
   }
   dbg->serialise(ios);
   delete dbg;
   dbg = new world_t(ios);
-  if(dbg->get_grid(42)->get_structure(1)->get_clone_identifier() != cloner_registry__road_cloner)
+  if(dbg->get_grid(test__gr42)->get_structure(test__s1)->get_clone_identifier() != cloner_registry__road_cloner)
   {
     throw std::logic_error("incorrect series serialiser");
   }

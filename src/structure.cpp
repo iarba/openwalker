@@ -1,6 +1,10 @@
 #include "structure.h"
 #include "misc_utils.h"
 
+abstract_structure_constructor_base::~abstract_structure_constructor_base()
+{
+}
+
 structure_delta::structure_delta()
 {
 }

@@ -16,7 +16,7 @@ void road_unsetter(context_t ctx)
 
 void master_pause_toggler(context_t ctx)
 {
-  ctx.world->dirt->set(master_config__autorun, (value_t) !ctx.world->dirt->get(master_config__autorun));
+  ctx.world->dirt->set_val(master_config__autorun, !ctx.world->dirt->get_val(master_config__autorun));
   ((master_t *)ctx.world)->update();
 }
 

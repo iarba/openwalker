@@ -2,14 +2,15 @@
 #define CONTEXT_H
 
 #include "world.h"
+#include "properties.h"
 #include <iostream>
 
 class context_t
 {
 public:
   world_t* world = NULL;
-  oid_t grid_id = 0;
-  oid_t element_id = 0;
+  oid_t grid_id = null__null;
+  oid_t element_id = null__null;
   glm::ivec2 cell_pos = {0, 0};
 };
 
