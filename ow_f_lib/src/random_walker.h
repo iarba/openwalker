@@ -25,6 +25,7 @@ public:
   virtual void serialise(std::ostream &os) const;
   void copy_into(random_walker_t *other) const;
   virtual walker_delta *compute_delta(context_t ctx) const;
+  std::function<bool(context_t)> get_pathfinding_checker();
 protected:
   void regenerate_pathfinding_checker();
   bool use_nvp;

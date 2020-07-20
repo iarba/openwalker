@@ -8,6 +8,7 @@
 class context_t
 {
 public:
+  bool valid();
   world_t* world = NULL;
   oid_t grid_id = null__null;
   oid_t element_id = null__null;

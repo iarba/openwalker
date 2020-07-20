@@ -8,6 +8,7 @@
 #include "manipulator.h"
 #include "sfml_viewer.h"
 #include "named_virtual_pointer.h"
+#include "spawn_utils.h"
 
 void ow_f_lib_init();
 

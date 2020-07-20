@@ -168,6 +168,11 @@ walker_delta *random_walker_t::compute_delta(context_t ctx) const
   return wd;
 }
 
+std::function<bool(context_t)> random_walker_t::get_pathfinding_checker()
+{
+  return pathfinding_checker;
+}
+
 void random_walker_t::regenerate_pathfinding_checker()
 {
   if(use_nvp)
