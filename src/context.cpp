@@ -3,7 +3,7 @@
 
 bool context_t::valid()
 {
-  auto gr = world->get_grid(grid_id);
+  auto gr = grid();
   if(!gr)
   {
     return false;
@@ -18,6 +18,26 @@ bool context_t::valid()
     return false;
   }
   return true;
+}
+
+grid_t *context_t::grid()
+{
+  return world->get_grid(grid_id);
+}
+
+cell_t *context_t::cell()
+{
+  return grid()->at(cell_pos);
+}
+
+structure_t *context_t::structure()
+{
+  return grid()->get_structure(element_id);
+}
+
+walker_t *context_t::walker()
+{
+  return grid()->get_walker(element_id);
 }
 
 std::ostream& operator<<(std::ostream &os, const context_t &data)

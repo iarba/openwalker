@@ -9,17 +9,19 @@ class slave_t;
 
 class context_t;
 
-class world_t; //----------
+class world_t; //-------------
 // A 1                 
 // |                     
 // V n                   
-class grid_t; //------*----  
-// |                  |  
-// |                  |  
-// V n                |  
-class structure_t; //-+----
-//                    V n  
-class walker_t; //---------
+class grid_t; //------*-----*-
+// |                  |     |
+// |                  |     |
+// V n                |     |
+class structure_t; //-+-----+-
+//                    V n   |
+class walker_t; //----------+-
+//                          V size^2
+class cell_t; //--------------
 
 class master_delta;
 class world_delta;

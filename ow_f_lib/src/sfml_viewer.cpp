@@ -129,7 +129,7 @@ void sfml_viewer_t::load_tex(namer_t t_id, std::string tilemap)
 {
   sf::Texture *tex = new sf::Texture();
   tex->loadFromFile(tilemap);
-  tex->setSmooth(true);
+  tex->setSmooth(false);
   textures[t_id] = tex;
 }
 

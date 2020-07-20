@@ -8,6 +8,7 @@ if(NOT OW_SKIP_TEST)
   file(GLOB_RECURSE TSTLIB_SOURCES "tstlib/*.cpp")
   file(GLOB_RECURSE PROXY_SOURCES "proxy/*.cpp")
   file(GLOB_RECURSE GOL_SOURCES "gol/*.cpp")
+  file(GLOB_RECURSE DEMO_SOURCES "owdemo/*.cpp")
 endif()
 
 add_subdirectory(dep/glm)
@@ -40,6 +41,9 @@ file(COPY assets DESTINATION ${CMAKE_BINARY_DIR})
 if(NOT OW_SKIP_TEST)
   add_executable(gol ${GOL_SOURCES})
   target_link_libraries(gol ${OW_LIBS})
+
+  add_executable(owdemo ${DEMO_SOURCES})
+  target_link_libraries(owdemo ${OW_LIBS})
 
   add_library(tstlib STATIC ${TSTLIB_SOURCES})
   target_link_libraries(tstlib ${OW_LIBS})

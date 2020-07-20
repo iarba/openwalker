@@ -23,11 +23,13 @@ inline int zone_allocator = 0;
 
 #define def_zone(zone) inline int domain_to_zone(zone); inline int domain_to_zalloc(zone) = 0;
 #define def(zone, namer) inline namer_t domain_and_index_to_namer(zone, namer);
+#define def_vec(zone, namer, size) inline namer_t domain_and_index_to_namer(zone, namer)[size];
 #define def_dyn_zone(zone) inline int domain_to_zone(zone); std::unordered_set<int> domain_to_zalloc(zone);
 
 #define imp_zone(zone) domain_to_zone(zone) = zone_allocator++;
 #define imp_dyn_zone(zone) imp_zone(zone);
 #define imp(zone, namer) domain_and_index_to_namer(zone, namer) = namer_t(domain_to_zone(zone), ++domain_to_zalloc(zone));
+#define imp_vec(zone, namer, size) for(int i = 0; i < size; i++){domain_and_index_to_namer(zone, namer)[i] = namer_t(domain_to_zone(zone), ++domain_to_zalloc(zone));}
 #define acquire_dyn(zone, holder) do{holder = namer_t(domain_to_zone(zone), rand());}while(domain_to_zalloc(zone).find(holder.second) != domain_to_zalloc(zone).end()); domain_to_zalloc(zone).insert(holder.second);
 #define release_dyn(zone, holder) domain_to_zalloc(zone).erase(holder.second);
 

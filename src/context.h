@@ -1,6 +1,7 @@
 #ifndef CONTEXT_H
 #define CONTEXT_H
 
+#include "_fwd.h"
 #include "world.h"
 #include "properties.h"
 #include <iostream>
@@ -9,6 +10,10 @@ class context_t
 {
 public:
   bool valid();
+  grid_t *grid();
+  cell_t *cell();
+  structure_t *structure();
+  walker_t *walker();
   world_t* world = NULL;
   oid_t grid_id = null__null;
   oid_t element_id = null__null;

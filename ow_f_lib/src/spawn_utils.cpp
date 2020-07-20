@@ -5,10 +5,10 @@ bool ctx_to_true(context_t _ctx)
   return true;
 }
 
-std::vector<context_t> get_neighbouring_cells_of_structure(context_t str_ctx, int limit, std::function<bool(context_t)> filter)
+std::vector<context_t> get_neighbouring_cells_of_structure(context_t str_ctx, unsigned int limit, std::function<bool(context_t)> filter)
 {
   std::vector<context_t> ret_val;
-  structure_t str = str_ctx.world->get_grid(str_ctx.grid_id)->get_structure(std_ctx.element_id);
+  structure_t *str = str_ctx.world->get_grid(str_ctx.grid_id)->get_structure(str_ctx.element_id);
   glm::ivec2 pos = str->get_position();
   glm::ivec2 sz = str->get_size();
   glm::ivec2 br = pos + sz;

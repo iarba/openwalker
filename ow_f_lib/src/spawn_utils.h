@@ -6,6 +6,6 @@
 
 bool ctx_to_true(context_t _ctx);
 
-std::vector<context_t> get_neighbouring_cells_of_structure(context_t structure, int limit = 0, std::function<bool(context_t)> filter = ctx_to_true);
+std::vector<context_t> get_neighbouring_cells_of_structure(context_t structure, unsigned int limit = 0, std::function<bool(context_t)> filter = ctx_to_true);
 
 #endif // SPAWN_UTILS_H

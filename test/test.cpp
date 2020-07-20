@@ -28,8 +28,8 @@ void test_dyn_namers()
     release_dyn(tst_dyn, it);
   }
   std::set<namer_t> u_namers;
-  int target = 1 << 15;
-  int left = target;
+  unsigned int target = 1 << 15;
+  unsigned int left = target;
   while(left--)
   {
     namer_t n;
