@@ -64,6 +64,8 @@ private:
   void render_cell(viewer_context_t ctx, cell_t *c);
   void render_structure(viewer_context_t ctx, structure_t *s);
   void render_walker(viewer_context_t ctx, walker_t *w);
+  std::map<sf::Sprite *, sf::Vector2f> sprite_sizes;
+  sf::FloatRect viewAABB;
 };
 
 #endif // SFML_VIEWER_H

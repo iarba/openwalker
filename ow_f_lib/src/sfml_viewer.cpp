@@ -17,7 +17,8 @@ void printFPS()
 
 bool namers_defined = false;
 
-#define ZOOM_SENS 1.1
+#define ZOOM_SENS 1.1f
+#define AABB_EPS 0.1f
 
 sfml_viewer_t::sfml_viewer_t(world_t *w, manipulator_t *man)
 {
@@ -140,6 +141,7 @@ void sfml_viewer_t::define_sprite(namer_t s_id, namer_t t_id, int tlx, int tly, 
   spr->setTexture(*get_texture(t_id));
   spr->setTextureRect(sf::IntRect(tlx, tly, sizex, sizey));
   sprites[s_id] = spr;
+  sprite_sizes[spr] = sf::Vector2f(sizex, sizey);
 }
 
 void sfml_viewer_t::set_cell_renderer(std::function<void(viewer_context_t, cell_t *)> renderer)
@@ -182,9 +184,12 @@ sfml_viewer_t *sfml_viewer_t::update_camera()
 {
   sf::View v = window->getView();
   v.setCenter(cam_x, cam_y);
-  v.setSize(view_width, view_height);
+  sf::Vector2f view_size = sf::Vector2f(view_width, view_height);
+  v.setSize(view_size);
   v.zoom(zoom_lvl);
   window->setView(v);
+  view_size = view_size * zoom_lvl + sf::Vector2f(AABB_EPS, AABB_EPS);
+  viewAABB = sf::FloatRect(sf::Vector2f(cam_x, cam_y) - sf::Vector2f(view_width, view_height) * zoom_lvl / 2.f, sf::Vector2f(view_width, view_height) * zoom_lvl);
   return this;
 }
 
@@ -199,6 +204,15 @@ sfml_viewer_t *sfml_viewer_t::reset_camera()
 
 void sfml_viewer_t::draw(sf::Sprite *spr)
 {
+  auto it = sprite_sizes.find(spr);
+  if(it != sprite_sizes.end())
+  { // we have a size for said sprite
+    sf::FloatRect sprAABB(spr->getPosition(), sf::Vector2f(it->second.x * spr->getScale().x, it->second.y * spr->getScale().y));
+    if(!sprAABB.intersects(viewAABB))
+    {
+      return;
+    }
+  }
   window->draw(*spr);
 }
 
