@@ -1,4 +1,5 @@
 #include "road.h"
+#include "common_prop.h"
 
 #define ROAD_SPRITE_SCALE 8.0f
 
@@ -6,7 +7,6 @@ void road_t::init(sfml_viewer_t *view)
 {
   // initialise namers
   imp(owdemo, id_road);
-  imp(owdemo, property_road_walkable);
   imp(owdemo, event_road_construct);
   imp(owdemo, event_road_destruct);
   imp(owdemo, tex_road);
@@ -58,7 +58,7 @@ void road_t::on_destruct(context_t ctx)
 {
   grid_t *g = ctx.grid();
   structure_t *s = ctx.structure();
-  g->at(s->get_position())->set_persistent(owdemo__property_road_walkable, 0);
+  g->at(s->get_position())->unset(owdemo__property_road_walkable);
 }
 
 void road_t::sfml_renderer(sfml_viewer_t::viewer_context_t ctx, structure_t *s)
@@ -98,6 +98,8 @@ void road_t::sfml_renderer(sfml_viewer_t::viewer_context_t ctx, structure_t *s)
 
 road_t::road_t(glm::ivec2 position) : structure_t(position)
 { 
+  ieh.on_create.push_back(event_t(owdemo__event_construct));
+  ieh.on_delete.push_back(event_t(owdemo__event_destruct));
   ieh.on_create.push_back(event_t(owdemo__event_road_construct));
   ieh.on_delete.push_back(event_t(owdemo__event_road_destruct));
   clone_identifier = owdemo__id_road;;

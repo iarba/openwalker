@@ -1,6 +1,8 @@
 #include "owdemo_main.h"
 #include <iostream>
+#include "common_prop.h"
 #include "road.h"
+#include "well.h"
 
 namer_t g_oid = {0, 0};
 def_dyn_zone(oid_allocator);
@@ -14,25 +16,25 @@ master_t *build_world(master_t *m)
   nd->wd->grid_spawns[g_oid] = new grid_t({100, 100});
   nd->wd->grid_deltas[g_oid] = new grid_delta();
   acquire_dyn(oid_allocator, oid);
-  nd->wd->grid_deltas[g_oid]->structure_spawns[oid] = new road_t({0, 0});
+  nd->wd->grid_deltas[g_oid]->structure_spawns[oid] = new well_t({6, 6});
   acquire_dyn(oid_allocator, oid);
-  nd->wd->grid_deltas[g_oid]->structure_spawns[oid] = new road_t({0, 2});
+  nd->wd->grid_deltas[g_oid]->structure_spawns[oid] = new road_t({7, 8});
   acquire_dyn(oid_allocator, oid);
-  nd->wd->grid_deltas[g_oid]->structure_spawns[oid] = new road_t({1, 2});
+  nd->wd->grid_deltas[g_oid]->structure_spawns[oid] = new road_t({8, 8});
   acquire_dyn(oid_allocator, oid);
-  nd->wd->grid_deltas[g_oid]->structure_spawns[oid] = new road_t({1, 3});
+  nd->wd->grid_deltas[g_oid]->structure_spawns[oid] = new road_t({8, 9});
   acquire_dyn(oid_allocator, oid);
-  nd->wd->grid_deltas[g_oid]->structure_spawns[oid] = new road_t({0, 3});
+  nd->wd->grid_deltas[g_oid]->structure_spawns[oid] = new road_t({8, 10});
   acquire_dyn(oid_allocator, oid);
-  nd->wd->grid_deltas[g_oid]->structure_spawns[oid] = new road_t({0, 5});
+  nd->wd->grid_deltas[g_oid]->structure_spawns[oid] = new road_t({9, 10});
   acquire_dyn(oid_allocator, oid);
-  nd->wd->grid_deltas[g_oid]->structure_spawns[oid] = new road_t({0, 6});
+  nd->wd->grid_deltas[g_oid]->structure_spawns[oid] = new road_t({10, 10});
   acquire_dyn(oid_allocator, oid);
-  nd->wd->grid_deltas[g_oid]->structure_spawns[oid] = new road_t({0, 7});
+  nd->wd->grid_deltas[g_oid]->structure_spawns[oid] = new road_t({10, 9});
   acquire_dyn(oid_allocator, oid);
-  nd->wd->grid_deltas[g_oid]->structure_spawns[oid] = new road_t({1, 7});
+  nd->wd->grid_deltas[g_oid]->structure_spawns[oid] = new road_t({10, 8});
   acquire_dyn(oid_allocator, oid);
-  nd->wd->grid_deltas[g_oid]->structure_spawns[oid] = new road_t({0, 8});
+  nd->wd->grid_deltas[g_oid]->structure_spawns[oid] = new road_t({9, 8});
 
   m->feed(nd);
   
@@ -53,7 +55,9 @@ int main(int argc, char **argv)
   imp_zone(owdemo);
   imp_dyn_zone(oid_allocator);
 
+  common_prop::init(view);
   road_t::init(view);
+  well_t::init(view);
 
   build_world(m);
 

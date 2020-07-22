@@ -4,7 +4,6 @@
 #include "owdemo_main.h"
 
 def(owdemo, id_road);
-def(owdemo, property_road_walkable);
 def(owdemo, event_road_construct);
 def(owdemo, event_road_destruct);
 def(owdemo, tex_road);
