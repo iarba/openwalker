@@ -49,7 +49,7 @@ protected:
   std::function<void(viewer_context_t, cell_t *)> cell_renderer;
   std::map<namer_t, std::function<void(viewer_context_t, structure_t *)>> structure_renderers;
   std::map<namer_t, std::function<void(viewer_context_t, walker_t *)>> walker_renderers;
-  oid_t grid_id;
+  oid_t grid_id = null__null;
   float zoom_lvl = 0.25f;
   float view_width;
   float view_height;

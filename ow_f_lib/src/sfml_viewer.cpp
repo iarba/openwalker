@@ -36,6 +36,7 @@ sfml_viewer_t::sfml_viewer_t(world_t *w, manipulator_t *man)
   define_sprite(sfml_viewer_def_res__str_spr, sfml_viewer_def_res__tex, 256, 0, 256, 256);
   define_sprite(sfml_viewer_def_res__wal_spr, sfml_viewer_def_res__tex, 0, 256, 256, 256);
   define_sprite(sfml_viewer_def_res__cel_spr, sfml_viewer_def_res__tex, 0, 0, 256, 256);
+  w->set_deletion_queue_usage(true);
 }
 
 sfml_viewer_t::~sfml_viewer_t()
@@ -168,7 +169,12 @@ sf::Texture *sfml_viewer_t::get_texture(namer_t t_id)
 
 sfml_viewer_t *sfml_viewer_t::set(oid_t grid_id)
 {
+  if(this->grid_id != null__null)
+  {
+    w->get_grid(this->grid_id)->set_deletion_queue_usage(false);
+  }
   this->grid_id = grid_id;
+  w->get_grid(this->grid_id)->set_deletion_queue_usage(true);
   return this;
 }
 
@@ -198,12 +204,12 @@ void sfml_viewer_t::draw(sf::Sprite *spr)
 
 void sfml_viewer_t::render()
 {
-  world_viewer_t wv(w);
   viewer_context_t ctx;
-  ctx.ctx.world = &wv;
+  ctx.ctx.world = w;
   ctx.ctx.grid_id = grid_id;
   ctx.that = this;
-  render_grid(ctx, wv.get_grid(grid_id));
+  render_grid(ctx, w->get_grid(grid_id));
+  w->deletion_queue_maintenance();
 }
 
 void sfml_viewer_t::render_grid(viewer_context_t ctx, grid_t *g)
@@ -226,6 +232,7 @@ void sfml_viewer_t::render_grid(viewer_context_t ctx, grid_t *g)
     ctx.ctx.element_id = it.first;
     render_walker(ctx, it.second);
   }
+  g->deletion_queue_maintenance();
 }
 
 void sfml_viewer_t::render_cell(viewer_context_t ctx, cell_t *c)

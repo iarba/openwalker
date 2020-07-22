@@ -85,6 +85,8 @@ public:
   void trigger_delete(context_t ctx);
   std::map<oid_t, structure_t *> get_structures();
   std::map<oid_t, walker_t *> get_walkers();
+  void set_deletion_queue_usage(bool value);
+  void deletion_queue_maintenance();
 protected:
   instance_event_handler_t ieh;
   namer_t clone_identifier;
@@ -95,6 +97,9 @@ protected:
   bool suicide = false;
   mutable std::mutex critical_lock;
 private:
+  bool deletion_queue_mode = false;
+  std::vector<structure_t *> structure_deletion_queue;
+  std::vector<walker_t *> walker_deletion_queue;
 };
 
 #endif // GRID_H

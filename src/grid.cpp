@@ -282,6 +282,7 @@ grid_t::grid_t(std::istream& is)
 
 grid_t::~grid_t()
 {
+  deletion_queue_maintenance();
   critical_lock.lock();
   for(int i = 0; i < this->size.x; i++)
   {
@@ -459,7 +460,14 @@ void grid_t::apply_delta(grid_delta *gd, context_t ctx)
     {
       ctx.element_id = it.first;
       structures[it.first]->trigger_delete(ctx);
-      delete structures[it.first];
+      if(deletion_queue_mode)
+      {
+        structure_deletion_queue.push_back(structures[it.first]);
+      }
+      else
+      {
+        delete structures[it.first];
+      }
       structures.erase(it.first);
     }
   }
@@ -476,7 +484,14 @@ void grid_t::apply_delta(grid_delta *gd, context_t ctx)
     {
       ctx.element_id = it.first;
       walkers[it.first]->trigger_delete(ctx);
-      delete walkers[it.first];
+      if(deletion_queue_mode)
+      {
+        walker_deletion_queue.push_back(walkers[it.first]);
+      }
+      else
+      {
+        delete walkers[it.first];
+      }
       walkers.erase(it.first);
     }
   }
@@ -543,4 +558,27 @@ std::map<oid_t, structure_t *> grid_t::get_structures()
 std::map<oid_t, walker_t *> grid_t::get_walkers()
 {
   return walkers;
+}
+
+void grid_t::set_deletion_queue_usage(bool value)
+{
+  critical_lock.lock();
+  deletion_queue_mode = value;
+  critical_lock.unlock();
+}
+
+void grid_t::deletion_queue_maintenance()
+{
+  critical_lock.lock();
+  for(auto s : structure_deletion_queue)
+  {
+    delete s;
+  }
+  structure_deletion_queue.clear();
+  for(auto w : walker_deletion_queue)
+  {
+    delete w;
+  }
+  walker_deletion_queue.clear();
+  critical_lock.unlock();
 }

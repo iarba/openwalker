@@ -124,6 +124,7 @@ world_t::world_t(std::istream &is)
 
 world_t::~world_t()
 {
+  deletion_queue_maintenance();
   critical_lock.lock();
   for(auto it : grids)
   {
@@ -212,7 +213,14 @@ void world_t::apply_delta(world_delta *wd)
       {
         ctx.grid_id = it.first;
         grids[it.first]->trigger_delete(ctx);
-        delete grids[it.first];
+        if(deletion_queue_mode)
+        {
+          grid_deletion_queue.push_back(grids[it.first]);
+        }
+        else
+        {
+          delete grids[it.first];
+        }
         grids.erase(it.first);
       }
     }
@@ -233,4 +241,22 @@ void world_t::apply_delta(world_delta *wd)
 std::map<oid_t, grid_t *> world_t::get_grids()
 {
   return grids;
+}
+
+void world_t::set_deletion_queue_usage(bool value)
+{
+  critical_lock.lock();
+  deletion_queue_mode = value;
+  critical_lock.unlock();
+}
+
+void world_t::deletion_queue_maintenance()
+{
+  critical_lock.lock();
+  for(auto g : grid_deletion_queue)
+  {
+    delete g;
+  }
+  grid_deletion_queue.clear();
+  critical_lock.unlock();
 }

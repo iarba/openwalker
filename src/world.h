@@ -36,12 +36,16 @@ public:
   world_delta *compute_delta(context_t ctx) const;
   void apply_delta(world_delta *wd);
   std::map<oid_t, grid_t *> get_grids();
+  void set_deletion_queue_usage(bool value);
+  void deletion_queue_maintenance();
   dirt_t *dirt;
 protected:
   std::map<oid_t, grid_t *> grids;
   bool is_slice_not_triggers = true;
   mutable std::mutex critical_lock;
 private:
+  bool deletion_queue_mode = false;
+  std::vector<grid_t *> grid_deletion_queue;
 };
 
 #endif // WORLD_H

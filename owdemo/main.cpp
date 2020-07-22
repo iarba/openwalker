@@ -48,7 +48,7 @@ int main(int argc, char **argv)
 
   master_t *m = new master_t();
   manipulator_t *man = new manipulator_t(m);
-  sfml_viewer_t *view = (new sfml_viewer_t(m, man))->set(g_oid);
+  sfml_viewer_t *view = (new sfml_viewer_t(m, man));
 
   imp_zone(owdemo);
   imp_dyn_zone(oid_allocator);
@@ -56,6 +56,8 @@ int main(int argc, char **argv)
   road_t::init(view);
 
   build_world(m);
+
+  view->set(g_oid);
 
   view->start_render();
 
