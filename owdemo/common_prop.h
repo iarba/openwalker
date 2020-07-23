@@ -3,6 +3,8 @@
 
 #include "owdemo_main.h"
 
+#define OWDEMO_BASE_WALKER_SPEED 0.33
+
 def(owdemo, property_road_walkable);
 def(owdemo, property_house_water);
 def(owdemo, property_cell_occupied);

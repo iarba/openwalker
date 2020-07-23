@@ -28,13 +28,13 @@ public:
   std::function<bool(context_t)> get_pathfinding_checker();
 protected:
   void regenerate_pathfinding_checker();
-  bool use_nvp;
-  namer_t pathfinding_nvp;
+  bool use_nvp = false;
+  namer_t pathfinding_nvp = null__null;
   std::function<bool(context_t)> pathfinding_checker;
-  namer_t required_pathfinding_property;
-  value_t required_pathfinding_min_value;
-  value_t required_pathfinding_max_value;
-  value_t required_pathfinding_def_value;
+  namer_t required_pathfinding_property = null__null;
+  value_t required_pathfinding_min_value = 0;
+  value_t required_pathfinding_max_value = 0;
+  value_t required_pathfinding_def_value = 0;
 };
 
 #endif // RANDOM_WALKER_H

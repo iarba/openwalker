@@ -3,6 +3,7 @@
 #include "common_prop.h"
 #include "road.h"
 #include "well.h"
+#include "water_carrier.h"
 
 namer_t g_oid = {0, 0};
 def_dyn_zone(oid_allocator);
@@ -35,6 +36,12 @@ master_t *build_world(master_t *m)
   nd->wd->grid_deltas[g_oid]->structure_spawns[oid] = new road_t({10, 8});
   acquire_dyn(oid_allocator, oid);
   nd->wd->grid_deltas[g_oid]->structure_spawns[oid] = new road_t({9, 8});
+  int count = 1;
+  while(count--)
+  {
+    acquire_dyn(oid_allocator, oid);
+    nd->wd->grid_deltas[g_oid]->walker_spawns[oid] = new water_carrier_t({7, 8});
+  }
 
   m->feed(nd);
   
@@ -58,10 +65,12 @@ int main(int argc, char **argv)
   common_prop::init(view);
   road_t::init(view);
   well_t::init(view);
+  water_carrier_t::init(view);
 
   build_world(m);
 
   view->set(g_oid);
+  m->conf(true, 33);
 
   view->start_render();
 

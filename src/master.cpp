@@ -3,6 +3,19 @@
 #include <functional>
 #include "misc_utils.h"
 
+static void printFPS()
+{
+  static std::chrono::time_point<std::chrono::system_clock> oldTime = std::chrono::high_resolution_clock::now();
+  static int fps;
+  fps++;
+  if(std::chrono::duration_cast<std::chrono::seconds>(std::chrono::high_resolution_clock::now() - oldTime) >= std::chrono::seconds{1})
+  {
+    oldTime = std::chrono::high_resolution_clock::now();
+    std::cout << "M_FPS: " << fps <<  "\n";
+    fps = 0;
+  }
+}
+
 void master_t::load()
 {
   imp_zone(master_config);
@@ -100,6 +113,7 @@ node_delta *master_t::compute_delta()
   node_delta *nd = new node_delta();
   nd->wd = world_t::compute_delta(ctx);
   node_lock.unlock();
+  printFPS();
   return nd;
 }
 

@@ -2,7 +2,7 @@
 #include "object_viewer.h"
 #include <chrono>
 
-void printFPS()
+static void printFPS()
 {
   static std::chrono::time_point<std::chrono::system_clock> oldTime = std::chrono::high_resolution_clock::now();
   static int fps;
