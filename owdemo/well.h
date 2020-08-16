@@ -6,6 +6,7 @@
 def(owdemo, id_well);
 def(owdemo, tex_well);
 def(owdemo, spr_well);
+def(owdemo, ev_well_spawn);
 
 class well_t : public structure_t
 {
@@ -21,7 +22,10 @@ public:
 
   well_t(glm::ivec2 position);
   well_t(std::istream &is);
+  virtual void serialise(std::ostream &os) const;
   virtual ~well_t();
+
+  int spawn_cd = 100;
 };
 
 #endif // OWDEMO_ROAD_H

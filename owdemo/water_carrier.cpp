@@ -57,6 +57,7 @@ void water_carrier_t::sfml_renderer(sfml_viewer_t::viewer_context_t ctx, walker_
 water_carrier_t::water_carrier_t(glm::ivec2 position) : random_walker_t(position, owdemo__nvp_water_carrier_pathfinding)
 {
   speed = OWDEMO_BASE_WALKER_SPEED * 1;
+  ttl = 100;
   clone_identifier = owdemo__id_water_carrier;
 }
 

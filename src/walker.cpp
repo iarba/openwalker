@@ -76,6 +76,7 @@ walker_t::walker_t(std::istream &is)
   ow_assert(is >> speed);
   ow_assert(is >> properties);
   ow_assert(is >> ieh);
+  ow_assert(is >> ttl);
   clone_identifier = cloner_registry__walker_cloner;
 }
 
@@ -92,6 +93,7 @@ void walker_t::serialise(std::ostream &os) const
   os << " " << speed << " ";
   os << " " << properties << " ";
   os << " " << ieh << " ";
+  os << " " << ttl << " ";
 }
 
 void walker_t::copy_into(walker_t *other) const
@@ -133,6 +135,11 @@ void walker_t::apply_delta(walker_delta *wd)
   for(auto it : wd->delta_properties)
   {
     this->properties[it.first] = it.second;
+  }
+  this->ttl--;
+  if(this->ttl == 0)
+  {
+    this->suicide = true;
   }
 }
 

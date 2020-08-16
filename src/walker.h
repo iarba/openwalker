@@ -76,6 +76,7 @@ protected:
   direction_t direction = dir_east;
   double speed = 1;
   glm::dvec2 position;
+  int ttl = 0;
 private:
 };
 
