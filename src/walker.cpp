@@ -70,6 +70,8 @@ void walker_t::copy_into(walker_t *other) const
   other->speed = this->speed;
   other->properties = this->properties;
   other->ieh = this->ieh;
+  other->ttl = this->ttl;
+  other->clone_identifier = this->clone_identifier;
 }
 
 glm::dvec2 walker_t::get_position() const

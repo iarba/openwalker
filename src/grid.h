@@ -27,6 +27,7 @@ class cell_t
 public:
   cell_t();
   cell_t(std::istream& is);
+  virtual ~cell_t();
   void serialise(std::ostream& os);
   virtual void copy_into(cell_t *other);
   void discard();

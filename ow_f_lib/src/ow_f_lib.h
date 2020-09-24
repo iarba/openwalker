@@ -9,6 +9,7 @@
 #include "sfml_viewer.h"
 #include "named_virtual_pointer.h"
 #include "spawn_utils.h"
+#include "menu.h"
 
 def_zone(ow_f_lib);
 

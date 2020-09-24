@@ -22,8 +22,9 @@ bool namers_defined = false;
 
 sfml_viewer_t::sfml_viewer_t(world_t *w, manipulator_t *man)
 {
-  this -> w = w;
-  this -> man = man;
+  this->w = w;
+  this->man = man;
+  this->menu = new menu_t();
   if(!namers_defined)
   {
     namers_defined = true;
@@ -41,6 +42,7 @@ sfml_viewer_t::sfml_viewer_t(world_t *w, manipulator_t *man)
 
 sfml_viewer_t::~sfml_viewer_t()
 {
+  delete menu;
   for(auto it : sprites)
   {
     delete it.second;
@@ -105,6 +107,22 @@ void sfml_viewer_t::start_render()
         {
           drag_mode = false;
         }
+        else
+        {
+          if(sfev.mouseButton.button == sf::Mouse::Right)
+          {
+            if(this->menu->active)
+            {
+              this->menu->clear_erase();
+              this->menu->active = false;
+            }
+            else
+            {
+              this->menu->active = true;
+              // generate menu based on position;
+            }
+          }
+        }
       }
       if(sfev.type == sf::Event::MouseMoved)
       {
@@ -128,6 +146,7 @@ void sfml_viewer_t::start_render()
     }
     window->clear(sf::Color::White);
     render();
+    render_menu();
     window->display();
   }
 }
@@ -227,6 +246,31 @@ void sfml_viewer_t::render()
   ctx.that = this;
   render_grid(ctx, w->get_grid(grid_id));
   w->deletion_queue_maintenance();
+}
+
+void sfml_viewer_t::render_menu()
+{
+  if(this->menu->active)
+  {
+    printf("printing menu\n");
+    // configure camera for menu
+    sf::View v = window->getView();
+    v.setCenter(view_width / 2, view_height / 2);
+    sf::Vector2f view_size = sf::Vector2f(view_width, view_height);
+    v.setSize(view_size);
+    v.zoom(1);
+    window->setView(v);
+    // display the main menu box
+    sf::Vector2f rec_size = sf::Vector2f(view_width * 0.8, view_height * 0.8);
+    sf::RectangleShape rec(rec_size);
+    rec.move(view_width * 0.1, view_height * 0.1);
+    rec.setFillColor(sf::Color(200, 200, 200));
+    rec.setOutlineThickness(10);
+    rec.setOutlineColor(sf::Color(255, 0, 0));
+    window->draw(rec);
+    // revert camera to environment camera
+    update_camera();
+  }
 }
 
 void sfml_viewer_t::render_grid(viewer_context_t ctx, grid_t *g)

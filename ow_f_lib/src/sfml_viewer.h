@@ -5,6 +5,7 @@
 #include <SFML/Graphics.hpp>
 #include <openwalker/openwalker.h>
 #include "manipulator.h"
+#include "menu.h"
 
 def_zone(sfml_viewer_def_res);
 def(sfml_viewer_def_res, tex);
@@ -41,6 +42,7 @@ public:
   sfml_viewer_t *reset_camera();
   void draw(sf::Sprite *spr);
 protected:
+  menu_t *menu;
   sf::RenderWindow *window = NULL;
   world_t *w;
   manipulator_t *man;
@@ -60,6 +62,7 @@ protected:
   bool drag_mode = false;
 private:
   void render();
+  void render_menu();
   void render_grid(viewer_context_t ctx, grid_t *g);
   void render_cell(viewer_context_t ctx, cell_t *c);
   void render_structure(viewer_context_t ctx, structure_t *s);

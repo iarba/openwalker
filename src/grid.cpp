@@ -15,6 +15,10 @@ cell_t::cell_t(std::istream& is)
   ow_assert(is >> temporary >> persistent);
 }
 
+cell_t::~cell_t()
+{
+}
+
 void cell_t::serialise(std::ostream& os)
 {
   os << " " << temporary << " " << persistent << " ";
@@ -171,6 +175,7 @@ grid_t::grid_t(std::istream& is)
     walkers[where] = cloner_t::g_cloner_get()->create_walker(is);
   }
   ow_assert(is >> ieh);
+  ow_assert(is >> ttl);
   clone_identifier = cloner_registry__grid_cloner;
 }
 
@@ -220,6 +225,7 @@ void grid_t::serialise(std::ostream& os) const
     it.second->serialise(os);
   }
   os << " " << ieh << " ";
+  os << " " << ttl << " ";
   critical_lock.unlock();
 }
 
@@ -245,6 +251,8 @@ void grid_t::copy_into(grid_t *other) const
   }
   other->suicide = this->suicide;
   other->ieh = this->ieh;
+  other->ttl = this->ttl;
+  other->clone_identifier = this->clone_identifier;
   critical_lock.unlock();
 }
 

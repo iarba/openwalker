@@ -42,6 +42,7 @@ structure_t::structure_t(std::istream &is)
   ow_assert(is >> properties);
   ow_assert(is >> suicide);
   ow_assert(is >> ieh);
+  ow_assert(is >> ttl);
   clone_identifier = cloner_registry__structure_cloner;
 }
 
@@ -57,6 +58,7 @@ void structure_t::serialise(std::ostream &os) const
   os << " " << properties << " ";
   os << " " << suicide << " ";
   os << " " << ieh << " ";
+  os << " " << ttl << " ";
 }
 
 void structure_t::copy_into(structure_t *other) const
@@ -65,6 +67,8 @@ void structure_t::copy_into(structure_t *other) const
   other->position = this->position;
   other->properties = this->properties;
   other->ieh = this->ieh;
+  other->ttl = this->ttl;
+  other->clone_identifier = this->clone_identifier;
 }
 
 glm::ivec2 structure_t::get_position() const
