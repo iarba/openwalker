@@ -22,22 +22,6 @@ public:
   virtual grid_t *deserialise(std::istream &is) = 0;
 };
 
-class grid_delta
-{
-public:
-  grid_delta();
-  grid_delta(const grid_delta *other);
-  grid_delta(std::istream &is);
-  ~grid_delta();
-  void serialise(std::ostream &os);
-  std::map<oid_t, structure_t *> structure_spawns;
-  std::map<oid_t, structure_delta*> structure_deltas;
-  std::map<oid_t, walker_t *> walker_spawns;
-  std::map<oid_t, walker_delta*> walker_deltas;
-  influence_delta inf_delta;
-  bool suicide = false;
-};
-
 class cell_t
 {
 public:
@@ -76,18 +60,13 @@ public:
   cell_t *at(glm::ivec2 position) const;
   structure_t *get_structure(oid_t id) const;
   walker_t *get_walker(oid_t id) const;
-  virtual grid_delta *compute_delta(context_t ctx) const;
-  void apply_delta(grid_delta *gd, context_t ctx);
   bool get_suicide() const;
   namer_t get_clone_identifier() const;
-  void append_triggers(std::vector<std::pair<event_t, context_t>> &triggers, context_t ctx, std::function<double()> roll);
+  void append_triggers(std::vector<std::pair<event_t, context_t>> &triggers, context_t ctx) const;
   void trigger_create(context_t ctx);
   void trigger_delete(context_t ctx);
   std::map<oid_t, structure_t *> get_structures();
   std::map<oid_t, walker_t *> get_walkers();
-  void set_deletion_queue_usage(bool value);
-  void deletion_queue_maintenance();
-protected:
   instance_event_handler_t ieh;
   namer_t clone_identifier;
   std::map<oid_t, structure_t *> structures;
@@ -96,10 +75,9 @@ protected:
   cell_t **grid;
   bool suicide = false;
   mutable std::mutex critical_lock;
+  int ttl = 0;
+protected:
 private:
-  bool deletion_queue_mode = false;
-  std::vector<structure_t *> structure_deletion_queue;
-  std::vector<walker_t *> walker_deletion_queue;
 };
 
 #endif // GRID_H

@@ -37,7 +37,6 @@ sfml_viewer_t::sfml_viewer_t(world_t *w, manipulator_t *man)
   define_sprite(sfml_viewer_def_res__str_spr, sfml_viewer_def_res__tex, 256, 0, 256, 256);
   define_sprite(sfml_viewer_def_res__wal_spr, sfml_viewer_def_res__tex, 0, 256, 256, 256);
   define_sprite(sfml_viewer_def_res__cel_spr, sfml_viewer_def_res__tex, 0, 0, 256, 256);
-  w->set_deletion_queue_usage(true);
 }
 
 sfml_viewer_t::~sfml_viewer_t()
@@ -109,7 +108,6 @@ void sfml_viewer_t::start_render()
       }
       if(sfev.type == sf::Event::MouseMoved)
       {
-        
         auto mpos = sf::Vector2i(sfev.mouseMove.x, sfev.mouseMove.y);
         if(drag_mode)
         {
@@ -119,6 +117,13 @@ void sfml_viewer_t::start_render()
         }
         last_mouse_x = mpos.x;
         last_mouse_y = mpos.y;
+      }
+      if(sfev.type == sf::Event::KeyPressed)
+      {
+        if(sfev.key.code == sf::Keyboard::Space)
+        {
+          ((master_t *)w)->toggle_pause();
+        }
       }
     }
     window->clear(sf::Color::White);
@@ -173,10 +178,8 @@ sfml_viewer_t *sfml_viewer_t::set(oid_t grid_id)
 {
   if(this->grid_id != null__null)
   {
-    w->get_grid(this->grid_id)->set_deletion_queue_usage(false);
   }
   this->grid_id = grid_id;
-  w->get_grid(this->grid_id)->set_deletion_queue_usage(true);
   return this;
 }
 
@@ -246,7 +249,6 @@ void sfml_viewer_t::render_grid(viewer_context_t ctx, grid_t *g)
     ctx.ctx.element_id = it.first;
     render_walker(ctx, it.second);
   }
-  g->deletion_queue_maintenance();
 }
 
 void sfml_viewer_t::render_cell(viewer_context_t ctx, cell_t *c)

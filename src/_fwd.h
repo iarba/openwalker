@@ -25,13 +25,12 @@ class cell_t; //--------------
 
 class master_delta;
 class world_delta;
-class grid_delta;
-class structure_delta;
-class walker_delta;
 
 class cloner_t;
 class abstract_grid_constructor_base;
 class abstract_structure_constructor_base;
 class abstract_walker_constructor_base;
+
+class xoshirorandomiser;
 
 #endif // _FWD_H

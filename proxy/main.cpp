@@ -1,6 +1,5 @@
 #include <openwalker/openwalker.h>
 #include <ow_f_lib/ow_f_lib.h>
-#include "../tstlib/test.h"
 
 int main(int argc, char **argv)
 {
@@ -8,7 +7,6 @@ int main(int argc, char **argv)
   openwalker_set_logger(&std::cout);
   openwalker_init(2313);
   ow_f_lib_init();
-  tst_load();
   try
   {
     std::vector<std::string> args;

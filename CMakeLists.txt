@@ -39,18 +39,9 @@ set(CMAKE_CXX_FLAGS "-Wall -Wextra -O3")
 file(COPY assets DESTINATION ${CMAKE_BINARY_DIR})
 
 if(NOT OW_SKIP_TEST)
-  add_executable(gol ${GOL_SOURCES})
-  target_link_libraries(gol ${OW_LIBS})
-
   add_executable(owdemo ${DEMO_SOURCES})
   target_link_libraries(owdemo ${OW_LIBS})
 
-  add_library(tstlib STATIC ${TSTLIB_SOURCES})
-  target_link_libraries(tstlib ${OW_LIBS})
-
-  add_executable(test ${TEST_SOURCES})
-  target_link_libraries(test ${OW_LIBS} tstlib)
-
   add_executable(ow_proxy ${PROXY_SOURCES})
-  target_link_libraries(ow_proxy ${OW_LIBS} tstlib)
+  target_link_libraries(ow_proxy ${OW_LIBS})
 endif()

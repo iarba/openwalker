@@ -1,31 +1,9 @@
 #include "structure.h"
 #include "misc_utils.h"
+#include "xoshirowrapper.h"
 
 abstract_structure_constructor_base::~abstract_structure_constructor_base()
 {
-}
-
-structure_delta::structure_delta()
-{
-}
-
-structure_delta::structure_delta(const structure_delta *other)
-{
-  this->suicide = other->suicide;
-}
-
-structure_delta::structure_delta(std::istream &is)
-{
-  ow_assert(is >> suicide);
-}
-
-structure_delta::~structure_delta()
-{
-}
-
-void structure_delta::serialise(std::ostream &os)
-{
-  os << " " << suicide << " ";
 }
 
 def(cloner_registry, structure_cloner);
@@ -53,6 +31,7 @@ structure_t::structure_t(glm::ivec2 position, glm::ivec2 size)
 {
   this->position = position;
   this->size = size;
+  ieh.on_random.push_back(event_t(ow_d_events__structure_suicide));
   clone_identifier = cloner_registry__structure_cloner;
 }
 
@@ -93,21 +72,6 @@ glm::ivec2 structure_t::get_position() const
   return this->position;
 }
 
-structure_delta *structure_t::compute_delta(context_t ctx) const
-{
-  structure_delta *sd = new structure_delta();
-  return sd;
-}
-
-void structure_t::append_influence_delta(influence_delta &id, context_t ctx) const
-{
-}
-
-void structure_t::apply_delta(structure_delta *sd)
-{
-  this->suicide = sd->suicide;
-}
-
 bool structure_t::get_suicide() const
 {
   return this->suicide;
@@ -123,11 +87,13 @@ namer_t structure_t::get_clone_identifier() const
   return clone_identifier;
 }
 
-void structure_t::append_triggers(std::vector<std::pair<event_t, context_t>> &triggers, context_t ctx, std::function<double()> roll) const
+void structure_t::append_triggers(std::vector<std::pair<event_t, context_t>> &triggers, context_t ctx) const
 {
+  xoshirorandomiser r(ctx.seed);
   for(auto ev : ieh.on_random)
   {
-    if(ev.chance(ctx) > roll())
+    ctx.seed = r.next();
+    if(ev.chance(ctx))
     triggers.push_back({ev, ctx});
   }
 }

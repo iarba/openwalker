@@ -8,45 +8,50 @@
 namer_t g_oid = {0, 0};
 def_dyn_zone(oid_allocator);
 
-master_t *build_world(master_t *m)
+void build_world(context_t ctx)
 {
-  oid_t oid;
+  master_t *m = (master_t *)ctx.world;
 
-  node_delta *nd = new node_delta();
-  nd->wd = new world_delta();
-  nd->wd->grid_spawns[g_oid] = new grid_t({100, 100});
-  nd->wd->grid_deltas[g_oid] = new grid_delta();
-  acquire_dyn(oid_allocator, oid);
-  nd->wd->grid_deltas[g_oid]->structure_spawns[oid] = new well_t({6, 6});
-  acquire_dyn(oid_allocator, oid);
-  nd->wd->grid_deltas[g_oid]->structure_spawns[oid] = new road_t({7, 8});
-  acquire_dyn(oid_allocator, oid);
-  nd->wd->grid_deltas[g_oid]->structure_spawns[oid] = new road_t({8, 8});
-  acquire_dyn(oid_allocator, oid);
-  nd->wd->grid_deltas[g_oid]->structure_spawns[oid] = new road_t({8, 9});
-  acquire_dyn(oid_allocator, oid);
-  nd->wd->grid_deltas[g_oid]->structure_spawns[oid] = new road_t({8, 10});
-  acquire_dyn(oid_allocator, oid);
-  nd->wd->grid_deltas[g_oid]->structure_spawns[oid] = new road_t({9, 10});
-  acquire_dyn(oid_allocator, oid);
-  nd->wd->grid_deltas[g_oid]->structure_spawns[oid] = new road_t({10, 10});
-  acquire_dyn(oid_allocator, oid);
-  nd->wd->grid_deltas[g_oid]->structure_spawns[oid] = new road_t({10, 9});
-  acquire_dyn(oid_allocator, oid);
-  nd->wd->grid_deltas[g_oid]->structure_spawns[oid] = new road_t({10, 8});
-  acquire_dyn(oid_allocator, oid);
-  nd->wd->grid_deltas[g_oid]->structure_spawns[oid] = new road_t({9, 8});
+  grid_t *gr = new grid_t({100, 100});
+  ctx.grid_id = g_oid;
+  m->grids[g_oid] = gr;
+  acquire_dyn(oid_allocator, ctx.element_id);
+  gr->structures[ctx.element_id] = new well_t({6, 6});
+  gr->structures[ctx.element_id]->trigger_create(ctx);
+  acquire_dyn(oid_allocator, ctx.element_id);
+  gr->structures[ctx.element_id] = new road_t({7, 8});
+  gr->structures[ctx.element_id]->trigger_create(ctx);
+  acquire_dyn(oid_allocator, ctx.element_id);
+  gr->structures[ctx.element_id] = new road_t({8, 8});
+  gr->structures[ctx.element_id]->trigger_create(ctx);
+  acquire_dyn(oid_allocator, ctx.element_id);
+  gr->structures[ctx.element_id] = new road_t({8, 9});
+  gr->structures[ctx.element_id]->trigger_create(ctx);
+  acquire_dyn(oid_allocator, ctx.element_id);
+  gr->structures[ctx.element_id] = new road_t({8, 10});
+  gr->structures[ctx.element_id]->trigger_create(ctx);
+  acquire_dyn(oid_allocator, ctx.element_id);
+  gr->structures[ctx.element_id] = new road_t({9, 10});
+  gr->structures[ctx.element_id]->trigger_create(ctx);
+  acquire_dyn(oid_allocator, ctx.element_id);
+  gr->structures[ctx.element_id] = new road_t({10, 10});
+  gr->structures[ctx.element_id]->trigger_create(ctx);
+  acquire_dyn(oid_allocator, ctx.element_id);
+  gr->structures[ctx.element_id] = new road_t({10, 9});
+  gr->structures[ctx.element_id]->trigger_create(ctx);
+  acquire_dyn(oid_allocator, ctx.element_id);
+  gr->structures[ctx.element_id] = new road_t({10, 8});
+  gr->structures[ctx.element_id]->trigger_create(ctx);
+  acquire_dyn(oid_allocator, ctx.element_id);
+  gr->structures[ctx.element_id] = new road_t({9, 8});
+  gr->structures[ctx.element_id]->trigger_create(ctx);
   int count = 1;
   while(count--)
   {
-    acquire_dyn(oid_allocator, oid);
-    nd->wd->grid_deltas[g_oid]->walker_spawns[oid] = new water_carrier_t({7, 8});
+    acquire_dyn(oid_allocator, ctx.element_id);
+    gr->walkers[ctx.element_id] = new water_carrier_t({7, 8});
+    gr->walkers[ctx.element_id]->trigger_create(ctx);
   }
-
-  m->feed(nd);
-  
-  delete nd;
-  return m;
 }
 
 int main(int argc, char **argv)
@@ -60,6 +65,7 @@ int main(int argc, char **argv)
   sfml_viewer_t *view = (new sfml_viewer_t(m, man));
 
   imp_zone(owdemo);
+  imp(owdemo, event_dbg_create);
   imp_dyn_zone(oid_allocator);
 
   common_prop::init(view);
@@ -67,7 +73,13 @@ int main(int argc, char **argv)
   well_t::init(view);
   water_carrier_t::init(view);
 
-  build_world(m);
+  event_register(owdemo__event_dbg_create, ow_event_helpers::ret_0, build_world);
+  node_delta nd;
+  context_t ctx;
+  nd.wd = new world_delta();
+  nd.wd->triggers.push_back({event_t(owdemo__event_dbg_create), ctx});
+  m->feed(&nd);
+  
 
   view->set(g_oid);
   m->conf(true, 33);

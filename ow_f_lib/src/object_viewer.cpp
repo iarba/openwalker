@@ -14,11 +14,6 @@ std::map<oid_t, grid_t *> &world_viewer_t::get_grids()
   return grids;
 }
 
-bool &world_viewer_t::get_is_slice_not_triggers()
-{
-  return is_slice_not_triggers;
-}
-
 grid_viewer_t::grid_viewer_t(grid_t *base) : grid_t(base->get_size())
 {
   base->copy_into(this);

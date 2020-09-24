@@ -3,10 +3,13 @@
 
 #include <openwalker/openwalker.h>
 #include <functional>
+#include "ow_f_lib.h"
 
 // a random walker moves in 4 directions - N E S W
 // a random walker stops when it grid-allignes, then chooses a new direction
 // if possible to not turn back, it will continue, otherwise it will turn back
+
+def(ow_f_lib, event_random_walker_walk);
 
 class random_walker_t : public walker_t
 {
@@ -24,7 +27,7 @@ public:
   virtual ~random_walker_t();
   virtual void serialise(std::ostream &os) const;
   void copy_into(random_walker_t *other) const;
-  virtual walker_delta *compute_delta(context_t ctx) const;
+  static void compute_delta(context_t ctx);
   std::function<bool(context_t)> get_pathfinding_checker();
 protected:
   void regenerate_pathfinding_checker();

@@ -22,28 +22,48 @@ bool context_t::valid()
 
 grid_t *context_t::grid()
 {
-  return world->get_grid(grid_id);
+  auto r = world->get_grid(grid_id);
+  if(r == NULL)
+  {
+    throw std::logic_error("Grid not found!");
+  }
+  return r;
 }
 
 cell_t *context_t::cell()
 {
-  return grid()->at(cell_pos);
+  auto r = grid()->at(cell_pos);
+  if(r == NULL)
+  {
+    throw std::logic_error("Cell not found!");
+  }
+  return r;
 }
 
 structure_t *context_t::structure()
 {
-  return grid()->get_structure(element_id);
+  auto r = grid()->get_structure(element_id);
+  if(r == NULL)
+  {
+    throw std::logic_error("Structure not found!");
+  }
+  return r;
 }
 
 walker_t *context_t::walker()
 {
-  return grid()->get_walker(element_id);
+  auto r = grid()->get_walker(element_id);
+  if(r == NULL)
+  {
+    throw std::logic_error("Walker not found!");
+  }
+  return r;
 }
 
 std::ostream& operator<<(std::ostream &os, const context_t &data)
 {
   // world pointer is masqueraded
-  os << " " << data.grid_id << " " << data.element_id << " " << data.cell_pos.x << " " << data.cell_pos.y << " ";
+  os << " " << data.grid_id << " " << data.element_id << " " << data.cell_pos.x << " " << data.cell_pos.y << " " << data.seed << " ";
   return os;
 }
 
@@ -55,5 +75,6 @@ std::istream& operator>>(std::istream &is, context_t &data)
   ow_assert(is >> data.element_id);
   ow_assert(is >> data.cell_pos.x);
   ow_assert(is >> data.cell_pos.y);
+  ow_assert(is >> data.seed);
   return is;
 }

@@ -15,6 +15,7 @@
 #include "log.h"
 #include "event.h"
 #include "dirt.h"
+#include "xoshirowrapper.h"
 #include <iostream>
 
 void openwalker_init(int seed);

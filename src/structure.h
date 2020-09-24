@@ -19,17 +19,6 @@ public:
   virtual structure_t *deserialise(std::istream &is) = 0;
 };
 
-class structure_delta
-{
-public:
-  structure_delta();
-  structure_delta(const structure_delta *other);
-  structure_delta(std::istream &is);
-  ~structure_delta();
-  void serialise(std::ostream &os);
-  bool suicide = false;
-};
-
 class structure_t
 {
 public:
@@ -46,22 +35,20 @@ public:
   virtual void serialise(std::ostream &os) const;
   void copy_into(structure_t *other) const;
   glm::ivec2 get_position() const;
-  virtual structure_delta *compute_delta(context_t ctx) const;
-  virtual void append_influence_delta(influence_delta &id, context_t ctx) const;
-  void apply_delta(structure_delta *wd);
   bool get_suicide() const;
   glm::ivec2 get_size() const;
   namer_t get_clone_identifier() const;
-  void append_triggers(std::vector<std::pair<event_t, context_t>> &triggers, context_t ctx, std::function<double()> roll) const;
+  void append_triggers(std::vector<std::pair<event_t, context_t>> &triggers, context_t ctx) const;
   void trigger_create(context_t ctx);
   void trigger_delete(context_t ctx);
-protected:
   instance_event_handler_t ieh;
   namer_t clone_identifier;
   bool suicide = false;
   properties_t properties;
   glm::ivec2 position;
   glm::ivec2 size;
+  int ttl = 0;
+protected:
 private:
 };
 

@@ -18,9 +18,6 @@ public:
   world_delta(std::istream &is);
   ~world_delta();
   void serialise(std::ostream &os);
-  bool is_slice_not_triggers = true;
-  std::map<oid_t, grid_t *> grid_spawns;
-  std::map<oid_t, grid_delta *> grid_deltas;
   std::vector<std::pair<event_t, context_t>> triggers;
 };
 
@@ -36,16 +33,14 @@ public:
   world_delta *compute_delta(context_t ctx) const;
   void apply_delta(world_delta *wd);
   std::map<oid_t, grid_t *> get_grids();
-  void set_deletion_queue_usage(bool value);
   void deletion_queue_maintenance();
-  dirt_t *dirt;
-protected:
   std::map<oid_t, grid_t *> grids;
-  bool is_slice_not_triggers = true;
   mutable std::mutex critical_lock;
-private:
-  bool deletion_queue_mode = false;
   std::vector<grid_t *> grid_deletion_queue;
+  std::vector<walker_t *> walker_deletion_queue;
+  std::vector<structure_t *> structure_deletion_queue;
+protected:
+private:
 };
 
 #endif // WORLD_H

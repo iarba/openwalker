@@ -1,12 +1,14 @@
 #include "random_walker.h"
 #include "named_virtual_pointer.h"
-#include <set>
+#include <vector>
 
 def(cloner_registry, random_walker_cloner);
 
 void random_walker_t::load()
 {
   imp(cloner_registry, random_walker_cloner);
+  imp(ow_f_lib, event_random_walker_walk);
+  event_register(ow_f_lib__event_random_walker_walk, ow_event_helpers::always, random_walker_t::compute_delta);
   cloner_t::g_cloner_get()->reg_walker(cloner_registry__random_walker_cloner, new random_walker_t::random_walker_constructor());
 }
 
@@ -40,6 +42,7 @@ random_walker_t::random_walker_t(glm::dvec2 position, namer_t required_pathfindi
   this->required_pathfinding_def_value = required_pathfinding_def_value;
   clone_identifier = cloner_registry__random_walker_cloner;
   use_nvp = false;
+  ieh.on_random.push_back(event_t(ow_f_lib__event_random_walker_walk));
   regenerate_pathfinding_checker();
 }
 
@@ -48,6 +51,7 @@ random_walker_t::random_walker_t(glm::dvec2 position, namer_t pathfinding_nvp) :
   clone_identifier = cloner_registry__random_walker_cloner;
   this->pathfinding_nvp = pathfinding_nvp;
   use_nvp = true;
+  ieh.on_random.push_back(event_t(ow_f_lib__event_random_walker_walk));
   regenerate_pathfinding_checker();
 }
 
@@ -145,13 +149,14 @@ glm::ivec2 forward(glm::dvec2 position, double direction)
   return rval;
 }
 
-walker_delta *random_walker_t::compute_delta(context_t ctx) const
+void random_walker_t::compute_delta(context_t ctx)
 {
+  random_walker_t *that = (random_walker_t *)ctx.walker();
+  xoshirorandomiser r(ctx.seed);
   double eps = 0.0001;
-  walker_delta *wd = this->walker_t::compute_delta(ctx);
-  double dist_to_parse = this->speed;
-  double direction = this->direction;
-  glm::dvec2 position = this->position;
+  double dist_to_parse = that->speed;
+  double direction = that->direction;
+  glm::dvec2 position = that->position;
   double distance;
   for(glm::dvec2 next_grid_point = forward(position, direction); (distance = glm::distance(position, next_grid_point)) <= dist_to_parse + eps; next_grid_point = forward(position, direction))
   {
@@ -161,7 +166,7 @@ walker_delta *random_walker_t::compute_delta(context_t ctx) const
     }
     dist_to_parse -= distance;
     position = next_grid_point;
-    std::set<direction_t> possible_directions;
+    std::vector<direction_t> possible_directions;
     double backwards = direction + M_PI;
     while(backwards >= 2 * M_PI)
     {
@@ -174,39 +179,33 @@ walker_delta *random_walker_t::compute_delta(context_t ctx) const
         continue;
       }
       ctx.cell_pos = forward(position, new_direction);
-      if(pathfinding_checker(ctx))
+      if(that->pathfinding_checker(ctx))
       {
-        possible_directions.insert(new_direction);
+        possible_directions.push_back(new_direction);
       }
     }
     if(possible_directions.size() == 0)
     {
       ctx.cell_pos = forward(position, backwards);
-      if(pathfinding_checker(ctx))
+      if(that->pathfinding_checker(ctx))
       {
-        possible_directions.insert(backwards);
+        possible_directions.push_back(backwards);
       }
     }
     if(possible_directions.size() == 0)
     {
       dist_to_parse = 0;
-      wd->suicide = true;
+      that->suicide = true;
     }
     else
     {
-      int pos = rand() % possible_directions.size();
-      auto it = possible_directions.begin();
-      while(pos--)
-      {
-        it++;
-      }
-      direction = *it;
+      int pos = r.next() % possible_directions.size();
+      direction = possible_directions[pos];
     }
   }
   position = position + glm::dvec2(cos(direction), sin(direction)) * dist_to_parse;
-  wd->delta_position = position - this->position;
-  wd->delta_direction = direction - this->direction;
-  return wd;
+  that->position = position;
+  that->direction = direction;
 }
 
 std::function<bool(context_t)> random_walker_t::get_pathfinding_checker()

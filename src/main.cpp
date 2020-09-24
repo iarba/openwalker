@@ -18,6 +18,7 @@ void openwalker_init(int seed)
   grid_t::load();
   structure_t::load();
   walker_t::load();
+  xoshirorandomiser::load();
 }
 
 void openwalker_set_logger(std::ostream *logger)
@@ -28,4 +29,5 @@ void openwalker_set_logger(std::ostream *logger)
 void openwalker_destroy()
 {
   cloner_t::destroy();
+  xoshirorandomiser::destroy();
 }

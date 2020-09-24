@@ -18,6 +18,7 @@ public:
   oid_t grid_id = null__null;
   oid_t element_id = null__null;
   glm::ivec2 cell_pos = {0, 0};
+  uint64_t seed = 0;
 };
 
 std::ostream& operator<<(std::ostream &os, const context_t &data);

@@ -10,6 +10,8 @@
 #include "named_virtual_pointer.h"
 #include "spawn_utils.h"
 
+def_zone(ow_f_lib);
+
 void ow_f_lib_init();
 
 #endif // OW_F_LIB_H

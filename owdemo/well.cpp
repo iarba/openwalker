@@ -1,15 +1,18 @@
 #include "well.h"
 #include "common_prop.h"
+#include "water_carrier.h"
 
 #define WELL_SPRITE_SCALE 64.0f
 
 void spawn_associated_walker(context_t ctx)
 {
   well_t *w = (well_t *)ctx.structure();
+  xoshirorandomiser r(ctx.seed);
   if(--w->spawn_cd < 0)
   {
     w->spawn_cd = 200;
-    printf("spawn!\n");
+    auto positions = spawn_utils::get_neighbouring_cells_of_structure(ctx, 0, water_carrier_t::pathfinding_function);
+    spawn_utils::attach_to(ctx.grid(), new water_carrier_t(positions[r.next() % positions.size()]));
   }
 }
 

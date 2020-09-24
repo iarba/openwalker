@@ -19,9 +19,8 @@ public:
   virtual ~master_t();
   void receive_com(command_t c);
   void tick();
-  void allow(namer_t usr, namer_t ev_code);
-  void update();
   void conf(bool autorun, int delay);
+  void toggle_pause();
 protected:
   bool autorun = false;
   int delay = 500;

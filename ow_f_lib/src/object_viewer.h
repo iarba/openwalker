@@ -9,7 +9,6 @@ public:
   world_viewer_t(world_t *base);
   virtual ~world_viewer_t();
   std::map<oid_t, grid_t *> &get_grids();
-  bool &get_is_slice_not_triggers();
 };
 
 class grid_viewer_t : public grid_t
